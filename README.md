@@ -1,2 +1,2 @@
 # bumblebee_pollen
-R codes for analyzing DNA metabarcoding data of bumble bees in Virginia
+R codes for analyzing DNA metabarcoding data of bumble bees in Virginia. Contributed by Kelsey Schoenemann.
