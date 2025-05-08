@@ -1,0 +1,1350 @@
+---
+title: "ITS2 bioinformatics"
+author: "Kelsey Schoenemann"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+  word_document: default
+  html_document:
+    toc: yes
+    toc_float: yes
+editor_options:
+  chunk_output_type: console
+---
+
+
+# Set-Up workspace
+
+There are two possible directories containing sequence data: 
+* /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/rbcL
+** this directory is for running the code on UVA's HPC Rivanna
+
+* /Users/kelseyschoenemann/Desktop/Bioinformatics/2024-09-27_MiSeq_v3/ITS2 
+** this directory is for running the code on my local machine
+
+(you can easily switch between these two directories by selecting the old path, up to & including , and hit Cmd F to bring up Find & Replace tool, then copy-paste the new path into the Replace box and hit All. There should be 25 replacements if you skip the very first instance above)
+
+## Summary of Files / Directories
+
+/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2 
+*Ns & primers present (raw files)
+
+/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/filtN 
+*Ns removed, primers present (pre-filtered)
+
+/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/cutadapt 
+*Ns & primers removed (cutadapted)
+
+/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/cutadapt/filtered 
+*Ns & primers removed and filter & trimmed (filtered)
+
+* List of primers used *
+*We used plant universal primers: 
+**iTru_ITS2_S2F (ATGCGATACTTGGTGTGAAT) & iTru_ITS2_4R (TCCTCCGCTTATTGATATGC) 
+**iTru_rbcL2 (TGGCAGCATTYCGAGTAACTC) & iTru_rbcLa-R (GTAAAATCAAGTCCACCRCG)
+
+
+## Load packages
+
+```{r}
+#install packages with BiocManager (if you have anaconda)
+# if (!requireNamespace("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+# BiocManager::install("dada2", version = "3.16")
+# BiocManager::install(c("DECIPHER", "ShortRead", "phyloseq"))
+# BiocManager::install("decontam")
+
+library(devtools); packageVersion("devtools")
+library(dada2); packageVersion("dada2")
+library(ShortRead); packageVersion("ShortRead")
+library(Biostrings); packageVersion("Biostrings")
+library(DECIPHER); packageVersion("DECIPHER")
+library(phyloseq); packageVersion("phyloseq") 
+library(ggplot2); packageVersion("ggplot2")
+#library(decontam); packageVersion("decontam") #invoked later on
+
+#devtools::install_github("benjjneb/dada2", ref="v1.16") # change the ref argument to get other versions
+```
+
+
+## Set working directory
+
+```{r}
+setwd("/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2")
+path <- "/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2" ## CHANGE ME to the directory containing the fastq files.
+head(list.files(path, pattern = "*.fastq"))
+```
+
+```{r}
+list.files(path, pattern = "*.fastq")[1]
+```
+```{r}
+#R.utils::gunzip(list.files(path), remove=F)
+R.utils::isGzipped(list.files(path, pattern = "*.fastq")[1]) # checking that the file is unzipped, FALSE = not gzipped
+```
+
+```{r}
+# intstall R.utils
+# library(R.utils)
+# lapply(list.files(path, pattern = "*.gz"), FUN=gunzip, remove=F) # unzip all .gz files and don't remove compressed files
+# I manually moved all compressed files into a new folder, leaving these unzipped files in the working directory for this script
+# commenting out since I only need to unzip once
+```
+
+# Prep raw sequence reads
+
+Match forward and reverse reads by sample name. Pre-filter to remove reads with Ns.
+
+## Generate matched lists of fwd & rev reads with sample name
+
+Forward and reverse fastq files have the format: ITS2_SAMPLENAME_SXXX_L001_R1_001.fastq and ITS2_SAMPLENAME_SXXX_L001_R2_001.fastq, respectively
+
+For example: ITS2-2020-6-16-H1_S293_L001_R1_001.fastq is the forward reads of ITS2 sample 2020-06-16-H1
+
+```{r}
+fnFs <- sort(list.files(path, pattern = "L001_R1_001.fastq", full.names = TRUE))
+fnRs <- sort(list.files(path, pattern = "L001_R2_001.fastq", full.names = TRUE))
+
+#string parsing may have to be altered in your own data if your file names have a different format.
+```
+
+## Pre-filter to remove reads with Ns
+
+Ambiguous bases (Ns) in the sequencing reads makes accurate mapping of short primer sequences difficult. Here, remove reads with Ns, but perform no other filtering.
+
+```{r}
+fnFs.filtN <- file.path(path, "filtN", basename(fnFs)) #create directory paths to contain N-filterd files in filtN/ subdirectory within path
+fnRs.filtN <- file.path(path, "filtN", basename(fnRs))
+```
+
+Now we can filter out whole sequences and trim parts of sequences based on their quality score. This function takes files from path /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2 and creates new files in filtN folder /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/filtN
+
+```{r}
+filterAndTrim(fnFs, fnFs.filtN, fnRs, fnRs.filtN, maxN = 0, multithread = TRUE, matchIDs = T, compress = F) #eliminates sequences with more than 0 Ns;
+
+#I had an issue with "Mismatched forward and reverse sequence files" but adding the matchID=T parameter fixed it; #I had an issue with the filtN files being compressed so the cutadapt command couldn't read the files ("UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte"), adding the compress = F parameter fixed it (("Or you could just gzip all your files at the beginning." - benjjneb)??)
+```
+
+### Check how much filtering affected read numbers
+
+```{r}
+#before filterAndTrim
+plotQualityProfile(fnFs[1:1]) #checking quality and number of FWD reads of first sample
+```
+
+```{r}
+plotQualityProfile(fnRs[1:1]) #checking quality and number of REV reads of first sample
+```
+
+```{r}
+#after filterAndTrim
+plotQualityProfile(fnFs.filtN[1:1]) #checking quality and number of FWD reads of first sample
+```
+
+```{r}
+plotQualityProfile(fnRs.filtN[1:1]) #checking quality and number of REV reads of first sample
+```
+
+Not every sample made it through the pre-filter to remove reads with Ns
+
+```{r}
+length(file.path(path, "filtN", basename(fnFs))) #length of "fnFs.filtN," created in chunk above (262)
+```
+
+```{r}
+length(list.files(file.path(path, "filtN"), pattern = "L001_R1_001.fastq", full.names = TRUE)) #length of files actually written to the fnFs.filtN directories (257)
+```
+
+
+### Updating path names (after samples drop out)
+
+```{r}
+# update directory, since not all samples made it thru the filter
+fnFs.filtN <- file.path(path, "filtN", basename(list.files(file.path(path, "filtN"), pattern = "L001_R1_001.fastq", full.names = TRUE))) 
+fnRs.filtN <- file.path(path, "filtN", basename(list.files(file.path(path, "filtN"), pattern = "L001_R2_001.fastq", full.names = TRUE)))
+```
+
+# Identify primers in reads
+
+## Verify the presence and orientation of these primers
+
+```{r}
+#ITS2 primers
+FWD <- "ATGCGATACTTGGTGTGAAT"  ## CHANGE ME to your forward primer sequence
+REV <- "TCCTCCGCTTATTGATATGC"  ## CHANGE ME...
+
+#to ensure we have the right primers, and the correct orientation of the primers on the reads, we will verify the presence and orientation of these primers in the data
+
+allOrients <- function(primer) {
+  # Create all orientations of the input sequence
+  require(Biostrings)
+  dna <- DNAString(primer)  # The Biostrings works w/ DNAString objects rather than character vectors
+  orients <- c(Forward = dna, Complement = complement(dna), Reverse = reverse(dna),
+               RevComp = reverseComplement(dna))
+  return(sapply(orients, toString))  # Convert back to character vector
+}
+
+FWD.orients <- allOrients(FWD)
+REV.orients <- allOrients(REV)
+
+FWD.orients #all possible orientations of forward
+REV.orients #...and reverse primers
+
+```
+
+
+## Count how many times primers appear in reads
+
+We are now ready to count the number of times the primers appear in the forward and reverse read, while considering all possible primer orientations. Identifying and counting the primers on one set of paired end FASTQ files is sufficient, assuming all the files were created using the same library preparation, so we’ll just process the first sample.
+
+```{r}
+primerHits <- function(primer, fn) {
+  # Counts number of reads in which the primer is found
+  nhits <- vcountPattern(primer, sread(readFastq(fn)), fixed = FALSE)
+  return(sum(nhits > 0))
+}
+
+#count of primer hits in the nth read
+rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[n]]),
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[n]]),
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[n]]),
+      REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[n]]))
+```
+
+
+Note: Orientation mixups are a common trip-up. If, for example, the REV primer is matching the Reverse reads in its RevComp orientation, then replace REV with its reverse-complement orientation (REV <- REV.orient[[“RevComp”]]) before proceeding.
+
+# Remove primers from reads
+
+These primers can be now removed using a specialized primer/adapter removal tool. Here, we use cutadapt for this purpose. Download, installation and usage instructions are available online: <http://cutadapt.readthedocs.io/en/stable/index.html>
+
+```{r}
+#cutadapt <- "/Users/kelseyschoenemann/opt/anaconda3/envs/cutadaptenv/bin/cutadapt" #CHANGE ME to the cutadapt path on your local machine
+
+cutadapt <- "/home/kls7sg/.local/bin/cutadapt" #for running on Rivanna HPC
+system2(cutadapt, args = "--version") # Run shell commands from R
+```
+
+If the above command successfully executed, R has found cutadapt and you are ready to continue following along.
+
+We now create output filenames for the cutadapt-ed files, and define the parameters we are going to give the cutadapt command. The critical parameters are the primers, and they need to be in the right orientation, i.e. the FWD primer should have been matching the forward-reads in its forward orientation, and the REV primer should have been matching the reverse-reads in its forward orientation.
+
+### Create directory with updated path names
+
+```{r}
+path.cut <- file.path(path, "cutadapt"); if(!dir.exists(path.cut)) dir.create(path.cut) #create a new folder in the main directory called cutadapt
+#/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/cutadapt
+
+# fnFs.cut <- file.path(path.cut, basename(fnFs)) #old code; to place fwd reads w/o primers in the new cutadapt directory
+# fnRs.cut <- file.path(path.cut, basename(fnRs)) #old code
+           length(file.path(path, basename(fnFs)))    # 262 samples with F reads in original directory
+```
+
+```{r}
+length(list.files(file.path(path, "filtN"), pattern = "L001_R1_001.fastq", full.names = TRUE)) # but only 257 samples passed the filtN filter (removing reads with Ns)
+```
+
+```{r}
+# figuring out how to create/call directory paths with just retained samples
+# basename(list.files(file.path(path, "filtN"), pattern = "L001_R1_001.fastq", full.names = TRUE))[1]
+# file.path(path.cut, basename(list.files(file.path(path, "filtN"), pattern = "L001_R1_001.fastq", full.names = TRUE))[1])
+
+# here's an updated directory that only includes destinations for samples/files that still exist
+fnFs.cut <- file.path(path.cut, sort(basename(list.files(file.path(path, "filtN"), pattern = "R1_001.fastq", full.names = TRUE)))) #to place forward reads with primers cut (removed) in the new cutadapt directory
+fnRs.cut <- file.path(path.cut, sort(basename(list.files(file.path(path, "filtN"), pattern = "R2_001.fastq", full.names = TRUE)))) #to place reverse reads with primers cut (removed) in the new cutadapt directory
+```
+
+### Running cutadapt
+
+```{r}
+FWD.RC <- dada2:::rc(FWD) #generate reverse complement of fwd
+REV.RC <- dada2:::rc(REV) #...and rev primers
+
+R1.flags <- paste("-g", FWD, "-a", REV.RC) # To flag FWD and reverse-complement of REV for removal from forward reads (R1)
+R2.flags <- paste("-G", REV, "-A", FWD.RC) # To flag REV and  reverse-complement of FWD for removal from reverse reads (R2)
+
+# Run Cutadapt to cut flagged sequences from input reads and save cut sequences to output folder
+#Warning: A lot of output will be written to the console by cutadapt!
+
+for(i in seq_along(fnFs)) {
+  system2(cutadapt, args = c(
+    R1.flags, R2.flags, "-n", 2, #-n 2 required to remove FWD & REV from reads
+    "-o", fnFs.cut[i], "-p", fnRs.cut[i], # output files
+    fnFs.filtN[i], fnRs.filtN[i]) # input files
+    )
+}
+#it says "one or more of your adapter sequences may be incomplete" but that's okay
+```
+
+## Count primers again
+
+As a sanity check, we will count the presence of primers in the  cutadapt-ed sample:
+
+```{r}
+rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.cut[[n]]),
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.cut[[n]]),
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.cut[[n]]),
+      REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.cut[[n]]))
+```
+
+
+Success! Primers are no longer detected in the cutadapted reads
+
+The primer-free sequence files are now ready to be analyzed through the DADA2 pipeline.
+
+#Prep the pre-filtered & “cutadapted” sequence reads
+
+## Generate matched lists of fwd & rev reads with sample name
+
+### Create path names (all samples included)
+
+```{r}
+#the only thing changing from last time is 'path' becomes 'path.cut'
+#fnRs <- sort(list.files(path, pattern = "_2.fastq.gz", full.names = TRUE))
+
+cutFs <- sort(list.files(path.cut, pattern = "L001_R1_001.fastq", full.names = TRUE))
+cutRs <- sort(list.files(path.cut, pattern = "L001_R2_001.fastq", full.names = TRUE))
+```
+
+## Filter and trim “cutadapted” reads with filtering parameters
+
+To store the output files of filtered reads as fastq.gz files, we’re creating another directory /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/cutadapt/filtered
+
+```{r}
+filtFs <- file.path(path.cut, "filtered", basename(cutFs))
+filtRs <- file.path(path.cut, "filtered", basename(cutRs))
+```
+
+```{r}
+#recall, the PRE-filter filter:    filterAndTrim(fnFs, fnFs.filtN, fnRs, fnRs.filtN, maxN = 0, multithread = TRUE, matchIDs = T, compress=F) #eliminates sequences with more than 0 Ns
+
+#NOW we filter for more stringent Quality Control
+out <- filterAndTrim(cutFs, filtFs, cutRs, filtRs, maxN = 0, maxEE = c(2, 5), minLen = 50, rm.phix = TRUE, compress = TRUE, multithread = TRUE) #changed from default: maxEE=2,5
+
+# Some input samples had no reads pass the filter.
+```
+
+```{r}
+head(out)
+```
+
+```{r}
+out.table<-as.data.frame(cbind(out,(out[,2]/out[,1])*100))
+100-mean((out[,2]/out[,1])*100, na.rm=T) #loose ~50% of reads on average
+```
+
+For this dataset, we will use standard filtering parameters:
+
+-   maxN=0 #DADA2 requires sequences contain no Ns and Ns are already removed (this is the default setting)
+
+-   truncQ=2 #trims/truncates reads at the first instance of a bp with quality score =< 2 (this is the default setting)
+
+-   rm.phix=TRUE PhiX (FEE-ex) is a small virus with single-stranded DNA that you can spike in samples to use as control in sequencing #removes these reads in filtering
+
+-   maxEE=2,5 #sets the maximum number of “expected errors” allowed in a read. c(2,5) sets the parameter for the F & R reads
+
+-   minLen=50 #sets the minimum bp length of reads #gets rid of spurious very low-length sequences.
+
+### Check how much filtering affected read numbers
+
+```{r}
+n=20
+#before filterAndTrim
+plotQualityProfile(cutFs[n:n]) #checking quality and number of FWD reads of nth sample
+```
+
+```{r}
+#after filterAndTrim
+plotQualityProfile(filtFs[n:n]) #checking quality and number of FWD reads of nth sample
+```
+
+### Updating sample names (after samples drop out)
+
+```{r}
+# updating sample names for "out"
+length(rownames(as.data.frame(out)))
+                         rownames(as.data.frame(out))
+                strsplit(rownames(as.data.frame(out)),  "_S")
+         lapply(strsplit(rownames(as.data.frame(out)),  "_S"), function(l) l[[1]])
+strsplit(sapply(strsplit(rownames(as.data.frame(out)),  "_S"), function(l) l[[1]]),"-")[[1]][-1]
+
+temp<-strsplit(sapply(strsplit(rownames(as.data.frame(out)),  "_S"), function(l) l[[1]]),"-")
+
+sample.names<-character(length(rownames(as.data.frame(out)))) #set up container object
+for(i in 1:length(rownames(as.data.frame(out)))){ #fill container with sample names
+  sample.names[i]<-paste(temp[[i]][-1],collapse="_")
+}
+head(sample.names); tail(sample.names); length(sample.names); length(rownames(out)) #sample.names, length of sample.names, length of samples output from filterAndTrim
+```
+
+```{r}
+rownames(out)<-sample.names
+plotQualityProfile(filtFs[1:1]) #checking quality and number of FWD reads of first sample
+plotQualityProfile(filtRs[1:1]) #checking quality and number of REV reads of first sample
+```
+
+Not every sample made it through the filterAndTrim step
+
+```{r}
+length(file.path(path.cut, "filtered", basename(cutFs))) #length of "filtFs," created in chunk above ()
+```262
+
+```{r}
+length(list.files(file.path(path.cut, "filtered"), pattern = "L001_R1_001.fastq", full.names = TRUE)) #length of files actually written to the filtFs directories (254)
+```
+
+
+### Updating path names (after samples drop out)
+
+```{r}
+# update directory, since not all samples made it thru the filter
+filtFs <- file.path(path.cut, "filtered", basename(list.files(file.path(path.cut, "filtered"), pattern = "L001_R1_001.fastq", full.names = TRUE)))
+filtRs <- file.path(path.cut, "filtered", basename(list.files(file.path(path.cut, "filtered"), pattern = "L001_R2_001.fastq", full.names = TRUE)))
+```
+
+# Learn error and inspect quality of cutadapted & filtered reads
+
+## Learn the error rates
+
+Learns the error rates from an input list, or vector, of file names or a list of derep-class objects. Error rate estimation is performed by errorEstimationFunction. The output of this function serves as input to the dada function call as the err parameter
+
+This uses the reads from the filter and trimmed files located in the “filtered” folder /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/cutadapt/filtered
+
+```{r}
+#You can safely ignore error messages “Not all sequences were the same length.”
+errF <- learnErrors(filtFs, multithread = TRUE)
+```
+
+```{r}
+errR <- learnErrors(filtRs, multithread = TRUE)
+```
+
+```{r}
+#explanation of parameters in the learnErrors() function:
+#learnErrors(
+            #fls,             <-- fastq files
+            #nbases = 1e+08,   <-- minimum number of total bases to learn error rate
+            #nreads = NULL,   <-- deprecated, don't use
+            #errorEstimationFunction = loessErrfun,
+            #multithread = FALSE, <-- if enabled, sets the number of threads
+            #randomize = FALSE,  <-- If FALSE, samples are read in the provided order until enough reads are obtained. If TRUE, samples are picked at random from those provided
+            #MAX_CONSIST = 10,  <--The maximum number of times to step through the self-consistency loop.
+            #OMEGA_C = 0,  <--The threshold at which unique sequences inferred to contain errors are corrected in the final output, and used to estimate the error rates
+            #qualityType = "Auto", <--The quality encoding of the fastq file(s). "Auto" (the default) means to attempt to auto-detect the encoding.
+            #verbose = FALSE)
+```
+
+## Plot errors
+
+We expect a roughly linear decrease in Log transformed error frequency as the consensus quality score increases from 0 to 40
+
+```{r}
+
+plotErrors(errF, nominalQ = TRUE) #forward
+```
+
+```{r}
+plotErrors(errR, nominalQ = TRUE) #reverse
+```
+
+
+## Inspect read quality profiles
+
+The quality profile plot is a gray-scale heatmap of the frequency of each quality score at each base position. The median quality score at each position is shown by the green line, and the quartiles of the quality score distribution by the orange lines. The read line shows the scaled proportion of reads that extend to at least that position.
+
+```{r}
+plotQualityProfile(filtFs[n]) #inspect nth sample's forward reads
+```
+
+```{r}
+plotQualityProfile(filtRs[n]) #reverse always worse
+```
+
+# Dereplication & denoising of identical sequences
+
+Dereplication combines all identical sequencing reads into into “unique sequences” with a corresponding “abundance” (the number of reads with that same sequence). Dereplication substantially reduces computation time by eliminating redundant comparisons.
+
+DADA2 retains a summary of the quality information associated with each unique sequence. *The consensus quality profile of a unique sequence is the average of the positional qualities from the dereplicated reads.* These quality profiles inform the error model of the subsequent denoising step, significantly increasing DADA2’s accuracy. **But we did the learnErrors step before dereplication?** **dada is the denoising step and uses the error model created before**
+
+using the reads from the filter and trimmed files located in the “filtered” folder /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/cutadapt/filtered
+
+## Dereplicate reads
+
+```{r}
+derepFs <- derepFastq(filtFs, verbose = TRUE)
+```
+
+```{r}
+derepRs <- derepFastq(filtRs, verbose = TRUE)
+```
+
+```{r}
+#Note that the dereplicated sequences only exist in the R environment, and are not saved into a separate output subdirectory
+```
+
+### Updating sample names (after samples drop out)
+
+Extract sample names from filtF (to only include samples that passed the previous filter)
+
+```{r}
+
+# my file names have 'junk' at the beginning and end of the file name
+                  basename(filtFs[241])
+
+         strsplit(basename(filtFs[241]),"_S")
+
+         strsplit(basename(filtFs[241]),"_S")[[1]][1]
+
+strsplit(strsplit(basename(filtFs[241]),"_S")[[1]][1],"-")[[1]]
+
+# and their structure (esp length) differs between worker samples, queen samples, extraction negative controls, and pcr negative controls. 
+paste(strsplit(strsplit(basename(filtFs[241]),"_S")[[1]][1],"-")[[1]][-1],collapse="_")
+
+paste(strsplit(strsplit(basename(filtFs[226]),"_S")[[1]][1],"-")[[1]][-1],collapse="_")
+
+paste(strsplit(strsplit(basename(filtFs[176]),"_S")[[1]][1],"-")[[1]][-1],collapse="_")
+
+
+paste(strsplit(strsplit(basename(filtFs[1]),  "_S")[[1]][1],"-")[[1]][-1],collapse="_")
+
+# make a simple function to replicate above
+get.sample.name <- function(fname) paste(strsplit(strsplit(basename(fname[1]),  "_S")[[1]][1],"-")[[1]][-1],collapse="_")
+
+sample.names <- unname(sapply(filtFs, get.sample.name))
+head(sample.names)
+```
+
+```{r}
+length(sample.names)
+```
+
+```{r}
+# Name the dereplicated class objects by the sample names
+names(derepFs) <- sample.names
+names(derepRs) <- sample.names
+```
+
+## Denoise reads to resolve exact sequences with dada2
+
+At this step, the core sample inference algorithm is applied to the dereplicated sequences from /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/ITS2/cutadapt/filtered (remember that the dereplicated sequences only exist in the R environment)
+
+DADA2 infers sample sequences exactly and resolves differences of as little as 1 nucleotide using the models of the error rates we learned in the previous step
+
+```{r}
+dadaFs <- dada(derepFs, err = errF, multithread = TRUE)
+```
+
+```{r}
+dadaRs <- dada(derepRs, err = errR, multithread = TRUE)
+```
+
+
+## Merge paired reads
+
+We’ve inferred the sample sequences in the forward and reverse reads independently. Now it’s time to merge those inferred sequences together, throwing out those pairs of reads that don’t match
+
+```{r}
+mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, verbose=TRUE, minOverlap = 11, maxMismatch = 0)
+```
+
+```{r}
+#this paper used min overlap of 10bp with "nrITS2": https://www.sciencedirect.com/science/article/pii/S0048969721055455#s0010
+
+#I played with minOverlap parameter to see the effects on merging, and 11 works well
+# length=30L; overlap=25; mismat=0
+# mergers.test <- mergePairs(head(dadaFs, n=length), head(derepFs, n=length), head(dadaRs, n=length), head(derepRs, n=length), verbose=TRUE, minOverlap = overlap, maxMismatch = mismat)
+# rm(length,overlap,mismat,mergers.test)
+```
+
+The mergePairs(…) function returns a data.frame corresponding to each successfully merged unique sequence. The “forward” and “reverse” columns record which forward and reverse sequence contributed to that merged sequence.
+
+## Construct ASV table
+
+We can now construct an amplicon sequence variant table (ASV) table, a higher-resolution version of the OTU table produced by traditional methods.
+
+```{r}
+seqtab <- makeSequenceTable(mergers)
+dim(seqtab)
+# 254 samples
+# 1,150 ASVs
+```
+
+# Post-dada2 quality control
+
+## Remove chimeras
+
+A chimera is a single DNA sequence originating when multiple transcripts or DNA sequences get joined. Chimeras can be considered artifacts and be filtered out from the data during processing
+
+The number of unique variants that are chimeras is higher in exact amplicon sequence variant (ASV) methods like DADA2 than they were in OTU methods, as chimeras very close to the real sequences are the most common type of chimera, and those used to be hidden by being lumped into an OTU. So some expectations based on previous OTU processing should be modified a little bit.
+
+Robert Edgar discusses this in more detail in his uchime2 paper: <https://doi.org/10.1101/074252>
+
+```{r}
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE) #more stringent parameter minFoldParentOverAbundance=2
+```
+
+```{r}
+length(sample.names)
+
+rownames(seqtab.nochim) <- sample.names
+
+sum(seqtab) # reads
+
+sum(seqtab.nochim) # reads after removing chimeras
+
+sum(seqtab.nochim)/sum(seqtab) # proportion of reads remaining
+
+100-((sum(seqtab.nochim)/sum(seqtab))*100) # 5 percent of reads removed as chimeras
+```
+
+
+The more important metric here is the fraction of reads removed as bimeras, which is \<20% here, so in the range of what we see. It is normal that a much higher fraction of ASVs than reads will be removed as bimeras, because chimeras are highly diverse but usually quite rare. You will see more chimeric ASVs if you sequence deeply, but not a meaningfully higher number of chimeric reads.
+
+If you’re seeing more than 20% of reads being chimeric, you may want to re-examine your PCR protocol in the future. Longer extension times and fewer PCR cycles are both approaches that have been shown to reduce the formation of chimeric amplicons.
+
+## Inspect distribution of sequence lengths
+
+Looking distribution of sequence lengths in the non-chimeric ASVs
+
+```{r}
+table(nchar(getSequences(seqtab.nochim)))
+```
+
+```{r}
+sum(table(nchar(getSequences(seqtab.nochim)))) #total ASVs
+```
+
+```{r}
+plot(table(nchar(getSequences(seqtab.nochim)))) #peak at 346bp
+```
+Unexpected second peak at 490bp
+
+## Remove ASVs with less than 100 reads total
+
+This threshold has been used before for characterizing pollinator microbiomes (Hammer et al. 2020, 2023). Since my pollens are expected to be a lot more simple than a microbiome, I feel this threshold is quite conservative.
+
+```{r}
+seqtab.nochim<-seqtab.nochim[,!!colSums(seqtab.nochim > 100)]
+```
+
+Citations for this step: Hammer, T. J., J. C. Dickerson, W. O. McMillan, and N. Fierer. 2020. Heliconius Butterflies Host Characteristic and Phylogenetically Structured Adult-Stage Microbiomes. Applied and Environmental Microbiology 86. Hammer, T. J., J. Kueneman, M. Argueta-Guzmán, Q. S. McFrederick, Lady Grant, W. Wcislo, S. Buchmann, and B. N. Danforth. 2023. Bee breweries: The unusually fermentative, lactobacilli-dominated brood cell microbiomes of cellophane bees. Frontiers in Microbiology 14:1–16.
+
+## Remove contaminating sequences with decontam
+
+The steps & info below are largely from this tutorial: <https://benjjneb.github.io/decontam/vignettes/decontam_intro.html#necessary-ingredients>
+
+The investigation of environmental microbial communities and microbiomes has been transformed by the recent widespread adoption of culture-free high-throughput sequencing methods. In amplicon sequencing a particular genetic locus is amplified from DNA extracted from the community of interest, and then sequenced on a next-generation sequencing platform. In shotgun metagenomics, bulk DNA is extracted from the community of interest and sequenced. Both techniques provide cost-effective and culture-free characterizations of microbial communities.
+
+However, the accuracy of these methods is limited in practice by the introduction of contaminating DNA that was not truly present in the sampled community. This contaminating DNA can come from several sources, such as the reagents used in the sequencing reaction, and can critically interfere with downstream analyses, especially in lower biomass environments. The decontam package provides simple statistical methods to identify and visualize contaminating DNA features, allowing them to be removed and a more accurate picture of sampled communities to be constructed from marker-gene and metagenomics data.
+
+### Prep phyloseq objects
+
+```{r}
+
+#load packages
+library(decontam); packageVersion("decontam")
+library(readxl)
+library(tidyverse)
+```
+
+```{r}
+#load sample data
+samp.ctrls.conc<-read_excel("/scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/SampleConc.xlsx")
+head(samp.ctrls.conc)
+```
+
+```{r}
+#filter sample data for just ITS2 samples
+samp.ctrls.conc <- samp.ctrls.conc %>% filter(str_starts(SampleID,'ITS2'))
+
+detach("package:tidyverse")
+```
+
+```{r}
+#create phyloseq objects with seqtab and sample data (i.e., samp.ctrls.conc)
+SAMP <- sample_data(samp.ctrls.conc)
+  sample_names(SAMP) <- sample_data(SAMP)$SampleID_AllUnderscores
+OTU <- otu_table(seqtab.nochim, taxa_are_rows = F, errorIfNULL=TRUE)
+  sample_names(OTU)<-paste0("ITS2_",sample_names(OTU))
+
+#checking if name formats in SAMP and OTU objects match
+head(sample_names(SAMP))
+```
+
+```{r}
+head(sample_names(OTU))
+```
+
+```{r}
+#checking if number of samples in SAMP and OTU objects match
+identical(sample_names(SAMP),sample_names(OTU)) # The safe and reliable way to test two objects for being exactly equal. It returns TRUE in this case, FALSE in every other case.
+```
+
+```{r}
+match(sample_names(SAMP), sample_names(OTU)) # match returns a vector of the positions of (first) matches of its first argument in its second.
+```
+
+```{r}
+sample_names(SAMP) %in% sample_names(OTU) # %in% is a more intuitive interface as a binary operator, which returns a logical vector indicating if there is a match or not for its left operand.
+```
+
+```{r}
+#subset phyloseq object with sample info to contain only the samples present in the OTU obj
+SAMP<-prune_samples(sample_names(SAMP) %in% sample_names(OTU), SAMP) #prune_samples() is a method for pruning/filtering unwanted samples by defining those you want to keep. first argument is a logical vector where the kept samples are TRUE, and length is equal to the number of samples in object x; second argument is the phyloseq object to be pruned (subsetted)
+
+#join phyloseq objects into one
+physeq = phyloseq(OTU, SAMP)
+physeq
+```
+
+```{r}
+#reorder physeq 
+physeq.reord <- physeq
+otu_table(physeq.reord) <- otu_table(physeq.reord)[order(sample_data(physeq.reord)$Control),] # reorder so the controls appear last
+```
+
+### Plots read numbers for control samples and unknown samples
+
+A quick first look at the library sizes (i.e. the number of reads) in each sample, as a function of whether that sample was a true positive sample or a negative control:
+
+```{r}
+#plot read numbers for control vs sample 
+df <- as.data.frame(sample_data(physeq)) # Put sample_data into a ggplot-friendly data.frame
+df$LibrarySize <- sample_sums(physeq) #sum read numbers
+df <- df[order(df$LibrarySize),] #sort by total read numbers
+df$Index <- seq(nrow(df)) #create index based on read number sort order
+ggplot(data=df, aes(x=Index, y=LibrarySize, color=as.factor(Control))) + geom_point() #plot of read numbers of every library, colored by control vs unk samples
+```
+
+```{r}
+ggplot(data=df, aes(x=Index, y=LibrarySize, color=Conc_ng.uL)) + geom_point() #plot of read numbers of every library, colored by library stock concentration
+```
+
+### Identify probable contaminants
+
+The first contaminant identification method we’ll use is the “frequency” method. In this method, the distribution of the frequency of each sequence feature as a function of the input DNA concentration is used to identify contaminants.
+
+The second contaminant identification method is the “prevalence” method. In this method, the prevalence (presence/absence across samples) of each sequence feature in true positive samples is compared to the prevalence in negative controls to identify contaminants.
+
+The final, “combined” method: The frequency and prevalence probabilities are combined with Fisher’s method and used to identify contaminants. ONLY THIS METHOD IS SHOWN
+
+```{r}
+#identify contaminants by frequency & prevalence combined
+sample_data(physeq.reord)$is.neg <- sample_data(physeq.reord)$Control == "TRUE"
+contamdf.comb <- isContaminant(physeq.reord, method="combined", conc="Conc_ng.uL", neg="is.neg")
+```
+
+```{r}
+table(contamdf.comb$contaminant)
+```
+
+```{r}
+which(contamdf.comb$contaminant)
+```
+
+
+```{r}
+# Make phyloseq object of presence-absence in negative controls and true samples
+ps.pa <- transform_sample_counts(physeq.reord, function(abund) 1*(abund>0))
+ps.pa.neg <- prune_samples(sample_data(ps.pa)$Control == "TRUE", ps.pa)
+ps.pa.pos <- prune_samples(sample_data(ps.pa)$Control == "FALSE", ps.pa)
+# Make data.frame of prevalence in positive and negative samples
+df.pa <- data.frame(pa.pos=taxa_sums(ps.pa.pos), pa.neg=taxa_sums(ps.pa.neg),
+                      contaminant=contamdf.comb$contaminant)
+# Plot the number of times these taxa were observed in negative controls and positive samples
+ggplot(data=df.pa, aes(x=pa.neg, y=pa.pos, color=contaminant)) + geom_point() +
+  xlab("Prevalence (Negative Controls)") + ylab("Prevalence (True Samples)")
+
+
+#Samples seem to split pretty cleanly into a branch that shows up mostly in positive samples, and another that shows up mostly in negative controls, and the contaminant assignment (at default probability threshold) has done a good job of identifying those mostly in negative controls.
+```
+
+### Remove contaminating sequences
+
+```{r}
+#remove contaminants, create seqtab.nochim.nocontam object
+physeq.reord.noncontam <- prune_taxa(!contamdf.comb$contaminant, physeq.reord) #create subsetted phyloseq object with the contaminants removed (pruned)
+seqtab.nochim.nocontam <- otu_table(physeq.reord.noncontam) #extract otu table from pruned data
+class(seqtab.nochim.nocontam) <- "matrix" #coerce to matrix (so we can manipulate and export more easily)
+```
+
+
+```{r}
+substr(rownames(seqtab.nochim.nocontam), 6, 100) #captures a substring, starting at character 6 (from the left) and continuing up to 100 characters (this will grab sample name without the ITS2 designation)
+```
+
+```{r}
+identical(substr(rownames(seqtab.nochim.nocontam), 6, 100), rownames(seqtab.nochim)) #they are not in the same order, but this is expected because we had previously reordered nocontam according to total reads
+```
+
+```{r}
+match(substr(rownames(seqtab.nochim.nocontam), 6, 100), rownames(seqtab.nochim)) #returns a vector of the positions of (first) matches of its first argument in its second (switching the order of the arguments reveals that we lost a sample during decontam processing)
+
+which(is.na(match(rownames(seqtab.nochim),substr(rownames(seqtab.nochim.nocontam), 6, 100)))) #which nochim sample name is NA (ie not found in the nocontam dataset)
+```
+
+```{r}
+index<-paste0("ITS2_",rownames(seqtab.nochim)[-which(is.na(match(rownames(seqtab.nochim),substr(rownames(seqtab.nochim.nocontam), 6, 100))))]) #save the order of sample names in nochim (and paste ITS2_ in front) as an index for reordering nocontam (BUT not including the row with the negative control that got dropped!)
+
+seqtab.nochim.nocontam <- seqtab.nochim.nocontam[index,,drop=FALSE] #reorder nocontam based on order of sample names in nochim
+
+identical(substr(rownames(seqtab.nochim.nocontam), 6, 100),
+          rownames(seqtab.nochim)[-which(is.na(match(rownames(seqtab.nochim),
+                                                     substr(rownames(seqtab.nochim.nocontam), 6, 100))))]) #true! they match exactly
+```
+
+# Track reads through the pipeline
+
+We now inspect the the number of reads that made it through each step in the pipeline to verify everything worked as expected.
+
+```{r}
+# just checking how many samples, reads at various stages
+head(out)
+```
+
+```{r}
+length(out)/2
+```
+
+```{r}
+length(dadaFs)
+```
+
+```{r}
+length(dadaRs)
+```
+
+```{r}
+length(mergers)
+```
+
+```{r}
+length(rowSums(seqtab.nochim))
+```
+
+```{r}
+length(rowSums(seqtab.nochim.nocontam)) #oh.. right we lost a sample at the end
+```
+
+```{r}
+length(sample.names)
+```
+
+```{r}
+#we'll need to add it back so things match up ughhh
+       head(rownames(seqtab.nochim.nocontam))
+```
+
+```{r}
+head(substr(rownames(seqtab.nochim.nocontam), 6, 100))
+```
+
+```{r}
+which(is.na(match(rownames(seqtab.nochim),substr(rownames(seqtab.nochim.nocontam), 6, 100)))) #which nochim sample name is NA (ie not found in the nocontam dataset)
+```
+
+```{r}
+rownames(seqtab.nochim)
+
+```{r}
+seqtab.nochim.nocontam <- rbind(0, seqtab.nochim.nocontam) ## OVERWRITING AN EXISTING OBJECT (do NOT run this multiple times!!)
+rownames(seqtab.nochim.nocontam)[rownames(seqtab.nochim.nocontam) == ""] <- "ITS2_pcr_its2_neg_ctrl_20240517"
+
+index<-paste0("ITS2_",rownames(seqtab.nochim)) #save the order of sample names in nochim (and paste ITS2_ in front) as an index for reordering nocontam 
+
+seqtab.nochim.nocontam <- seqtab.nochim.nocontam[index,,drop=FALSE] #reorder nocontam based on order of sample names in nochim
+
+getN <- function(x) sum(getUniques(x))
+track <- cbind(out[names(derepFs),], # i only want the samples from "out" which appear in "derepFs" (but in the original tutorial code, you would just call for "out" here)
+               sapply(dadaFs, getN), # If processing a single sample, replace with getN(dadaFs)
+               sapply(dadaRs, getN), 
+               sapply(mergers, getN),
+               rowSums(seqtab.nochim),
+               rowSums(seqtab.nochim.nocontam)
+               )
+
+colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim", "nocontam")
+rownames(track) <- sample.names
+track
+```
+
+```{r}
+head(track)
+```
+
+```{r}
+track<-as.data.frame(track)
+
+library(tidyverse)
+```
+
+```{r}
+head(track %>% mutate(loss=(input-nocontam)/input)) # calculate % of reads lost from input to final non-chimeric reads
+```
+
+```{r}
+head(track %>% filter(str_starts(rownames(.),'ext')|str_starts(rownames(.),'pcr')|str_starts(rownames(.),'ITS2'))) # select just negative control samples
+```
+
+```{r}
+# calculate mean and sd for number of reads at each step, separated between negative control and unknown samples
+t(track %>% 
+    mutate(loss=(input-nocontam)/input) %>% 
+    group_by(NegCtrl=str_starts(rownames(.),'ext') | str_starts(rownames(.),'pcr') | str_starts(rownames(.),'rbcL')) %>% 
+    summarize(across(input:loss, list(mean=mean, sd=sd), .names="{.col}.{.fn}")) %>% round(.,digits=2))
+```
+
+```{r}
+detach("package:tidyverse") #detaching to avoid conflicts... I'll reload it later when I make plots after taxonomic assignment
+```
+
+# Assign taxonomy
+
+The DADA2 package provides a native implementation of the naive Bayesian classifier method for taxonomic assignment. The assignTaxonomy function takes as input a set of sequences to ba classified, and a training set of reference sequences with known taxonomy, and outputs taxonomic assignments with at least minBoot bootstrap confidence.
+
+We used a publicly-available reference database that was each compiled by scraping sequences of seed plants registered on NCBI: ‘PLANiTS’ database for ITS2 sequences (Banchi et al. 2020; last updated 2020).
+Banchi, E., C. G. Ametrano, S. Greco, D. Stanković, L. Muggia, and A. Pallavicini. 2020. PLANiTS: A curated sequence reference dataset for plant ITS DNA metabarcoding. Database 2020.
+
+## Load reference databases
+
+```{r}
+# CHANGE ME to location on your machine
+PLANiTS.acc   <- "/scratch/kls7sg/Bioinformatics/ReferenceDatabases/ITS-PLANiTS_2020.03.29/ITS2.fasta" # (this database has accession numbers in the header)
+
+PLANiTS.sntx  <- "/scratch/kls7sg/Bioinformatics/ReferenceDatabases/ITS-PLANiTS_2020.03.29/ITS2.SINTAX_format.fas" #this database has headers with the entire taxonomy of the associated sequence, with each taxonomic level is separated by a semicolon
+
+PLANiTS.sntx.kls <- "/scratch/kls7sg/Bioinformatics/ReferenceDatabases/ITS-PLANiTS_2020.03.29/ITS2.SINTAX_format-kls2.fas" # this database is similar to PLANiTS.sntx but with headers cleaned up to look identical to the format of the rbcL database I used (RBCL Database: Bell, Karen (2021). rbcL July 2021. figshare. Dataset.<https://doi.org/10.6084/m9.figshare.14936007.v1>
+```
+
+
+## Implement assignTaxonomy function
+
+```{r}
+# start 5:04 pm
+Sys.time(); t1=Sys.time()
+```
+
+```{r}
+taxa.its2 <- assignTaxonomy(getSequences(seqtab.nochim.nocontam), PLANiTS.sntx.kls, multithread = TRUE)
+
+Sys.time(); t2=Sys.time()
+
+#if your reference file is in the incorrect format for assignTaxonomy, check out this webpage: https://benjjneb.github.io/dada2/training.html
+
+t2-t1 # daaamn, it completed in <3 mins (running on Rivanna with 24 cores and multithread=TRUE)
+```
+
+```{r}
+taxa.its2 <- taxa.its2[,-8] #removing an 8th column that only contains NAs (not sure why it got generated...)
+```
+
+
+## View the taxonomic assignment of all ASV sequences
+
+```{r}
+taxa.its2.print <- taxa.its2; rownames(taxa.its2.print) <- NULL  # Removing sequence rownames for display only
+head(taxa.its2.print)
+```
+
+
+
+## Linking taxonomic assignment of ASVs to sample sequence table
+
+```{r}
+.seq <- as.data.frame(t(seqtab.nochim.nocontam)) #sample sequence table; transpose columns to rows (so each sequence appears as a row)
+its2.taxa <- as.data.frame(taxa.its2) #assigned sequence taxonomy
+
+#do sample sequences appear in the same order as identified sequences?
+identical(rownames(its2.seq), rownames(its2.taxa)) # is true, so we proceed
+```
+
+```{r}
+match(rownames(its2.seq),rownames(its2.taxa)) #this function returns the index where the first argument matches the second argument; if the lists are identical, a sequential list of integers up to the total number of records being compared
+```
+
+
+```{r}
+# bind sample sequence table with assigned sequence taxonomy
+ITS2.IDs <- cbind(its2.seq,its2.taxa)
+# rownames(ITS2.IDs) <- NULL #remove ASV row names (skipping this for now)
+
+#rename samples (remove "ITS2_")
+names(ITS2.IDs)
+```
+
+```{r}
+names(ITS2.IDs) <- sub("^ITS2_", "", names(ITS2.IDs)) #remove the "ITS2_" at beginning of column names
+names(ITS2.IDs)
+```
+
+
+
+# Plots and summaries of taxonomic assignments
+
+```{r}
+library(tidyverse)
+```
+
+
+## Create long data from its2.IDs (sample reads by ASV, with taxa assigned)
+
+Transpose its2.IDs (ASV table by sample) into long format after calculating total reads for each ASV (each row in its2.IDs). After transposing, calculate total reads for each Sample
+
+```{r}
+its2.IDs<-ITS2.IDs %>% mutate(ASVTotalReads = select(., '2020_6_16_H1': 'SCA0013') %>% rowSums()) # total ASV reads
+
+its2.IDs.long<-its2.IDs %>% pivot_longer(cols = c(where(is.numeric), -ASVTotalReads), names_to = "Sample", values_to = "Reads") %>% filter(Reads>0) %>% group_by(Sample) %>% mutate(SampleTotalReads=sum(Reads)) # total Sample reads
+
+#its2.IDs<-partial_join(its2.IDs,___sample-info-data___,"Sample", "SampleName") #join sample info if you want/have it
+```
+
+## Total reads? Total Samples? Reads per sample?
+
+1,359,952 reads across all samples 213 samples with 1+ reads 7 to 40,336 reads per sample (mean = 6,391)
+
+```{r}
+sum(its2.IDs$ASVTotalReads) #1361209 reads after removing low-abundance ASVs (1,359,952 reads after removing contaminants)
+```
+
+```{r}
+its2.IDs %>% select(where(is.numeric), -ASVTotalReads) %>% colnames(.) %>% n_distinct(.) # 254 samples
+```
+
+```{r}
+n_distinct(its2.IDs.long$Sample) #213 samples after removing low-abundance ASVs
+```
+
+```{r}
+temp<-as.data.frame(its2.IDs %>% select(where(is.numeric), -ASVTotalReads) %>% colSums(.)) # sum up all the reads for all samples that appear in the its2.IDs dataset (basically an ASV table by sample with taxonomic ids)
+colnames(temp)<-"TotalReads" #rename column
+temp %>% filter(TotalReads==0) # filter to view just samples with 0 reads (these samples get dropped from the data when this dataset is transformed long into its2.IDs.long)
+
+rm(temp)
+
+hist(its2.IDs.long %>% group_by(Sample) %>% summarise(SumReads=sum(Reads)) %>% select(-Sample) %>% pull(SumReads), xlab="SampleReads", main=NULL) # 1 to ~40,000 reads per sample
+```
+
+```{r}
+summary(its2.IDs.long %>% group_by(Sample) %>% summarise(SumReads=sum(Reads)) %>% select(-Sample))
+```
+
+
+### Plots: reads per sample and total reads by sample vs control
+
+```{r}
+# plot of reads per sample for __negative control samples__ (color coded by above/below 2K reads)
+its2.IDs.long %>% filter(str_starts(Sample,'ext')|str_starts(Sample,'pcr')|str_starts(Sample,'its2')) %>% group_by(Sample) %>% summarise(SumReads=sum(Reads)) %>%
+  ggplot(aes(x=Sample,y=SumReads, fill=SumReads<2000))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))
+```
+
+```{r}
+#plot of reads per sample for __unknown samples__ (color coded by below/above 2K reads)
+its2.IDs.long %>% filter(!str_starts(Sample,'ext')&!str_starts(Sample,'pcr')&!str_starts(Sample,'its2')) %>% group_by(Sample) %>% summarise(SumReads=sum(Reads)) %>%
+  ggplot(aes(x=Sample,y=SumReads, fill=SumReads>2000))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))
+```
+
+```{r}
+#histogram for __unk samples__
+its2.IDs.long %>% filter(!str_starts(Sample,'ext')&!str_starts(Sample,'pcr')&!str_starts(Sample,'its2')) %>% group_by(Sample) %>% summarise(SumReads=sum(Reads)) %>%
+  ggplot(aes(SumReads))+
+  geom_histogram(binwidth = 1000, color="black")
+```
+
+```{r}
+#histogram for __neg ctrls__
+its2.IDs.long %>% filter(str_starts(Sample,'ext')|str_starts(Sample,'pcr')|str_starts(Sample,'its2')) %>% group_by(Sample) %>% summarise(SumReads=sum(Reads)) %>%
+  ggplot(aes(SumReads))+
+  geom_histogram(binwidth = 15, color="black")
+```
+
+## How many ASVs total? How many unassigned?
+
+344 total ASVs across all samples 103 of all ASVs were not assigned to species (includes 10 not assigned to genus/family)
+
+```{r}
+length(rownames(its2.IDs)) # 344 total ASVs across all samples
+```
+
+```{r}
+#(numbers in parentheses below reflect totals after low-abund ASV removal)
+its2.IDs%>%filter(is.na(Family)) %>% summarize(n=n()) # 4 of all ASVs were not assigned to family
+```
+```{r}
+its2.IDs%>%filter(is.na(Genus)) %>% summarize(n=n()) # 6 of all ASVs were not assigned to genus (includes 4 not assigned to family)
+```
+```{r}
+its2.IDs%>%filter(is.na(Species)) %>% summarize(n=n()) # 109 of all ASVs were not assigned to species (includes 10 not assigned to genus/family)
+```
+
+## How many reads per ASV?
+
+Most ASVs have very few reads.
+
+```{r}
+# most ASVs have very few total reads
+ggplot(its2.IDs, aes(x=ASVTotalReads))+
+  geom_histogram()
+```
+
+## Most common genera!) How many reads for each ASV species assignment?
+
+I looked at Genera assignments because so many ASVs were not assigned to species.
+
+```{r}
+ggplot(its2.IDs, aes(x=Genus,y=ASVTotalReads))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))
+```
+
+## What percent of reads assigned to spp overall?
+
+Overall, about 70% of reads were assigned to species
+
+```{r}
+its2.IDs %>% filter(is.na(Species)) %>% summarize(sum=sum(ASVTotalReads)) #407,522 reads unassigned to species (out of 1,359,952 reads across all samples total reads)
+
+#after removing low-abund ASVs, there are 285,984 reads unassigned to species (out of 1,898,063 reads total)
+
+(its2.IDs %>% filter(!is.na(Species)) %>% summarize(sum=sum(ASVTotalReads)))/1359952 # ~70% of reads assigned to species; this value may change as the total project reads (denominator) or total assigned reads (numerator) changes with different upstream QC, filtering parameters
+```
+
+## What percent of reads assigned to spp for each sample?
+
+some samples with a LOT of unassigned reads how many Unk ASVs per sample
+
+```{r}
+ggplot(its2.IDs.long,aes(x=Sample, y=Reads, fill=!is.na(Species)))+
+  geom_col(position = "fill")+
+  labs(x="", y="Proportion of Reads")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))
+```
+
+```{r}
+#some samples with a LOT of unassigned reads
+
+its2.IDs.long %>% filter(is.na(Species)) %>% group_by(Sample) %>% dplyr::summarize(UnkRichness=sum(is.na(Species))) %>%
+  ggplot(aes(x=Sample, y=UnkRichness))+
+  geom_col()+
+  labs(x="",y="Unk ASV Richness")
+```
+
+```{r}
+# how many Unk ASVs per sample
+
+its2.IDs.long %>% group_by(Sample) %>% dplyr::summarize(UnkRichness = sum(is.na(Species)), KnownRichness = sum(!is.na(Species)), UnkProp = UnkRichness/(UnkRichness+KnownRichness))
+```
+
+```{r}
+its2.IDs.long %>% group_by(Sample) %>% dplyr::summarize(UnkRichness = sum(is.na(Species)), KnownRichness = sum(!is.na(Species)), UnkProp = UnkRichness/(UnkRichness+KnownRichness)) %>%
+  ggplot(aes(x=Sample, y=UnkProp))+
+  geom_col()+
+  labs(x="",y="Proportion of ASVs Unidentified to Species")
+```
+
+## How many unassigned ASVs have more than 1000 reads?
+
+```{r}
+#histogram of ASVs unassigned to species (with more than 1000 reads) 
+its2.IDs %>% filter(is.na(Species)&ASVTotalReads>1000) %>% select(ASVTotalReads)%>%
+  ggplot(aes(ASVTotalReads))+
+  geom_histogram(binwidth = 10000, color="black")
+```
+
+```{r}
+#these 43 ASVs represent ~90% of the Species=NA reads (recall: 407,522 reads unassigned to species, 379,882 reads unassigned to species from abundant ASVs)
+head(its2.IDs %>% filter(is.na(Species) & ASVTotalReads>1000) %>% select(ASVTotalReads)) # common (>1000 reads) ASVs that were not assigned to species (43 ASVs that comprise a total of 379,882 reads)
+```
+
+```{r}
+length((its2.IDs %>% filter(is.na(Species)&ASVTotalReads>1000) %>% select(ASVTotalReads))$ASVTotalReads)
+```
+
+```{r}
+sum(its2.IDs %>% filter(is.na(Species)&ASVTotalReads>1000) %>% select(ASVTotalReads))
+```
+
+## What percent of ASV richness by sample is left unassigned?
+
+A mean of 30% of ASVs per sample are unassigned to species, but only a mean of 5% of ASVs per sample are unassigned to Family.
+
+```{r}
+# creating a summary table called "ASVs" to count the number of (un)assigned reads and taxonomic richness for each sample
+a<-its2.IDs.long %>% group_by(Sample) %>% summarise(SampleTotalReads=sum(Reads))
+b<-its2.IDs.long %>% group_by(Sample) %>% summarise(CountASVs=n())
+c<-its2.IDs.long %>% group_by(Sample, .drop=FALSE) %>% filter(is.na(Species)) %>% summarise(ASVs_NoSpp=n())
+d<-its2.IDs.long %>% group_by(Sample, .drop=FALSE) %>% filter(is.na(Family)) %>% summarise(ASVs_NoFam=n())
+e<-its2.IDs.long %>% group_by(Sample, .drop=FALSE) %>% summarise(Families=n_distinct(Family), Genera=n_distinct(Genus))
+
+ASVs <- cbind(a, b[,2],c[,2],d[,2],e[,-1])
+ASVs<- ASVs %>% mutate(PercNoSpp = (ASVs_NoSpp/CountASVs)*100, PercNoFam=(ASVs_NoFam/CountASVs)*100) # number and percent of ASVs not assigned to species or family
+
+summary(ASVs)
+```
+
+
+```{r}
+  ggplot(ASVs, aes(x=Sample, y=PercNoSpp))+
+  geom_col()
+```
+
+```{r}
+  ggplot(ASVs, aes(x=Sample, y=PercNoFam))+
+  geom_col()
+```
+
+## How many species per sample?
+
+mean = 3.2 species (range = 1-10 species) per sample
+
+```{r}
+its2.IDs.long %>% filter(!is.na(Species)) %>% group_by(Sample) %>% dplyr::summarize(Richness=n_distinct(Species))
+```
+
+```{r}
+summary(its2.IDs.long %>% filter(!is.na(Species)) %>% group_by(Sample) %>% dplyr::summarize(Richness=n_distinct(Species)))
+```
+
+```{r}
+its2.IDs.long %>% filter(!is.na(Species)) %>% group_by(Sample) %>% dplyr::summarize(Richness=n_distinct(Species)) %>%
+  ggplot(aes(x=Sample, y=Richness))+
+  geom_col()+
+  labs(x="",y="Spp Richness")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))
+```
+
+## How many reads per species per sample? And proportion of reads per species per sample
+
+```{r}
+# numbers of reads per species per sample
+ggplot(its2.IDs.long,aes(x=Sample, y=Reads, fill=Species))+
+  geom_col()+
+  labs(x="", y="Num of Reads")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1), legend.position="none")
+```
+```{r}
+#the legend for the above plot
+grid::grid.newpage()
+grid::grid.draw(cowplot::get_legend(ggplot(its2.IDs.long,aes(x=Sample, y=Reads, fill=Species))+geom_col()))
+```
+
+```{r}
+# proportion of reads per species per sample
+ggplot(its2.IDs.long,aes(x=Sample, y=Reads, fill=Species))+
+  geom_bar(position="fill", stat="identity") +
+  labs(x="", y="Prop of Reads")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1), legend.position="none")
+```
+
+## Rarefaction with phyloseq
+
+```{r}
+OTU <- otu_table(seqtab.nochim.nocontam, taxa_are_rows = F, errorIfNULL=TRUE)
+TAX <- tax_table(taxa.its2)
+physeq = phyloseq(OTU, TAX)
+physeq
+
+slotNames(physeq)
+```
+
+```{r}
+# example of what you can do with phyloseq object, physeq:
+# make plots:
+# plot_bar(physeq, fill = "Species") # this is basically the same as the plot under 'how many spp per sample?'
+
+class(OTU) <- "matrix" # as.matrix() will do nothing
+```
+
+```{r}
+vegan::rarecurve(OTU, step = 50, xlab = "Sample Size", ylab = "Species", label = TRUE, tidy=T) %>%
+  ggplot(aes(x=Sample, y=Species, col=Site))+
+  geom_line()+
+  labs(x="Read Depth", y="ASVs detected", col="")+
+  theme(legend.position = "none")+
+  lims(x=c(0,25000),y=c(0,25))
+```
+
+# Identify taxa missing from its2 reference database
+
+identify families that are not being identified to species
+
+## Histogram of read numbers for each ASV
+
+Using threshold of 1000 reads to designate ‘abundant’ vs ‘non-abundant’ ASVs from “How many unassigned ASVs have more than 1000 reads?” ASVs with this many total reads, but which were unassigned to species should be pulled out for futher investigation
+
+```{r}
+its2.IDs.long %>% ggplot(aes(x=Reads)) + geom_histogram()
+```
+
+```{r}
+its2.IDs.long %>% filter(Reads<1000) %>% ggplot(aes(x=Reads)) + geom_histogram()
+```
+
+## Identify abundant unknown ASVs
+
+Here extract the sequences of abundant (more than 1000 reads) but unidentified (Family or Species is NA) ASVs
+
+```{r}
+its2.IDs.long %>% filter(Reads>1000 & is.na(Species)) %>% ggplot(aes(x=Sample, fill=Family))+
+  geom_bar() +  
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))
+```
+
+```{r}
+#count sequences of abundant (more than 1000 reads) but unidentified ASVs (Species or Family is NA)
+dim(its2.IDs %>% filter(ASVTotalReads>1000 & is.na(Family))) # 0 ASVs
+```
+
+```{r}
+dim(its2.IDs %>% filter(ASVTotalReads>1000 & is.na(Species))) # 43 ASVs
+```
+
+```{r}
+#extract sequences of abundant unidentified ASVs
+head(rownames(its2.IDs %>% filter(ASVTotalReads>1000 & is.na(Species))))
+```
+
+```{r}
+rownames(its2.IDs %>% filter(ASVTotalReads>1000 & is.na(Species)))[1] #the first ASV
+```
+
+BLAST search for the first ASV came back with 100% identity to several Carduus spp (including Carduus acanthoides!!)
+
+## View all ASVs with >1000 reads unassigned to species
+
+```{r}
+knitr::kable(its2.IDs %>%
+               select(Kingdom:ASVTotalReads) %>%
+               filter(ASVTotalReads>1000 & is.na(Species)),
+             row.names = FALSE)
+```
+
+# Export sequence assignments and accessories for all samples (double check path!)
+
+```{r}
+#writepath:"/scratch/kls7sg/Bioinformatics/RMarkdown/ITS2_bioinformatics_files/"
+#altwritepath:"/Users/kelseyschoenemann/Desktop/Bioinformatics/RMarkdown/ITS2_bioinformatics_files"
+
+# save table tracking reads through the pipeline
+write.csv(track, file="/scratch/kls7sg/Bioinformatics/RMarkdown/ITS2_bioinformatics_files/track.csv")
+
+# save all ASVs with >1000 reads unassigned to species
+save<-as.data.frame(rownames(its2.IDs %>% filter(ASVTotalReads>1000 & is.na(Species))))
+write.csv(save, file="/scratch/kls7sg/Bioinformatics/RMarkdown/ITS2_bioinformatics_files/UnkSpp_ITS2_ASVs.csv")
+
+# seqtab.nochim.nocontam for phyloseq obj creation
+write.csv(seqtab.nochim.nocontam, file="/scratch/kls7sg/Bioinformatics/RMarkdown/ITS2_bioinformatics_files/seqtab.nochim.nocontam.csv")
+
+# taxa.ITS2 for phyloseq obj creation
+write.csv(taxa.its2, file="/scratch/kls7sg/Bioinformatics/RMarkdown/ITS2_bioinformatics_files/taxa.ITS2.csv")
+
+# its2.IDs
+write.csv(its2.IDs, file="/scratch/kls7sg/Bioinformatics/RMarkdown/ITS2_bioinformatics_files/its2.IDs.csv")
+
+# its2.IDs.long
+write.csv(its2.IDs.long, file="/scratch/kls7sg/Bioinformatics/RMarkdown/ITS2_bioinformatics_files/its2.IDs.long.csv")
+```
