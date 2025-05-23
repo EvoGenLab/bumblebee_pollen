@@ -14,7 +14,7 @@ editor_options:
 ---
 
 
-# Set-Up workspace
+# Set-Up workspace #
 
 There are two possible directories containing sequence data: 
 * /scratch/kls7sg/Bioinformatics/2024-09-27_MiSeq_v3/rbcL
