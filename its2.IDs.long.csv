@@ -1,0 +1,611 @@
+Index,Kingdom,Phylum,Class,Order,Family,Genus,Species,ASVTotalReads,Sample,Reads,SampleTotalReads
+228,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Trifolium,s_Trifolium repens,47578,Bf002,63,506
+229,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Trifolium,s_Trifolium repens,47578,KLS0169,15,282
+316,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Ba002,17,620
+317,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb005,1032,2564
+318,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb008,973,1919
+319,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb009,489,1401
+320,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb012,422,6951
+321,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb013,228,1860
+322,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb014,677,1185
+323,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb016,94,94
+324,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb017,1058,1291
+325,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb018,947,1745
+326,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb019,1534,5732
+327,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb022,5246,11255
+328,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bb023,2948,6855
+329,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bg001,33,5214
+330,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bg005,50,2244
+331,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bg010,113,1158
+332,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,Bg011,37,3096
+333,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0096,3183,6645
+334,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0105,10699,15070
+335,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0106,107,1685
+336,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0163,147,1602
+337,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0167,638,4207
+338,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0224,20,577
+339,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0254,18,6176
+340,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,KLS0272,52,917
+341,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,30807,SCA0013,15,405
+354,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Medicago,s_Medicago sativa,26819,Bb004,25,1395
+376,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,22253,Bb022,10,11255
+377,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,22253,Bg016,7832,11634
+378,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,22253,Bg017,2183,5715
+379,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,22253,Bg018,7372,10706
+380,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,22253,Bg019,4827,7529
+382,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bb001,276,2592
+383,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bb002,367,3761
+384,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bb004,690,1395
+385,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bb005,465,2564
+386,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bb010,782,3091
+387,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bb023,154,6855
+388,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bb024,136,1492
+389,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bf001,4652,5143
+390,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bg001,93,5214
+391,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bg002,544,4531
+392,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,Bg005,1086,2244
+393,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0106,168,1685
+394,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0134,3182,3462
+395,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0135,1805,2090
+396,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0137,113,310
+397,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0138,1838,1914
+398,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0150,70,2943
+399,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0153,73,73
+400,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0156,2768,3836
+401,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0163,337,1602
+402,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0165,160,1062
+403,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0170,236,380
+404,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0200,123,153
+405,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_Lamium purpureum,20561,KLS0254,443,6176
+480,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,16425,CKC0001,3399,7672
+481,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,16425,KLS0044,544,1190
+482,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,16425,KLS0045,512,1605
+483,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,16425,KLS0052,1052,2470
+484,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,16425,KLS0054,5578,12626
+485,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,16425,KLS0055,5340,12092
+532,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,12396,Bg001,23,5214
+533,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,12287,Bg014,5023,8201
+534,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,12287,Bg015,3180,5135
+535,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,12287,Bg016,640,11634
+536,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,12287,Bi003,2811,4689
+537,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,12287,Bi004,633,1910
+538,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Ba002,114,620
+539,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Ba003,12,1122
+540,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb003,1097,2234
+541,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb005,544,2564
+542,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb007,658,765
+543,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb008,340,1919
+544,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb009,665,1401
+545,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb010,45,3091
+546,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb011,1547,2232
+547,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb012,1961,6951
+548,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb013,909,1860
+549,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb017,41,1291
+550,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb019,274,5732
+551,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb023,32,6855
+552,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bb024,30,1492
+553,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bg003,93,4790
+554,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bg004,30,2649
+555,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bg007,627,7020
+556,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bg010,47,1158
+557,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bg013,92,153
+558,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bi001,51,6727
+559,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,Bi002,1365,2773
+560,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0095,153,271
+561,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0096,236,6645
+562,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0134,213,3462
+563,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0135,124,2090
+564,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0138,38,1914
+565,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0139,336,704
+566,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0155,53,99
+567,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0159,48,48
+568,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,12221,KLS0165,446,1062
+569,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,11781,Bb025,3093,5579
+570,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,11781,Bg009,67,10199
+571,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,11781,Bg012,5626,10321
+572,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,11781,Bg013,61,153
+573,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,11781,Bi001,2794,6727
+574,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,11781,Bi004,105,1910
+646,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Fabales,f_Fabaceae,g_Vicia,s_Vicia sativa,7877,KLS0105,134,15070
+647,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Fabales,f_Fabaceae,g_Vicia,s_Vicia sativa,7877,KLS0138,9,1914
+648,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Fabales,f_Fabaceae,g_Vicia,s_Vicia sativa,7877,KLS0254,4200,6176
+649,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Fabales,f_Fabaceae,g_Vicia,s_Vicia sativa,7877,KLS0256,3506,3815
+650,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Fabales,f_Fabaceae,g_Vicia,s_Vicia sativa,7877,SCA0013,28,405
+658,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,7280,Bb008,437,1919
+659,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,7280,Bb011,9,2232
+660,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,7280,Bb017,192,1291
+661,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,7280,Bb022,1771,11255
+662,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,7280,Bb023,935,6855
+663,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,7280,KLS0096,1678,6645
+664,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,7280,KLS0105,2258,15070
+672,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_Hesperis matronalis,6709,Ba002,417,620
+673,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_Hesperis matronalis,6709,Bf004,109,738
+674,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_Hesperis matronalis,6709,Bg009,4610,10199
+675,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_Hesperis matronalis,6709,Bg011,45,3096
+681,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,6619,CKC0001,1429,7672
+682,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,6619,KLS0052,505,2470
+683,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,6619,KLS0054,2444,12626
+684,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,6619,KLS0055,2241,12092
+773,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,6110,Bg016,1876,11634
+774,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,6110,Bg017,2627,5715
+775,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,6110,Bg018,1186,10706
+776,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,6110,Bg019,421,7529
+813,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,Bb003,207,2234
+814,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,Bb013,44,1860
+815,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,Bf001,61,5143
+816,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,Bf002,15,506
+817,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,Bg001,281,5214
+818,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,Bg003,181,4790
+819,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,Bg004,293,2649
+820,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0096,56,6645
+821,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0119,43,1578
+822,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0138,26,1914
+823,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0155,46,99
+824,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0167,1520,4207
+825,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0169,267,282
+826,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0201,158,8045
+827,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0205,261,2091
+828,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0221,11,673
+829,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0224,215,577
+830,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0248,125,4368
+831,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0256,41,3815
+832,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,KLS0259,24,339
+833,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,5755,SCA0010,104,546
+834,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Pulmonaria,s_Pulmonaria obscura,5741,Bi007,5741,16430
+835,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bb010,689,3091
+836,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bb012,12,6951
+837,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bb013,36,1860
+838,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bb018,302,1745
+839,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bb021,15,87
+840,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bb023,22,6855
+841,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bg001,1855,5214
+842,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bg002,172,4531
+843,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bg003,491,4790
+844,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bg004,961,2649
+845,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bg006,884,9410
+846,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bg011,16,3096
+847,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,Bi001,118,6727
+848,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Mummenhoffia,s_NA,5612,KLS0054,39,12626
+858,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Syringa,s_NA,5424,Bg002,2469,4531
+859,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Syringa,s_NA,5424,Bg004,9,2649
+860,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Syringa,s_NA,5424,KLS0248,2946,4368
+870,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,5369,CKC0001,1202,7672
+871,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,5369,KLS0052,384,2470
+872,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,5369,KLS0054,1903,12626
+873,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,5369,KLS0055,1880,12092
+874,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,5227,Bb012,191,6951
+875,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,5227,Bb014,508,1185
+876,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,5227,Bb019,1405,5732
+877,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,5227,Bb022,1921,11255
+878,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,5227,Bb023,1202,6855
+900,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,4923,Bg007,4513,7020
+901,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,4923,Bg014,150,8201
+902,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,4923,Bi003,260,4689
+903,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,4901,Bb001,1779,2592
+904,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,4901,Bb002,2065,3761
+905,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,4901,KLS0205,477,2091
+906,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,4901,KLS0254,392,6176
+907,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,4901,KLS0256,188,3815
+908,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,4837,Bg014,1941,8201
+909,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,4837,Bg015,1304,5135
+910,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,4837,Bg016,249,11634
+911,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,4837,Bi003,1117,4689
+912,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,4837,Bi004,226,1910
+934,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bb003,352,2234
+935,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bb005,131,2564
+936,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bb007,107,765
+937,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bb009,247,1401
+938,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bb011,428,2232
+939,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bb012,1715,6951
+940,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bb013,459,1860
+941,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bg007,150,7020
+942,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,Bi002,481,2773
+943,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,KLS0119,12,1578
+944,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,KLS0139,182,704
+945,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,4587,KLS0165,323,1062
+948,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,s_Ranunculus bulbosus,4514,Bg018,118,10706
+949,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,s_Ranunculus bulbosus,4514,KLS0163,453,1602
+950,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,s_Ranunculus bulbosus,4514,KLS0167,281,4207
+951,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,s_Ranunculus bulbosus,4514,KLS0205,1015,2091
+952,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,s_Ranunculus bulbosus,4514,KLS0209,173,1396
+953,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,s_Ranunculus bulbosus,4514,KLS0256,73,3815
+954,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,s_Ranunculus bulbosus,4514,SCA0013,130,405
+959,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,4329,CKC0001,1043,7672
+960,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,4329,KLS0054,1706,12626
+961,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,4329,KLS0055,1580,12092
+962,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,4095,Bb025,1085,5579
+963,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,4095,Bg012,1983,10321
+964,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,4095,Bi001,1027,6727
+969,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,NA,3792,Bb001,211,2592
+970,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,NA,3792,Bb002,232,3761
+971,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,NA,3792,Bb019,978,5732
+972,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,NA,3792,Bi007,2371,16430
+973,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,3597,Bg001,629,5214
+974,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,3597,Bg003,1795,4790
+975,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,3597,Bi002,31,2773
+976,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,3597,KLS0201,101,8045
+977,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,3597,KLS0209,1041,1396
+978,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,3574,Bb022,2192,11255
+979,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,3574,Bb023,1382,6855
+986,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,3552,Bb019,394,5732
+987,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,3552,Bg001,164,5214
+988,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,3552,Bg003,495,4790
+989,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,3552,Bg004,675,2649
+990,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,3552,Bg008,1264,2712
+991,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,3552,Bg009,475,10199
+992,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,3552,Bg010,85,1158
+993,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,3375,Ba001,919,2532
+994,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,3375,Bb018,195,1745
+995,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,3375,Bb021,39,87
+996,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,3375,Bg001,1834,5214
+997,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,3375,Bg002,388,4531
+998,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_Polemonium reptans,3161,Bb019,473,5732
+999,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_Polemonium reptans,3161,Bg005,28,2244
+1000,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_Polemonium reptans,3161,Bi007,2660,16430
+1012,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,2794,Bg017,506,5715
+1013,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,2794,Bg018,815,10706
+1014,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,2794,Bg019,1473,7529
+1015,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Photinia,NA,2783,Bg006,2783,9410
+1020,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,2719,KLS0201,2719,8045
+1026,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Ericaceae,g_Vaccinium,NA,2663,KLS0119,718,1578
+1027,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Ericaceae,g_Vaccinium,NA,2663,KLS0150,1021,2943
+1028,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Ericaceae,g_Vaccinium,NA,2663,KLS0156,924,3836
+1037,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,Ba003,330,1122
+1038,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,Bf001,176,5143
+1039,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,Bg006,303,9410
+1040,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,Bg007,108,7020
+1041,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,Bg011,242,3096
+1042,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,Bi004,365,1910
+1043,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,Bi006,489,2804
+1044,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,KLS0170,144,380
+1045,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,KLS0244,65,123
+1046,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,KLS0254,130,6176
+1047,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,KLS0263,91,91
+1048,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2647,SCA0009,204,511
+1053,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,2451,CKC0001,599,7672
+1054,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,2451,KLS0054,917,12626
+1055,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,2451,KLS0055,935,12092
+1063,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,Bf001,209,5143
+1064,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,Bg002,323,4531
+1065,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,Bg003,274,4790
+1066,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,Bg004,424,2649
+1067,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,Bg006,311,9410
+1068,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,Bg010,342,1158
+1069,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,KLS0201,236,8045
+1070,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,KLS0221,156,673
+1071,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,2449,SCA0013,174,405
+1083,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,2348,Bb025,635,5579
+1084,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,2348,Bg012,1119,10321
+1085,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,2348,Bi001,594,6727
+1095,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Anemone,NA,2060,KLS0201,2060,8045
+1099,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_Polemonium reptans,1906,Bb001,64,2592
+1100,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_Polemonium reptans,1906,Bb002,77,3761
+1101,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_Polemonium reptans,1906,Bi007,1765,16430
+1102,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Photinia,NA,1857,Bg006,1857,9410
+1121,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Ericaceae,g_Gaylussacia,s_Gaylussacia baccata,1743,KLS0150,1599,2943
+1122,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Ericaceae,g_Gaylussacia,s_Gaylussacia baccata,1743,KLS0156,144,3836
+1123,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer rubrum,1700,Bg004,40,2649
+1124,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer rubrum,1700,Bi004,90,1910
+1125,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer rubrum,1700,KLS0007,1511,2178
+1126,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer rubrum,1700,KLS0055,17,12092
+1127,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer rubrum,1700,KLS0227,42,381
+1140,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,1671,Bg014,653,8201
+1141,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,1671,Bg015,541,5135
+1142,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,1671,Bi003,477,4689
+1144,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_NA,1628,Bg009,1052,10199
+1145,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Anemone,s_Anemone quinquefolia,1610,KLS0201,1610,8045
+1147,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,1577,Bb023,33,6855
+1148,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,1577,KLS0139,29,704
+1149,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,1577,KLS0167,389,4207
+1150,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,1577,KLS0205,202,2091
+1151,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,Bb022,115,11255
+1152,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,Bg007,99,7020
+1153,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,Bg011,352,3096
+1154,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,Bg015,110,5135
+1155,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,Bi002,152,2773
+1156,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,KLS0221,264,673
+1157,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,KLS0224,183,577
+1158,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,KLS0253,170,724
+1159,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,s_Quercus ilicifolia,1572,KLS0254,127,6176
+1160,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,1543,Bg006,77,9410
+1161,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,1543,Bg008,1105,2712
+1162,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,1543,Bg009,361,10199
+1164,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,1500,Bb025,374,5579
+1165,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,1500,Bg010,60,1158
+1166,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,1500,Bg012,724,10321
+1167,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,1500,Bi001,342,6727
+1168,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,1486,Bb018,271,1745
+1169,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,1486,Bb019,327,5732
+1170,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,1486,KLS0105,888,15070
+1171,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Papaveraceae,g_Lamprocapnos,s_Lamprocapnos spectabilis,1442,Bi007,1442,16430
+1174,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Fontanesia,s_Fontanesia phillyreoides,1408,Bg009,827,10199
+1175,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Fontanesia,s_Fontanesia phillyreoides,1408,Bi006,581,2804
+1176,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,1408,KLS0007,51,2178
+1177,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,1408,KLS0044,646,1190
+1178,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,1408,KLS0045,711,1605
+1179,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Syringa,s_NA,1361,Bg002,463,4531
+1180,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Syringa,s_NA,1361,KLS0248,898,4368
+1184,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Photinia,s_Photinia schneideriana,1317,Bg006,1317,9410
+1198,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,1205,Bb012,995,6951
+1199,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_Mertensia virginica,1205,Bi002,210,2773
+1200,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,1200,Bg016,221,11634
+1201,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,1200,Bg017,187,5715
+1202,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,1200,Bg018,388,10706
+1203,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,1200,Bg019,404,7529
+1204,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Malus,s_Malus rockii,1179,KLS0071,1179,1676
+1210,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Thlaspi,s_Thlaspi arvense,1151,Bf001,31,5143
+1211,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Thlaspi,s_Thlaspi arvense,1151,Bg006,385,9410
+1212,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Thlaspi,s_Thlaspi arvense,1151,Bg007,32,7020
+1213,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Thlaspi,s_Thlaspi arvense,1151,Bg011,32,3096
+1214,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Thlaspi,s_Thlaspi arvense,1151,Bg014,38,8201
+1215,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Thlaspi,s_Thlaspi arvense,1151,KLS0163,610,1602
+1216,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Thlaspi,s_Thlaspi arvense,1151,KLS0200,23,153
+1224,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Photinia,NA,1098,Bg006,1098,9410
+1225,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,Bb023,16,6855
+1226,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,Bg003,81,4790
+1227,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,Bg010,273,1158
+1228,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,Bg011,129,3096
+1229,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,KLS0221,134,673
+1230,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,KLS0225,39,39
+1231,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,KLS0259,178,339
+1232,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,SCA0010,166,546
+1233,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,1074,SCA0013,58,405
+1240,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Lardizabalaceae,g_NA,s_NA,976,Bb010,947,3091
+1241,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Lardizabalaceae,g_NA,s_NA,976,Bg006,29,9410
+1242,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,Bg010,205,1158
+1243,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,Bi002,87,2773
+1244,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,Bi003,24,4689
+1245,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,KLS0209,66,1396
+1246,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,KLS0227,103,381
+1247,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,KLS0241,23,608
+1248,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,KLS0244,58,123
+1249,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,KLS0253,127,724
+1250,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,s_Platanus occidentalis,972,SCA0009,279,511
+1251,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Crataegus,s_Crataegus viridis,971,Bg011,971,3096
+1252,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,NA,948,Bb012,787,6951
+1253,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,NA,948,Bi002,161,2773
+1254,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,923,KLS0105,923,15070
+1255,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,917,Bb025,238,5579
+1256,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,917,Bg012,450,10321
+1257,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,917,Bi001,229,6727
+1258,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,909,Bb003,46,2234
+1259,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,909,Bb005,94,2564
+1260,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,909,Bb012,628,6951
+1261,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,909,Bi002,141,2773
+1263,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,866,Ba001,866,2532
+1265,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,NA,864,Ba002,38,620
+1266,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,NA,864,Bf004,68,738
+1267,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,NA,864,Bg009,579,10199
+1268,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,861,Bi004,281,1910
+1269,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,861,Bi006,286,2804
+1270,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,861,KLS0137,194,310
+1271,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,861,KLS0224,100,577
+1272,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_Hesperis matronalis,855,Bg009,855,10199
+1279,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Crataegus,s_Crataegus monogyna,827,Bg003,827,4790
+1286,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,795,KLS0135,90,2090
+1287,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,795,KLS0272,705,917
+1288,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x carnea,794,Bi001,794,6727
+1290,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Exochorda,s_NA,772,Bb010,109,3091
+1291,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Exochorda,s_NA,772,Bb018,30,1745
+1292,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Exochorda,s_NA,772,Bg001,23,5214
+1293,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Exochorda,s_NA,772,Bg002,10,4531
+1294,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Exochorda,s_NA,772,Bg003,511,4790
+1295,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Exochorda,s_NA,772,Bg004,89,2649
+1299,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,751,Bb002,751,3761
+1300,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Papaveraceae,g_Chelidonium,s_Chelidonium majus,748,Bg005,748,2244
+1301,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,747,Ba001,747,2532
+1306,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,Bb023,53,6855
+1307,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,Bg002,151,4531
+1308,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,Bg014,24,8201
+1309,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,Bi006,138,2804
+1310,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,KLS0221,108,673
+1311,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,KLS0246,58,58
+1312,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,KLS0248,64,4368
+1313,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,715,SCA0010,119,546
+1316,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,NA,702,Bi007,702,16430
+1317,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Buglossoides,s_NA,699,Bb004,680,1395
+1318,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Buglossoides,s_NA,699,Bb010,12,3091
+1319,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Buglossoides,s_NA,699,KLS0256,7,3815
+1320,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Berberis,NA,692,KLS0106,151,1685
+1321,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Berberis,NA,692,KLS0168,541,1345
+1323,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,688,KLS0045,78,1605
+1324,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,688,KLS0167,207,4207
+1325,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,688,KLS0227,89,381
+1326,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,681,Bg016,659,11634
+1327,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,681,KLS0259,22,339
+1328,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Anemone,NA,678,KLS0201,678,8045
+1329,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,Bb010,93,3091
+1330,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,ESE0004,88,2446
+1331,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,KLS0054,39,12626
+1332,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,KLS0055,99,12092
+1333,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,KLS0071,17,1676
+1334,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,KLS0095,55,271
+1335,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,KLS0096,42,6645
+1336,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,KLS0105,168,15070
+1337,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer negundo,674,KLS0119,73,1578
+1338,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Pulmonaria,s_Pulmonaria obscura,669,Bi007,669,16430
+1339,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Aronia,s_NA,667,ESE0004,667,2446
+1340,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_NA,665,Bg009,665,10199
+1341,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Aronia,s_NA,663,ESE0004,663,2446
+1342,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,658,Bg006,45,9410
+1343,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,658,Bi006,35,2804
+1344,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum lentago,658,KLS0167,578,4207
+1345,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Papaveraceae,g_Dicentra,s_NA,643,Ba003,643,1122
+1347,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Crataegus,s_Crataegus viridis,613,Bg011,613,3096
+1348,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,612,Bg007,612,7020
+1356,k_Viridiplantae,p_Streptophyta,NA,NA,NA,NA,NA,605,Bb001,262,2592
+1357,k_Viridiplantae,p_Streptophyta,NA,NA,NA,NA,NA,605,Bb002,269,3761
+1358,k_Viridiplantae,p_Streptophyta,NA,NA,NA,NA,NA,605,KLS0254,74,6176
+1363,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,NA,589,KLS0106,421,1685
+1364,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,NA,589,KLS0167,168,4207
+1368,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,570,Bg017,201,5715
+1369,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,570,Bg018,168,10706
+1370,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,570,Bg019,201,7529
+1371,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,567,Bi006,567,2804
+1372,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_NA,564,Bi007,564,16430
+1373,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x carnea,555,Bi001,555,6727
+1374,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Robinia,s_NA,554,Bg018,554,10706
+1375,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,542,Bf004,44,738
+1376,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,542,Bg001,37,5214
+1377,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,542,ESE0004,148,2446
+1378,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,542,KLS0167,82,4207
+1379,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,542,KLS0168,221,1345
+1380,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,542,SCA0009,10,511
+1382,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,529,KLS0096,529,6645
+1384,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,NA,528,ESE0004,209,2446
+1385,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,NA,528,KLS0205,116,2091
+1386,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,525,Ba002,34,620
+1387,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,525,Bb003,163,2234
+1388,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,525,Bb011,71,2232
+1389,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,525,Bb012,88,6951
+1390,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,525,Bb013,169,1860
+1393,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Packera,s_NA,513,Bb019,153,5732
+1394,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Packera,s_NA,513,Bb023,14,6855
+1395,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Packera,s_NA,513,Bg011,15,3096
+1396,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Packera,s_NA,513,KLS0200,7,153
+1397,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Packera,s_NA,513,KLS0201,256,8045
+1398,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Packera,s_NA,513,KLS0205,20,2091
+1399,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Packera,s_NA,513,KLS0209,48,1396
+1411,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,503,Bg007,503,7020
+1412,k_Viridiplantae,p_Streptophyta,NA,NA,NA,NA,NA,501,KLS0106,501,1685
+1420,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,471,Bb025,85,5579
+1421,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,471,Bg012,230,10321
+1422,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,471,Bi001,156,6727
+1423,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Rosales,f_Rosaceae,g_Malus,s_NA,471,KLS0071,471,1676
+1424,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Hesperis,s_Hesperis dinarica,466,Bg009,466,10199
+1427,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,462,KLS0163,55,1602
+1430,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,444,KLS0096,444,6645
+1435,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Podophyllum,s_Podophyllum peltatum,426,Bb024,426,1492
+1436,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Fabales,f_Fabaceae,g_Vicia,s_Vicia sativa,424,KLS0254,424,6176
+1437,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Lupinus,s_Lupinus lepidus,421,Bf002,211,506
+1438,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Lupinus,s_Lupinus lepidus,421,Bf004,210,738
+1439,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Isatis,NA,420,KLS0241,420,608
+1440,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Caprifoliaceae,g_Lonicera,NA,416,KLS0253,416,724
+1441,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Lardizabalaceae,g_NA,s_NA,414,Bb010,414,3091
+1444,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Fontanesia,s_Fontanesia phillyreoides,406,Bg009,242,10199
+1445,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Fontanesia,s_Fontanesia phillyreoides,406,Bi006,164,2804
+1446,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,405,Bg006,69,9410
+1447,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,405,Bg007,28,7020
+1448,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,405,Bg011,52,3096
+1449,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,405,Bi004,113,1910
+1450,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,405,Bi006,143,2804
+1452,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Oleaceae,g_Fontanesia,s_Fontanesia phillyreoides,401,Bi006,401,2804
+1453,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum erythrospermum,398,KLS0168,398,1345
+1454,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,393,Bg001,40,5214
+1455,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,393,Bg006,65,9410
+1456,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,393,Bg011,205,3096
+1457,k_Viridiplantae,p_Streptophyta,c_NA,o_Proteales,f_Platanaceae,g_Platanus,NA,393,Bi004,83,1910
+1458,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,389,Bb012,152,6951
+1459,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,389,Bg007,60,7020
+1460,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,389,Bi002,145,2773
+1461,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,389,KLS0096,32,6645
+1465,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,378,Bb005,127,2564
+1466,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,378,Bb011,58,2232
+1467,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,378,Bg007,41,7020
+1468,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,378,KLS0095,63,271
+1469,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,378,KLS0134,50,3462
+1470,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,378,KLS0135,39,2090
+1474,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,339,Bb025,69,5579
+1475,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,339,Bg012,189,10321
+1476,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,339,Bi001,67,6727
+1477,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_Halesia diptera,339,Bi004,14,1910
+1478,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,338,Bb003,338,2234
+1481,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,335,KLS0071,9,1676
+1484,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,335,KLS0096,335,6645
+1488,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Fabales,f_Fabaceae,g_Vicia,s_Vicia sativa,325,KLS0254,325,6176
+1489,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer rubrum,322,KLS0007,322,2178
+1490,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,320,KLS0119,320,1578
+1494,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Baptisia,s_NA,317,Bf002,123,506
+1495,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Baptisia,s_NA,317,Bf004,194,738
+1496,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum sieboldii,316,Bg001,83,5214
+1497,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum sieboldii,316,Bg003,42,4790
+1498,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum sieboldii,316,Bg004,123,2649
+1499,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum sieboldii,316,Bg007,15,7020
+1500,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum sieboldii,316,Bg010,33,1158
+1501,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum sieboldii,316,Bg014,20,8201
+1502,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer saccharum,315,Bg002,11,4531
+1503,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer saccharum,315,KLS0045,304,1605
+1504,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,NA,312,KLS0167,312,4207
+1513,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,s_NA,298,Bi007,298,16430
+1515,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,296,ESE0004,296,2446
+1517,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Podophyllum,s_Podophyllum peltatum,293,Bb024,293,1492
+1518,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Podophyllum,s_Podophyllum peltatum,286,Bb021,33,87
+1519,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Podophyllum,s_Podophyllum peltatum,286,Bb024,221,1492
+1520,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Podophyllum,s_Podophyllum peltatum,286,KLS0254,32,6176
+1521,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Pyrus,NA,286,KLS0052,286,2470
+1522,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,285,Bg006,187,9410
+1523,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,285,Bg007,30,7020
+1524,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,285,KLS0209,68,1396
+1525,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,285,KLS0134,17,3462
+1526,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,285,KLS0135,21,2090
+1527,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,285,KLS0136,7,7
+1528,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,285,KLS0137,3,310
+1529,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,285,KLS0139,157,704
+1530,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,285,KLS0201,69,8045
+1531,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Ranunculaceae,g_Ranunculus,NA,285,KLS0253,11,724
+1534,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Berberidaceae,g_Podophyllum,s_Podophyllum peltatum,281,Bb024,281,1492
+1535,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum plicatum,278,Bg011,219,3096
+1536,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum plicatum,278,KLS0224,59,577
+1537,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Cardamine,s_Cardamine hirsuta,265,Bb003,26,2234
+1538,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Cardamine,s_Cardamine hirsuta,265,Bb005,30,2564
+1539,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Cardamine,s_Cardamine hirsuta,265,Bb011,119,2232
+1540,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Cardamine,s_Cardamine hirsuta,265,Bb013,15,1860
+1541,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Cardamine,s_Cardamine hirsuta,265,Bb023,64,6855
+1542,k_Viridiplantae,p_Streptophyta,c_NA,o_Brassicales,f_Brassicaceae,g_Cardamine,s_Cardamine hirsuta,265,KLS0135,11,2090
+1543,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Aesculus,s_Aesculus x marilandica,265,Bg014,265,8201
+1545,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Balsaminaceae,g_Impatiens,s_Impatiens capensis,265,KLS0138,3,1914
+1547,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Ericaceae,g_Vaccinium,NA,253,KLS0150,253,2943
+1550,k_Viridiplantae,p_Streptophyta,c_NA,o_Celastrales,f_Celastraceae,g_Celastrus,s_NA,244,Bg018,105,10706
+1551,k_Viridiplantae,p_Streptophyta,c_NA,o_Celastrales,f_Celastraceae,g_Celastrus,s_NA,244,Bg019,60,7529
+1552,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Potentilla,s_Potentilla indica,243,Bb003,5,2234
+1553,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Potentilla,s_Potentilla indica,243,Bg005,209,2244
+1554,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Potentilla,s_Potentilla indica,243,SCA0009,18,511
+1555,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Potentilla,s_Potentilla indica,243,SCA0010,11,546
+1556,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Pyrus,NA,243,KLS0052,243,2470
+1557,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Erigeron,NA,242,Bg004,5,2649
+1558,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Erigeron,NA,242,Bg011,28,3096
+1559,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Erigeron,NA,242,Bg014,33,8201
+1560,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Erigeron,NA,242,KLS0165,133,1062
+1561,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Erigeron,NA,242,KLS0167,32,4207
+1562,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Erigeron,NA,242,KLS0254,11,6176
+1564,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Prunus,NA,237,KLS0119,237,1578
+1569,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Spiraea,s_Spiraea trilobata,223,KLS0248,223,4368
+1570,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,220,Bf003,101,101
+1571,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,220,Bg001,119,5214
+1572,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Pulmonaria,s_Pulmonaria obscura,218,Bi007,218,16430
+1574,k_Viridiplantae,p_Streptophyta,NA,NA,NA,NA,NA,208,KLS0106,208,1685
+1575,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Lupinus,s_Lupinus lepidus,207,Bf002,94,506
+1576,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Lupinus,s_Lupinus lepidus,207,Bf004,113,738
+1579,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Paulowniaceae,g_Paulownia,s_NA,202,Bg007,202,7020
+1580,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Polemoniaceae,g_Polemonium,NA,194,Bb019,194,5732
+1581,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum plicatum,194,Bg011,140,3096
+1582,k_Viridiplantae,p_Streptophyta,c_NA,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum plicatum,194,Bg014,54,8201
+1587,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer saccharinum,182,KLS0007,182,2178
+1588,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,180,Bg008,180,2712
+1589,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Fagus,NA,175,KLS0119,175,1578
+1590,k_Viridiplantae,p_Streptophyta,c_NA,o_Boraginales,f_Boraginaceae,g_Mertensia,s_NA,169,Bb008,169,1919
+1592,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum erythrospermum,165,KLS0168,165,1345
+1593,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Lamiaceae,g_Lamium,s_NA,165,KLS0241,165,608
+1594,k_Viridiplantae,p_Streptophyta,c_NA,o_Ericales,f_Styracaceae,g_Halesia,s_NA,163,Bg008,163,2712
+1597,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,160,KLS0272,160,917
+1598,k_Viridiplantae,p_Streptophyta,c_NA,o_Malpighiales,f_Violaceae,g_Viola,NA,158,KLS0201,158,8045
+1600,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Rosa,NA,157,Bg016,157,11634
+1602,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum opulus,154,Bg017,11,5715
+1603,k_Viridiplantae,p_Streptophyta,c_Magnoliopsida,o_Dipsacales,f_Adoxaceae,g_Viburnum,s_Viburnum opulus,154,Bg019,143,7529
+1605,k_Viridiplantae,p_Streptophyta,c_NA,o_Aquifoliales,f_Aquifoliaceae,g_Ilex,s_Ilex rugosa,147,KLS0227,147,381
+1606,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Quercus,NA,146,SCA0010,146,546
+1607,k_Viridiplantae,p_Streptophyta,c_NA,o_Fabales,f_Fabaceae,g_Cercis,s_NA,141,Bb005,141,2564
+1608,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Papaveraceae,g_Dicentra,s_NA,137,Ba003,137,1122
+1611,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,NA,NA,133,ESE0004,133,2446
+1613,k_Viridiplantae,p_Streptophyta,c_NA,o_Ranunculales,f_Papaveraceae,g_Stylophorum,s_Stylophorum diphyllum,130,ESE0004,130,2446
+1614,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Fagus,s_Fagus grandifolia,130,KLS0096,110,6645
+1615,k_Viridiplantae,p_Streptophyta,c_NA,o_Fagales,f_Fagaceae,g_Fagus,s_Fagus grandifolia,130,KLS0168,20,1345
+1616,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,NA,129,KLS0106,129,1685
+1617,k_Viridiplantae,p_Streptophyta,c_Liliopsida,o_Asparagales,f_Amaryllidaceae,g_Leucojum,s_Leucojum aestivum,123,Bg005,123,2244
+1619,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Geum,s_NA,119,Bb024,105,1492
+1620,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Geum,s_NA,119,Bf001,14,5143
+1621,k_Viridiplantae,p_Streptophyta,c_NA,o_Lamiales,f_Plantaginaceae,g_Veronica,s_Veronica arvensis,115,KLS0259,115,339
+1622,k_Viridiplantae,p_Streptophyta,c_NA,o_Asterales,f_Asteraceae,g_Taraxacum,s_Taraxacum tenuifolium,112,ESE0004,112,2446
+1623,k_Viridiplantae,p_Streptophyta,c_NA,o_Sapindales,f_Sapindaceae,g_Acer,s_Acer rubrum,112,KLS0007,112,2178
+1624,k_Viridiplantae,p_Streptophyta,c_NA,o_Rosales,f_Rosaceae,g_Spiraea,s_Spiraea cantoniensis,112,KLS0248,112,4368
+1628,k_Viridiplantae,p_Streptophyta,c_Liliopsida,o_Asparagales,f_Hyacinthaceae,NA,NA,101,KLS0027,101,101

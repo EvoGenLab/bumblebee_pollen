@@ -1,0 +1,441 @@
+﻿SiteID,Family,Genus,Species,Common
+WCP1,Rosaceae,Rubus,spp,Bramble
+WCP1,Fabaceae,Cercis,canadensis,Eastern Redbud
+WCP1,Lauraceae,Lindera,benzoin,Spicebush
+WCP1,Magnoliaceae,Liriodendron,tulipifera,Tulip Poplar
+WCP1,Sapindaceae,Acer,spp,Maple
+WCP1,Violaceae,Viola,spp,Violet
+WCP1,Amaryllidaceae,Narcissus,pseudonarcissus,Common Daffodil
+SP1,Oleaceae,Forsythia,× intermedia,Border Forsythia
+SP1,Polemoniaceae,Phlox,subulata,Creeping Phlox
+SP1,Rosaceae,Pyrus,calleryana,Bradford Pear
+SP1,Rosaceae,Prunus,avium,Sweet Cherry
+SP1,Lauraceae,Lindera,benzoin,Spicebush
+DTP1,Lauraceae,Lindera,benzoin,Spicebush
+DTP1,Papaveraceae,Corydalis,incisa,Incised Fumewort
+DTP1,Rosaceae,Pyrus,calleryana,Bradford Pear
+DTP1,Rosaceae,Malus,spp,Apple
+DTP1,Montiaceae,Claytonia,virginica,Spring Beauty
+DTP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+DTP1,Ranunculaceae,Ficaria,verna,Lesser Celandine
+DTP1,Oleaceae,Forsythia,× intermedia,Border Forsythia
+DTP1,Asteraceae,Taraxacum,officinale,Dandelion
+DTP1,Rosaceae,Rubus,spp,Bramble
+CHP1,Violaceae,Viola,spp,Violet
+CHP1,Rosaceae,Prunus,spp,Cherry
+CHP1,Asparagaceae,Liriope,muscari,Lily turf
+CHP1,Asteraceae,Taraxacum,officinale,Dandelion
+CHP1,Lauraceae,Lindera,benzoin,Spicebush
+ICF1,Lauraceae,Lindera,benzoin,Spicebush
+ICF1,Boraginaceae,Mertensia,virginica,Virginia Bluebell
+ICF1,Caprifoliaceae,Lonicera,spp,Honeysuckle
+ICF1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+ICF1,Oleaceae,Forsythia,× intermedia,Border Forsythia
+ICF1,Amaryllidaceae,Narcissus,pseudonarcissus,Common Daffodil
+PCP1,Cornaceae,Cornus,florida,Flowering Dogwood
+PCP1,Aquifoliaceae,Ilex,opaca,American Holly
+PCP1,Asteraceae,Taraxacum,officinale,Dandelion
+PCP1,Magnoliaceae,Liriodendron,tulipifera,Tulip Poplar
+PCP1,Rosaceae,Prunus,serotina,Black Cherry
+PCP1,Rosaceae,Pryus,calleryana,Bradford Pear
+SRNP1,Lauraceae,Lindera,benzoin,Spicebush
+SRNP1,Rosaceae,Pyrus,calleryana,Bradford Pear
+SRNP1,Rosaceae,Prunus,spp,Cherry
+SRNP1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+SRNP1,Fabaceae,Cercis,canadensis,Eastern Redbud
+SRNP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+SRNP1,Asteraceae,Taraxacum,officinale,Dandelion
+SRNP1,Lamiaceae,Lamium,amplexicaule,Henbit
+SRNP1,Violaceae,Viola,spp,Violet
+HF1,Asteraceae,Taraxacum,officinale,Dandelion
+HF1,Montiaceae,Claytonia,virginica,Spring Beauty
+HF1,Rosaceae,Pryus,calleryana,Bradford Pear
+HF1,Rosaceae,Exochardo,racemosa,Pearlbush
+HF1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+HF1,Apocynaceae,Vinca,minor,Lesser Periwinkle
+HF1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+HF1,Lauraceae,Lindera,benzoin,Spicebush
+HF1,Rosaceae,Rubus,spp,Bramble
+WSF1,Violaceae,Viola,spp,Violet
+WSF1,Rosaceae,Prunus,spp,Cherry
+WSF1,Papaveraceae,Corydalis,aurea,Golden Corydalis
+WSF1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+WSF1,Oleaceae,Forsythia,× intermedia,Border Forsythia
+WSF1,Lauraceae,Lindera,benzoin,Spicebush
+WSF1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+WSF1,Rosaceae,Rubus,spp,Bramble
+GF1,Brassicaceae,Lobularia,maritima,Sweet Alyssum
+GF1,Asparagaceae,Hyancinthus,orientalis,Roman Hyacinth
+GF1,Asteraceae,Taraxacum,officinale,Dandelion
+GF1,Violaceae,Viola,spp,Violet
+GF1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+GF1,Boraginaceae,Mertensia,virginica,Virginia Bluebell
+GF1,Plantaginaceae,Veronica,spp,Speedwell
+GF1,Lauraceae,Lindera,benzoin,Spicebush
+GCCP1,Violaceae,Viola,spp,Violet
+GCCP1,Asteraceae,Taraxacum,officinale,Dandelion
+GCCP1,Apocynaceae,Vinca,minor,Lesser Periwinkle
+GCCP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+GCCP1,Fabaceae,Cercis,canadensis,Eastern Redbud
+CFP1,Asteraceae,Taraxacum,officinale,Dandelion
+CFP1,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+CFP1,Araceae,Sympiocarpus,foetidus,Eastern Skunk Cabbage
+CFP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+CFP1,Rosaceae,Prunus,avium,Sweet Cherry
+CFP1,Violaceae,Viola,spp,Violet
+RWP1,Violaceae,Viola,spp,Violet
+RWP1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+RWP1,Ranunculaceae,Helleborus,foetidus,Stinking Hellebore
+RWP1,Brassicaceae,Cardamine,hirsuta,Hairy Bittercress
+RWP1,Asteraceae,Taraxacum,officinale,Dandelion
+RWP1,Rosaceae,Pyrus,calleryana,Bradford Pear
+RWP1,Plantaginaceae,Veronica,persica,Common Field Speedwell
+RWP1,Lamiaceae,Lamium,amplexicaule,Henbit
+RWP1,Rosaceae,Prunus,spp,Cherry
+RWP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+RWP1,Amaryllidaceae,Narcissus,pseudonarcissus,Common Daffodil
+YMP1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+YMP1,Rosaceae,Prunus,spp,Cherry
+YMP1,Montiaceae,Claytonia,virginica,Spring Beauty
+YMP1,Ranunculaceae,Ficaria,verna,Lesser Celandine
+YMP1,Borginaceae,Buglossoides,arvensis,Corn Gromwell
+YMP1,Violaceae,Viola,spp,Violet
+YMP1,Asteraceae,Taraxacum,officinale,Dandelion
+YMP1,Lauraceae,Lindera,benzoin,Spicebush
+CF1,Asteraceae,Taraxacum,officinale,Dandelion
+CF1,Ranunculaceae,Ranunculus,spp,Buttercup
+CF1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+CF1,Lamiaceae,Lamium,amplexicaule,Henbit
+CF1,Violaceae,Viola,spp,Violet
+MF1,Brassicaceae,Brassica,rapa,Field Mustard
+MF1,Brassicaceae,Thlaspi,arvense,Field Pennycress
+MF1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+MF1,Brassicaceae,Barbarea,vulgaris,Yellow Rocket
+MF1,Plantaginaceae,Veronica,spp,Speedwell
+MF1,Asteraceae,Taraxacum,officinale,Dandelion
+MF1,Fabaceae,Trifolium,repens,White Clover
+MF1,Violaceae,Viola,spp,Violet
+SPIL1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+SPIL1,Asteraceae,Taraxacum,officinale,Dandelion
+SPIL1,Lauraceae,Lindera,benzoin,Spicebush
+VHVG1,Violaceae,Viola,spp,Violet
+VHVG1,Geraniaceae,Geranium,spp,Geranium
+VHVG1,Rosaceae,Prunus,spp,Cherry
+VHVG1,Asteraceae,Antennaria,neglecta,Field Pussytoe
+VHVG1,Lilaceae,Muscari,armeniacum,Grape Hyacinth
+VHVG1,Plantaginaceae,Veronica,spp,Speedwell
+VHVG1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+VHVG1,Lamiaceae,Lamium,amplexicaule,Henbit
+VHVG1,Asteraceae,Taraxacum,officinale,Dandelion
+VHVG1,Asparagaceae,Liriope,muscari,Lily turf
+VHVG1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+VHVG1,Fabaceae,Cercis,canadensis,Eastern Redbud
+RSP1,Asteraceae,Taraxacum,officinale,Dandelion
+RSP1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+RSP1,Lauraceae,Lindera,benzoin,Spicebush
+RSP1,Montiaceae,Claytonia,virginica,Spring Beauty
+RSP1,Rubiaceae,Houstonia,caerulea,Azure Bluet
+RSP1,Lamiaceae,Lamium,amplexicaule,Henbit
+RSP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+RSP1,Violaceae,Viola,spp,Violet
+NFCP1,Lauraceae,Lindera,benzoin,Spicebush
+NFCP1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+NFCP1,Magnoliaceae,Magnolia,liliiflora,Magnolia
+NFCP1,Asteraceae,Taraxacum,officinale,Dandelion
+NFCP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+NFCP1,Lamiaceae,Lamium,amplexicaule,Henbit
+NFCP1,Fabaceae,Cercis,canadensis,Eastern Redbud
+GMCP1,Montiaceae,Claytonia,virginica,Spring Beauty
+GMCP1,Lamiaceae,Lamium,amplexicaule,Henbit
+GMCP1,Geraniaceae,Erodium,cicutarium,Common Stork's Bill
+GMCP1,Plantaginaceae,Veronica,spp,Speedwell
+GMCP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+GMCP1,Rosaceae,Prunus,spp,Cherry
+GMCP1,Asteraceae,Taraxacum,officinale,Dandelion
+RLP1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+RLP1,Montiaceae,Claytonia,virginica,Spring Beauty
+RLP1,Lilaceae,Muscari,armeniacum,Grape Hyacinth
+RLP1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+RLP1,Asteraceae,Packera,aurea,Golden Groundsel
+RLP1,Fabaceae,Cercis,canadensis,Eastern Redbud
+RLP1,Ranunculaceae,Thalictrum,thalictroides,Rue Anemone
+RLP1,Asteraceae,Taraxacum,officinale,Dandelion
+RLP1,Rosaceae,Pyrus,calleryana,Bradford Pear
+RLP1,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+RLP1,Apocynaceae,Vinca,minor,Lesser Periwinkle
+RLP1,Rosaceae,Rubus,spp,Bramble
+SKY1,Amaryllidaceae,Narcissus,pseudonarcissus,Common Daffodil
+SKY1,Lauraceae,Lindera,benzoin,Spicebush
+SKY1,Violaceae,Viola,spp,Violet
+SKY1,Berberidaceae,Podophyllum,peltatum,Mayapple Flower
+SKY1,Montiaceae,Claytonia,virginica,Spring Beauty
+SKY1,Asteraceae,Taraxacum,officinale,Dandelion
+SKY1,Rosaceae,Prunus,angustifolia,Chickasaw Plum
+SKY1,Papaveraceae,Corydalis,flavula,Yellow Fumewort
+SKY1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+SKY1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+SKY1,Rosaceae,Malus,pumila,Apple
+SKY1,Araceae,Sympiocarpus,foetidus,Eastern Skunk Cabbage
+SKY1,Rosaceae,Rubus,spp,Bramble
+RHF1,Lamiaceae,Lamium,amplexicaule,Henbit
+RHF1,Adoxaceae,Viburnum,carlessi,Korean Spice Viburnum
+RHF1,Brassicaceae,Barbarea,vulgaris,Yellow Rocket
+RHF1,Lamiaceae,Glechoma,hederacea,Ground Ivy
+RHF1,Asteraceae,Taraxacum,officinale,Dandelion
+RHF1,Apocynaceae,Vinca,minor,Lesser Periwinkle
+RHF1,Plantaginaceae,Veronica,spp,Speedwell
+RHF1,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+RHF1,Ericaceae,Pieris,japonica,Valley Valentine
+RHF1,Rosaceae,Pyrus,calleryana,Bradford Pear
+RHF1,Ranunculaceae,Helleborus,orientalis,Garden Hellebore
+RHF1,Scrophulariaceae,Buddleja,davidii,Butterfly Bush
+RHF1,Boraginaceae,Mertensia,virginica,Virginia Bluebell
+RHF1,Lauraceae,Lindera,benzoin,Spicebush
+SP2,Violaceae,Viola,spp,Violet
+SP2,Rubiaceae,Houstonia,pusilla,Tiny Bluet
+SP2,Asteraceae,Taraxacum,officinale,Dandelion
+SP2,Oxalidaceae,Oxalis,stricta,Common Yellow Wood-Sorrel
+SP2,Apocynaceae,Vinca,minor,Lesser Periwinkle
+SP2,Ranunculaceae,Helleborus,orientalis,Garden Hellebore
+SP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+SP2,Rosaceae,Malus,spp,Apple
+SP2,Fabaceae,Cercis,canadensis,Eastern Redbud
+WCP2,Violaceae,Viola,spp,Violet
+WCP2,Asteraceae,Antennaria,neglecta,Field Pussytoe
+WCP2,Rosaceae,Potentilla,canadensis,Dwarf Cinquefoil
+WCP2,Caryophyllaceae,Stellaria,pubera,Star Chickweed
+WCP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+WCP2,Ericaceae,Vaccinium,corymbosum,Northern Highbush Blueberry
+WCP2,Rubiaceae,Houstonia,caerulea,Azure Bluet
+WCP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+WCP2,Cornaceae,Cornus,florida,Flowering Dogwood
+WCP2,Fabaceae,Cercis,canadensis,Eastern Redbud
+CHP2,Lamiaceae,Lamium,amplexicaule,Henbit
+CHP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+CHP2,Ranunculaceae,Ranunculus,spp,Buttercup
+CHP2,Apocynaceae,Vinca,minor,Lesser Periwinkle
+CHP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+CHP2,Lamiaceae,Ajuga,reptans,Bugleweed
+CHP2,Violaceae,Viola,spp,Violet
+DTP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+DTP2,Brassicaceae,Alliaria,petiolata,Garlic Mustard
+DTP2,Boraginaceae,Mertensia,virginica,Virginia Bluebell
+DTP2,Papaveraceae,Corydalis,incisa,Incised Fumewort
+DTP2,Asteraceae,Taraxacum,officinale,Dandelion
+DTP2,Brassicaceae,Barbarea,vulgaris,Yellow Rocket
+DTP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+DTP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+DTP2,Plantaginaceae,Veronica,spp,Speedwell
+DTP2,Montiaceae,Claytonia,virginica,Spring Beauty
+DTP2,Fabaceae,Cercis,canadensis,Eastern Redbud
+DTP2,Violaceae,Viola,spp,Violet
+ICF2,Lauraceae,Sassafras,albidum,Sassafras
+ICF2,Gentianaceae,Obolaria,virginica,Virginia Pennywort
+ICF2,Asteraceae,Taraxacum,officinale,Dandelion
+ICF2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+ICF2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+ICF2,Brassicaceae,Barbarea,orthoceras,American Rocket
+ICF2,Cornaceae,Cornus,florida,Flowering Dogwood
+ICF2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+ICF2,Violaceae,Viola,spp,Violet
+ICF2,Fabaceae,Cercis,canadensis,Eastern Redbud
+SRNP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+SRNP2,Asteraceae,Taraxacum,officinale,Dandelion
+SRNP2,Rosaceae,Fragaria,virginiana,Wild Strawberry
+SRNP2,Rosaceae,Malus,spp,Apple
+SRNP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+SRNP2,Violaceae,Viola,spp,Violet
+SRNP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+SRNP2,Fabaceae,Cercis,canadensis,Eastern Redbud
+PCP2,Papaveraceae,Corydalis,aurea,Golden Corydalis
+PCP2,Asteraceae,Packera,aurea,Golden Groundsel
+PCP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+PCP2,Rosaceae,Prunus,angustifolia,Chickasaw Plum
+PCP2,Cornaceae,Cornus,florida,Dogwood
+WSF2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+WSF2,Montiaceae,Claytonia,virginica,Spring Beauty
+WSF2,Amaryllidaceae,Narcissus,pseudonarcissus,Common Daffodil
+WSF2,Araceae,Sympiocarpus,foetidus,Eastern Skunk Cabbage
+WSF2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+WSF2,Violaceae,Viola,spp,Violet
+WSF2,Brassicaceae,Alliaria,petiolata,Garlic Mustard
+WSF2,Asteraceae,Taraxacum,officinale,Dandelion
+WSF2,Brassicaceae,Barbarea,orthoceras,American Rocket
+WSF2,Cornaceae,Cornus,florida,Dogwood
+HF2,Asteraceae,Taraxacum,officinale,Dandelion
+HF2,Geraniaceae,Geranium,molle,Dove's-foot and Crane's-bill
+HF2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+HF2,Plantaginaceae,Veronica,spp,Speedwell
+HF2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+HF2,Cornaceae,Cornus,florida,Dogwood
+GF2,Brassicaceae,Barbarea,vulgaris,Yellow Rocket
+GF2,Asteraceae,Erigeron,annuus,Daisy Fleabane
+GF2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+GF2,Brassicaceae,Alliaria,petiolata,Garlic Mustard
+GF2,Ericaceae,Rhododendron,x Holland,Holland
+GF2,Ericaceae,Rhododendron,x Autumn Lilac,Autumn Lilac
+GF2,Montiaceae,Claytonia,virginica,Spring Beauty
+GF2,Ranunculaceae,Ranunculus,spp,Buttercup
+GF2,Brassicaceae,Barbarea,orthoceras,American Rocket
+GF2,Lamiaceae,Lamium,amplexicaule,Henbit
+GF2,Violaceae,Viola,spp,Violet
+GCCP2,Lauraceae,Sassafras,albidum,Sassafras
+GCCP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+GCCP2,Lamiaceae,Lamium,amplexicaule,Henbit
+GCCP2,Ranunculaceae,Ranunculus,spp,Buttercup
+GCCP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+GCCP2,Rosaceae,Fragaria,virginiana,Wild Strawberry
+GCCP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+GCCP2,Asteraceae,Taraxacum,officinale,Dandelion
+GCCP2,Cornaceae,Cornus,florida,Dogwood
+GCCP2,Violaceae,Viola,spp,Violet
+CFP2,Cornaceae,Cornus,florida,Dogwood
+CFP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+CFP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+CFP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+CFP2,Violaceae,Viola,spp,Violet
+RWP2,Lauraceae,Sassafras,albidum,Sassafras
+RWP2,Ranunculaceae,Adonis,aestivalis,Summer Pheasant's Eye
+RWP2,Brassicaceae,Barbarea,vulgaris,Yellow Rocket
+RWP2,Violaceae,Viola,spp,Violet
+RWP2,Asparagaceae,Ornithogalum,umbellatum,Garden Star of Bethlehem
+RWP2,Fabaceae,Vicia,sativa,Common Vetch
+RWP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+RWP2,Ranunculaceae,Ranunculus,spp,Buttercup
+RWP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+RWP2,Caprifoliaceae,Lonicera,spp,Honeysuckle
+RWP2,Lamiaceae,Lamium,amplexicaule,Henbit
+RWP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+RWP2,Asteraceae,Taraxacum,officinale,Dandelion
+CF2,Ranunculaceae,Ranunculus,spp,Buttercup
+CF2,Cornaceae,Cornus,florida,Dogwood
+CF2,Lamiaceae,Ajuga,reptans,Bugleweed
+CF2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+CF2,Lamiaceae,Lamium,amplexicaule,Henbit
+CF2,Violaceae,Viola,spp,Violet
+YMP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+YMP2,Adoxaceae,Viburnum,opulus,Eastern Snowball Bush
+YMP2,Adoxaceae,Viburnum,tinus,Laurustine
+YMP2,Caprifoliaceae,Viburnum,prunifolium,Blackhaw
+YMP2,Rosaceae,Aronia,arbutifolia,Red Chokeberry
+YMP2,Montiaceae,Claytonia,virginica,Spring Beauty
+YMP2,Ericaceae,Pieris,japonica,Valley Valentine
+YMP2,Ranunculaceae,Ranunculus,spp,Buttercup
+YMP2,Violaceae,Viola,spp,Violet
+MF2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+MF2,Asteraceae,Taraxacum,officinale,Dandelion
+MF2,Adoxaceae,Viburnum,tinus,Laurustine
+MF2,Brassicaceae,Barbarea,vulgaris,Yellow Rocket
+MF2,Asteraceae,Packera,aurea,Golden Groundsel
+MF2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+MF2,Cornaceae,Cornus,florida,Flowering Dogwood
+MF2,Ranunculaceae,Ranunculus,spp,Buttercup
+MF2,Papaveraceae,Papaver,dubium,Poppy
+MF2,Plantaginaceae,Veronica,persica,Persian Speedwell
+MF2,Brassicaceae,Barbarea,orthoceras,American Rocket
+MF2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+MF2,Violaceae,Viola,spp,Violet
+MP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+MP2,Ranunculaceae,Ranunculus,spp,Buttercup
+MP2,Apiaceae,Zizia,aurea,Golden Alexander
+MP2,Caryophyllaceae,Stellaria,pubera,Star Chickweed
+MP2,Cornaceae,Cornus,florida,Flowering Dogwood
+SPIL2,Asteraceae,Taraxacum,officinale,Dandelion
+SPIL2,Asteraceae,Erigeron,annuus,Daisy Fleabane
+SPIL2,Violaceae,Viola,spp,Violet
+SPIL2,Cornaceae,Cornus,florida,Dogwood
+SPIL2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+SPIL2,Lamiaceae,Lamium,amplexicaule,Henbit
+SPIL2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+SPIL2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+SPIL2,Ranunculaceae,Ranunculus,spp,Buttercup
+SPIL2,Brassicaceae,Alliaria,petiolata,Garlic Mustard
+SPIL2,Brassicaceae,Barbarea,orthoceras,American Rocket
+SPIL2,Amaryllidaceae,Narcissus,pseudonarcissus,Common Daffodil
+VHVG2,Salicaceae,Salix,nigra,Black Willow
+VHVG2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+VHVG2,Asteraceae,Taraxacum,officinale,Dandelion
+VHVG2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+VHVG2,Rosaceae,Prunus,spp,Cherry
+VHVG2,Plantaginaceae,Veronica,spp,Speedwell
+VHVG2,Ranunculaceae,Ranunculus,spp,Buttercup
+VHVG2,Fabaceae,Cercis,virginica,Eastern Redbud
+VHVG2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+VHVG2,Cornaceae,Cornus,florida,Dogwood
+VHVG2,Lamiaceae,Lamium,amplexicaule,Henbit
+VHVG2,Aquifoliaceae,Ilex,spp,Holly
+VHVG2,Violaceae,Viola,spp,Violet
+RSP2,Rosaceae,Crataegus,flabellata,Hawthorn
+RSP2,Cornaceae,Cornus,florida,Dogwood
+RSP2,Rubiaceae,Houstonia,caerulea,Azure Bluet
+RSP2,Caryophyllaceae,Stellaria,pubera,Star Chickweed
+RSP2,Ranunculaceae,Ranunculus,spp,Buttercup
+RSP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+RSP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+RSP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+RSP2,Asteraceae,Packera,spp,Ragwort
+RSP2,Montiaceae,Claytonia,virginica,Spring Beauty
+RSP2,Fabaceae,Cercis,canadensis,Eastern Redbud
+NFCP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+NFCP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+NFCP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+NFCP2,Plantaginaceae,Veronica,spp,Speedwell
+NFCP2,Rosaceae,Aronia,melanocarpa,Black Chokeberry
+NFCP2,Cornaceae,Cornus,florida,Dogwood
+NFCP2,Fabaceae,Cercis,canadensis,Eastern Redbud
+NFCP2,Montiaceae,Claytonia,virginica,Spring Beauty
+NFCP2,Asteraceae,Taraxacum,officinale,Dandelion
+NFCP2,Violaceae,Viola,spp,Violet
+GMCP2,Rosaceae,Spiraea,crenata,Scalloped Spirea
+GMCP2,Brassicaceae,Hesperis,matronalis,Dame's Rocket
+GMCP2,Fabaceae,Vicia,sativa,Common Vetch
+GMCP2,Ranunculaceae,Ranunculus,spp,Buttercup
+GMCP2,Plantaginaceae,Veronica,spp,Speedwell
+GMCP2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+GMCP2,Asparagaceae,Ornithogalum,umbellatum,Garden Star of Bethlehem
+GMCP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+GMCP2,Lamiaceae,Lamium,amplexicaule,Henbit
+GMCP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+GMCP2,Lauraceae,Sassafras,albidum,Sassafras
+GMCP2,Brassicaceae,Alliaria,petiolata,Garlic Mustard
+GMCP2,Caprifoliaceae,Lonicera,spp,Honeysuckle
+GMCP2,Violaceae,Viola,spp,Violet
+RLP2,Brassicaceae,Barbarea,orthoceras,American Rocket
+RLP2,Caryophyllaceae,Stellaria,pubera,Star Chickweed
+RLP2,Cornaceae,Cornus,florida,Dogwood
+RLP2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+RLP2,Violaceae,Viola,spp,Violet
+RLP2,Ranunculaceae,Ranunculus,spp,Buttercup
+RLP2,Lauraceae,Sassafras,albidum,Sassafras
+RLP2,Adoxaceae,Viburnum,prunifolium,Blackhaw
+RLP2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+RLP2,Fabaceae,Vicia,sativa,Common Vetch
+RLP2,Annonaceae,Asimina,triloba,Pawpaw
+RLP2,Ranunculaceae,Aquilegia,canadensis,Eastern Red Columbine
+RLP2,Caprifoliaceae,Lonicera,spp,Honeysuckle
+RLP2,Fabaceae,Cercis,canadensis,Eastern Redbud
+SKY2,Violaceae,Viola,spp,Violet
+SKY2,Annonaceae,Asimina,triloba,Pawpaw
+SKY2,Lamiaceae,Glechoma,hederacea,Ground Ivy
+SKY2,Ranunculaceae,Ranunculus,spp,Buttercup
+SKY2,Rosaceae,Crataegus,flabellata,Hawthorn
+SKY2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+SKY2,Caryophyllaceae,Stellaria,pubera,Star Chickweed
+SKY2,Brassicaceae,Barbarea,orthoceras,American Rocket
+SKY2,Rosaceae,Rubus,flagellaris,Northern Blackberry
+SKY2,Brassicaceae,Alliaria,petiolata,Garlic Mustard
+SKY2,Adoxaceae,Viburnum,prunifolium,Blackhaw
+SKY2,Cornaceae,Cornus,florida,Dogwood
+SKY2,Gerniaceae,Gernium,maculatum,Wild Geranium
+SKY2,Araceae,Arisaema,triphyllum,Jack in the Pulpit
+SKY2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+SKY2,Asteraceae,Packera,spp,Ragwort
+SKY2,Fabaceae,Cercis,canadensis,Eastern Redbud
+RHF2,Montiaceae,Claytonia,virginica,Spring Beauty
+RHF2,Cornaceae,Cornus,florida,Dogwood
+RHF2,Adoxaceae,Viburnum,prunifolium,Blackhaw
+RHF2,Apiaceae,Zizia,aurea,Golden Alexander
+RHF2,Elaeagnaceae,Elaeagnus,umbellata,Autumn Olive
+RHF2,Lamiaceae,Lamium,purpureum,Purple Dead Nettle
+RHF2,Brassicaceae,Barbarea,orthoceras,American Rocket
+RHF2,Violaceae,Viola,spp,Violet

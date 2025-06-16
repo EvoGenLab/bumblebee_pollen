@@ -1,0 +1,88 @@
+﻿SiteID,Name,Date,StartTimeH,StartTimeM,EndTimeH,EndTimeM,EndTempC,DurationM,CountFlying,CountForaging,CountNestSeeking,TotalObserved
+BEF_01,Blandy Experimental Farm,30-Mar-22,15,2,16,32,17.2,,0,0,0,
+BEF_02,Blandy Experimental Farm,31-Mar-22,13,17,14,28,20.6,,0,0,0,
+BEF_03,Blandy Experimental Farm,1-Apr-22,10,41,11,32,9.4,,0,0,0,
+BEF_04,Blandy Experimental Farm,4-Apr-22,13,4,13,28,10,,0,0,0,
+BEF_05,Blandy Experimental Farm,4-Apr-22,16,2,17,1,12.2,,0,0,0,
+BEF_06,Blandy Experimental Farm,8-Apr-22,9,56,11,14,12.8,,0,0,0,
+BEF_07,Blandy Experimental Farm,8-Apr-22,13,17,13,18,15,,0,0,0,
+BEF_08,Blandy Experimental Farm,8-Apr-22,15,57,16,53,15.6,,0,0,0,
+BEF_09,Blandy Experimental Farm,11-Apr-22,11,26,12,41,16.1,,0,0,0,
+BEF_10,Blandy Experimental Farm,11-Apr-22,15,32,16,24,20,,0,0,0,
+BEF_11,Blandy Experimental Farm,13-Apr-22,13,46,15,11,28.9,,0,0,0,
+BEF_12,Blandy Experimental Farm,14-Apr-22,9,56,11,0,25.6,,0,0,0,
+BEF_13,Blandy Experimental Farm,14-Apr-22,12,47,14,28,23.3,,0,0,0,
+BEF_14,Blandy Experimental Farm,15-Apr-22,10,55,12,5,18.9,,0,0,0,
+BEF_15,Blandy Experimental Farm,20-Apr-22,12,58,14,57,14.4,,0,0,0,
+BEF_16,Blandy Experimental Farm,21-Apr-22,13,34,14,59,14.4,,0,0,0,
+BEF_17,Blandy Experimental Farm,22-Apr-22,12,35,13,55,21.7,,0,0,0,
+BEF_18,Blandy Experimental Farm,25-Apr-22,12,0,12,42,18.3,,0,0,0,
+BEF_19,Blandy Experimental Farm,25-Apr-22,15,47,16,32,21.7,,0,0,0,
+BEF_20,Blandy Experimental Farm,27-Apr-22,15,25,16,23,14.4,,0,0,0,
+BEF_21,Blandy Experimental Farm,28-Apr-22,13,20,14,56,13.9,,0,0,0,
+BEF_22,Blandy Experimental Farm,29-Apr-22,15,39,17,4,19.4,,0,0,0,
+BEF_23,Blandy Experimental Farm,2-May-22,15,23,16,21,27.2,,0,0,0,
+BEF_24,Blandy Experimental Farm,4-May-22,13,7,13,59,23.9,,0,0,0,
+BEF_25,Blandy Experimental Farm,4-May-22,15,18,16,33,24.4,,0,0,0,
+BEF_26,Blandy Experimental Farm,5-May-22,10,24,11,56,16.7,,0,0,0,
+BEF_27,Blandy Experimental Farm,5-May-22,15,49,17,16,18.9,,0,0,0,
+BEF_28,Blandy Experimental Farm,9-May-22,11,48,12,58,17.2,,0,0,0,
+BEF_29,Blandy Experimental Farm,9-May-22,15,9,17,2,20.6,,0,0,0,
+BEF_30,Blandy Experimental Farm,10-May-22,10,42,12,11,19.4,,0,0,0,
+BEF_31,Blandy Experimental Farm,10-May-22,15,19,16,23,21.7,,0,0,0,
+BEF_32,Blandy Experimental Farm,16-May-22,9,47,10,57,21.1,,0,0,0,
+BEF_33,Blandy Experimental Farm,16-May-22,14,17,15,38,26.1,,0,0,0,
+BEF_34,Blandy Experimental Farm,17-May-22,9,2,11,42,23.9,,0,0,0,
+BEF_35,Blandy Experimental Farm,18-May-22,9,55,11,51,20,,0,0,0,
+BEF_36,Blandy Experimental Farm,23-May-22,10,26,11,52,20,,0,0,0,
+BEF_37,Blandy Experimental Farm,25-May-22,9,56,11,43,17.8,,0,0,0,
+CFP1,C F Phelps WMA,29-Mar-22,13,0,15,0,6.7,120,2,4,0,6
+CFP2,C F Phelps WMA,21-Apr-22,10,15,12,0,17.2,105,55,45,5,105
+CHP1,Charlotte Humphris Park,22-Mar-22,12,30,14,30,22.2,120,0,2,1,3
+CHP2,Charlotte Humphris Park,12-Apr-22,9,0,10,30,21.1,90,2,3,5,10
+CF1,Cleveland Farm,30-Mar-22,14,30,17,30,15.6,180,1,3,0,4
+CF2,Cleveland Farm,22-Apr-22,9,0,11,30,20.6,150,7,13,0,20
+DTP1,Darden Towe Park,22-Mar-22,10,20,12,0,18.3,100,3,2,0,5
+DTP2,Darden Towe Park,12-Apr-22,12,0,15,0,26.7,180,6,13,8,27
+GMCP1,Gertrude E. Miller Community Park,4-Apr-22,13,0,14,40,11.7,100,4,7,0,11
+GMCP2,Gertrude E. Miller Community Park,29-Apr-22,11,15,13,0,19.4,105,3,10,4,17
+GCCP1,Greene County Community Park,28-Mar-22,13,30,14,30,6.7,60,0,0,0,0
+GCCP2,Greene County Community Park,20-Apr-22,12,30,14,30,15.6,120,7,14,3,24
+GF1,Greenway Farm,26-Mar-22,12,35,14,30,10.6,115,1,1,0,2
+GF2,Greenway Farm,17-Apr-22,11,0,13,0,15.6,120,7,36,1,44
+HF1,Hampstead Farm,25-Mar-22,12,0,15,0,16.7,180,6,6,0,12
+HF2,Hampstead Farm,16-Apr-22,12,0,13,20,21.7,80,0,0,1,1
+ICF1,Ivy Creek Foundation,22-Mar-22,15,0,17,0,20.6,120,1,3,0,4
+ICF2,Ivy Creek Foundation,13-Apr-22,9,30,11,0,26.1,90,9,7,3,19
+MP1,Mayo Property,1-Apr-22,9,30,10,30,10.6,60,0,0,0,0
+MP2,Mayo Property,24-Apr-22,13,30,15,0,29.4,90,4,0,15,19
+MF1,Miller Farm,2-Apr-22,12,0,14,45,12.8,165,7,5,1,13
+MF2,Miller Farm,24-Apr-22,9,0,11,0,26.7,120,18,40,7,65
+NFCP1,Northern Fauquier Community Park,4-Apr-22,10,0,11,46,9.4,106,0,1,0,1
+NFCP2,Northern Fauquier Community Park,28-Apr-22,15,0,17,0,15,120,3,0,0,3
+PCP1,Preddy Creek Park,24-Mar-22,12,30,13,30,13.3,60,0,0,0,0
+PCP2,Preddy Creek Park,15-Apr-22,15,0,16,30,23.3,90,8,0,8,16
+RSP1,Riverside Preserve,3-Apr-22,14,45,16,30,16.1,105,2,3,0,5
+RSP2,Riverside Preserve,28-Apr-22,12,0,13,30,14.4,90,4,3,0,7
+RHF1,Rock Hill Farm,9-Apr-22,13,0,14,10,10.6,70,0,0,0,0
+RHF2,Rock Hill Farm,30-Apr-22,15,0,16,30,21.1,90,4,12,0,16
+RLP1,Rockland Park,8-Apr-22,11,15,12,35,13.9,80,2,0,1,3
+RLP2,Rockland Park,29-Apr-22,15,0,17,0,15,120,4,6,3,13
+RWP1,Rockwater Park,29-Mar-22,15,45,16,45,7.8,60,0,0,0,0
+RWP2,Rockwater Park,21-Apr-22,14,30,15,30,18.9,60,2,4,3,9
+SP1,Seilheimer Property,21-Mar-22,12,20,,,19.4,,0,5,0,5
+SP2,Seilheimer Property,11-Apr-22,10,0,11,15,13.9,75,10,2,2,14
+SKY1,Sky Meadows,8-Apr-22,13,30,15,15,12.2,105,2,1,0,3
+SKY2,Sky Meadows,30-Apr-22,10,20,12,30,18.9,130,8,46,4,58
+SRNP1,South River Nature Preserve,24-Mar-22,14,30,17,45,16.7,195,11,16,1,28
+SRNP2,South River Nature Preserve,15-Apr-22,10,0,12,0,21.1,120,3,27,7,37
+SPIL1,Spilman Park,2-Apr-22,15,15,17,20,17.2,125,2,2,1,5
+SPIL2,Spilman Park,25-Apr-22,9,30,11,0,17.2,90,9,15,1,25
+VHVG1,Vint Hill Village Green,3-Apr-22,12,0,14,0,15.6,120,2,8,1,11
+VHVG2,Vint Hill Village Green,25-Apr-22,12,45,,,23.9,,2,19,0,21
+WCP1,Walnut Creek Park,21-Mar-22,9,30,11,0,15.6,90,0,0,0,0
+WCP2,Walnut Creek Park,11-Apr-22,13,0,15,0,23.3,120,16,14,3,33
+WSF1,Willow Spring Farm,25-Mar-22,15,30,17,0,16.7,90,3,3,0,6
+WSF2,Willow Spring Farm,16-Apr-22,9,30,11,0,19.4,90,5,8,3,16
+YMP1,Yowell Meadow Park,30-Mar-22,11,45,13,10,12.2,85,0,0,0,0
+YMP2,Yowell Meadow Park,22-Apr-22,13,0,,,25,,5,4,1,10
