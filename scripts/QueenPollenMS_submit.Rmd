@@ -1,0 +1,2034 @@
+---
+title: "Bombus spp. Queen Pollen Load Analyses"
+author: "Kels"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  word_document: default
+editor_options: 
+  chunk_output_type: console
+---
+
+# Set wd & load packages & read in data
+```{r}
+setwd("/Users/kelseyschoenemann/Desktop/Code_Datasets")
+
+library(readxl) #read in data
+library(readr)
+library(tidyverse) #manipulate the data
+library(ggplot2) #plot data
+# install.packages("devtools")
+# devtools::install_github("r-lib/conflicted")
+library(conflicted) #https://conflicted.r-lib.org
+conflicts_prefer(dplyr::filter)
+```
+
+## CapLog
+```{r}
+#read in capture log of queens identity and behavior
+CapLog <- read.csv("CaptureLog.csv")
+CapLog[,c(13:15)][is.na(CapLog[,c(13:15)])] <- 0 #replacing NAs with 0s
+CapLog$Bombus_spp<-as.factor(CapLog$Bombus_spp)
+CapLog$BeeID<-as.factor(CapLog$BeeID)
+CapLog$SiteID<-as.factor(CapLog$SiteID)
+CapLog$Date<-as.POSIXct(CapLog$Date, format="%m/%e/%y")
+```
+
+## SitDat
+```{r}
+#read in site data about survey conditions
+SitDat <- read.csv("SiteData.csv")
+SitDat[,c(10:13)][is.na(SitDat[,c(10:13)])] <- 0 #replacing NAs with 0s
+SitDat$SiteID<-as.factor(SitDat$SiteID)
+```
+
+## Effort
+```{r}
+#read in survey effort data about search times by habitat and observer
+Effort <- read.csv("SurveyEffort.csv")
+Effort$SiteID<-as.factor(Effort$SiteID)
+```
+
+## FlorSpp
+```{r}
+FlorSpp <- read.csv("FloweringSpp.csv")
+FlorSpp$SiteID<-as.factor(FlorSpp$SiteID)
+```
+
+## LandUse
+INFO about zonal statistics (i.e., how exactly the data I'm using was tabulated): https://gis.stackexchange.com/questions/276794/how-does-qgis-zonal-statistics-handle-partially-overlapping-pixels
+```{r}
+#read in land use data extracted near survey sites
+SitesLandUse <-  read.csv("export-Sites.csv") 
+SitesLandUse <- SitesLandUse[,-c(1,5)] #remove columns that aren't Name, SiteID, Type, County or land use columns
+SitesLandUse[,7:21][is.na(SitesLandUse[,7:21])] <- 0 #replace NAs in land use columns with 0
+
+# rename columns
+
+#LAND USE CLASSES
+#NLCD
+#	ClassID	Classification
+#	11	Open Water
+#	21	Developed, Open Space
+#	22	Developed, Low Intensity
+#	23	Developed, Medium Intensity 
+#	24	Developed High Intensity
+#	31	Barren Land (Rock/Sand/Clay) 
+#	41	Deciduous Forest
+#	42	Evergreen Forest
+#	43	Mixed Forest
+#	52	Shrub/Scrub
+#	71	Grassland/Herbaceous
+#	81	Pasture/Hay
+#	82	Cultivated Crops 
+#	90	Woody Wetlands
+#	95	Emergent Herbaceous Wetlands
+
+SitesLandUse2 <- SitesLandUse %>% rename(
+'NLCD_Water1000'='NLCD_Sites_1000m_11',
+'NLCD_DevelopedOpen1000'='NLCD_Sites_1000m_21',
+'NLCD_DevelopedLow1000'='NLCD_Sites_1000m_22',
+'NLCD_DevelopedMed1000'='NLCD_Sites_1000m_23',
+'NLCD_DevelopedHigh1000'='NLCD_Sites_1000m_24',
+'NLCD_Barren1000'='NLCD_Sites_1000m_31',
+'NLCD_DeciduousForest1000'='NLCD_Sites_1000m_41',
+'NLCD_EvergreenForest1000'='NLCD_Sites_1000m_42',
+'NLCD_MixedForest1000'='NLCD_Sites_1000m_43',
+'NLCD_ShrubScrub1000'='NLCD_Sites_1000m_52',
+'NLCD_Grassland1000'='NLCD_Sites_1000m_71',
+'NLCD_PastureHay1000'='NLCD_Sites_1000m_81',
+'NLCD_CultivatedCrops1000'='NLCD_Sites_1000m_82',
+'NLCD_WoodyWetlands1000'='NLCD_Sites_1000m_90',
+'NLCD_HerbaceousWetlands1000'='NLCD_Sites_1000m_95'
+)
+
+rm(SitesLandUse)
+```
+### make columns numeric, compute total cells/pixels for locations, select just NLCD data for sites, VGIN data for queens
+```{r}
+SitesLandUse2[,7:21] <- lapply(SitesLandUse2[,7:21], as.numeric) #change values to numeric
+
+SitesLandUse2 <- SitesLandUse2 %>% 
+  rowwise() %>% mutate(TotalCells1000_NLCD = rowSums(across('NLCD_Water1000':'NLCD_HerbaceousWetlands1000'))) #create new columns that equal the sum of all cells within 1000m of site centerpoint
+```
+
+## PollenIDs
+```{r}
+#read in tables of ASV assignments for each sample 
+#(datasets called 'long' because each sample spans multiple rows, one for each ASV within a sample)
+#for rbcL
+rbcL_IDs <- read.csv("rbcL.IDs.long.csv")
+rbcL_IDs$Sample <- as.factor(rbcL_IDs$Sample)
+
+
+#repeat for ITS2
+ITS2_IDs <- read.csv("ITS2.IDs.long.csv")
+ITS2_IDs[ITS2_IDs=="s_NA"]<-NA #explicitly call these text strings NA values
+ITS2_IDs[ITS2_IDs=="g_NA"]<-NA
+
+ITS2_IDs$Sample <- as.factor(ITS2_IDs$Sample)
+
+#bind the rbcL and ITS2 sequence taxonomies
+PollenIDs<-rbind(
+  rbcL_IDs %>% 
+  select(Sample, SampleTotalReads, Reads, Family, Genus, Species) %>% 
+  mutate(Family=str_extract(Family, "(?<=f__)[a-zA-Z\\s]+(?=_)"),
+         Genus=str_extract(Genus, "(?<=g__)[a-zA-Z\\s]+(?=_)"), #extracting character strings so taxa names will match up with those in ITS2 dataset
+         Species=str_extract(Species, "(?<=\\s)[a-zA-Z\\s]+(?=_)"), #god bless chatgpt for this one doggamm
+         Barcode="rbcL") %>%
+    filter(SampleTotalReads>999) #filter out samples with less than 1000 reads in total
+, # <-comma for rbind(rbcl,ITS2)
+# Explanation of the Regex
+# (?<=s__) - This is a lookbehind assertion that ensures the match occurs after "s__".
+# [a-zA-Z\\s]+ - This matches one or more letters (both uppercase and lowercase) and spaces. (the + is important!)
+# (?=_) - This is a lookahead assertion that ensures the match occurs before an underscore (_).
+ITS2_IDs %>% 
+  select(Sample, SampleTotalReads, Reads, Family, Genus, Species) %>% 
+  mutate(Family=str_extract(Family, "(?<=f_)[a-zA-Z\\s]+"),
+         Genus=str_extract(Genus, "(?<=g_)[a-zA-Z\\s]+"), #character string a little diff for ITS2
+         Species=str_extract(Species, "(?<=\\s)[a-zA-Z\\s]+"), 
+         Barcode="ITS2") %>%
+  filter(SampleTotalReads>999) #filter out samples with less than 1000 reads in total
+) %>% 
+  mutate(BeeID=Sample, #rename variable
+    #Barcode_Sample=paste(Barcode,Sample,sep = "_"), #create new variable with Barcode and Sample name appended together
+    Genus_species=paste(Genus,Species,sep = "_")) %>%
+  select(BeeID,Barcode,SampleTotalReads,Family,Genus,Species,Genus_species, Reads) %>% 
+  mutate(PropReads=Reads/SampleTotalReads) %>%
+# the data are still presented as ASVs (meaning multiple ASVs could be assigned to the same Genus/species, so now we will sum the reads for each ASV assigned to the same taxon for each sample) 
+  group_by(across(BeeID:Genus_species)) %>% # group by sample and taxonomic assignment 
+  summarise(across(Reads:PropReads, ~ sum(.x ))) %>% # and sum reads (or prop) 
+  mutate(Family = # correcting out-dated taxonomic names inherited from rbcL reference database (affecting rbcL samples only)
+           ifelse(.data$Family=="Aceraceae", "Sapindaceae", #change Acer../Hipp.. to Sapi..
+                  ifelse(.data$Family=="Hippocastanaceae", "Sapindaceae",
+                         ifelse(.data$Genus=="Nyssa", "Nyssaceae", #change Corn.. to Nyss (I only have two species from Cornaceae in my data, Nyssa sylvatica, which is now in Nyssaceae family, and Cornus spp, which remains in Cornaceae family); link: https://doi.org/10.1111/boj.12385
+                         .data$Family))))
+
+PollenIDs <- as.data.frame(PollenIDs) # revert tibble to dataframe
+
+
+rm(ITS2_IDs, rbcL_IDs)
+```
+
+
+# Summarize Data
+## CapLog.sum & CapLog.spp
+```{r}
+
+# generate summary table of queens captured by site-visit, behavior, pollen status
+CapLog.sum <- CapLog %>%           #
+  group_by(SiteID) %>%             ## at each site,
+  summarise(CapFly=sum(Flying),    ## sum number of bees captured while flying
+            CapForag=sum(Forage),  ## ...or foraging
+            CapNest=sum(NestSeek), ## ..or nest-seeking
+            TotalCaptured=sum(Flying,Forage,NestSeek),
+            PollenBees=sum(CarryPollen))
+
+
+# generate summary table of queens captured by site-visit and Bombus species
+CapLog.spp <- CapLog %>% 
+  group_by(SiteID, Bombus_spp) %>% 
+  tally() %>% 
+  pivot_wider(names_from = Bombus_spp, values_from = n) %>%
+  select(SiteID,bimaculatus,griseocollis,impatiens,auricomus,'vagans-sandersoni-perplexus',fervidus,pensylvanicus)
+
+```
+
+## SitDat.sum
+```{r}
+# generate summary table of start/end times and temps and observed tallys of queens by survey-date 
+## (this step was needed because Dave would sometimes do 2+ surveys at Blandy in a day, recording site conditions each time)
+SitDat.sum <- as.data.frame(
+  bind_rows(
+  SitDat %>% filter(Name!="Blandy Experimental Farm"),
+  SitDat %>% filter(Name=="Blandy Experimental Farm") %>% group_by(Date) %>%
+                dplyr::summarize(SiteID=first(SiteID), Name=first(Name), Date=first(Date),
+                  across('StartTimeH':'StartTimeM', list(dplyr::first)),
+                  across('EndTimeH':'EndTempC', list(dplyr::last)),
+                  across('DurationM', list(sum)),
+                  across('CountFlying':'TotalObserved',list(sum))) %>%
+                  'colnames<-'(c("Date","SiteID","Name", colnames(SitDat[,4:13]))) #renaming the summarized columns so they will match up with the original, un-summarized non-Blandy records
+            ))
+# The above code grabs rows from SitDat for sites OTHER than Blandy and combines (bind_rows) with the following:
+# A summary of rows from SitDat for ONLY Blandy, grouped by Date, where I want
+#   first Date, Name, and SiteID 
+#   the first StartTime, and last EndTime and EndTemp
+#   the sum of survey Duration
+#   the sum of the Count columns (which are expected to be zero for Blandy, since Dave didn't count bees not caught)
+
+rm(SitDat)
+```
+
+## Effort.sum 
+```{r}
+# generate summary table of search time 
+Effort.sum <- Effort %>% group_by(SiteID) %>%      #group by site
+  summarise(SearchTime=sum(SearchTime))
+```
+
+## SiteEffort
+```{r}
+SiteEffort <- left_join(SitDat.sum,Effort.sum,by="SiteID")
+SiteEffort$Date<-as.POSIXct(SiteEffort$Date, format="%d-%b-%y")
+
+rm(Effort)
+```
+
+## FlorSpp.sum
+```{r}
+FlorSpp.sum <- FlorSpp %>% group_by(SiteID) %>%
+  summarize(FloralRichness=n())
+
+```
+
+## LandUse.sum
+###SiteLandUse.sum, SiteLandUse.sum2
+```{r}
+# generate summary table of land cover near survey sites with *simplified* land cover classes (sum)
+# expressed as proportional cover (rather than numbers of cells) ----
+SitesLandUse.sum <- SitesLandUse2 %>%  
+    mutate(across('NLCD_Water1000':'NLCD_HerbaceousWetlands1000',~.x/TotalCells1000_NLCD)) %>%
+                ## ^^ divide all values ('~.x') by TotalCells for the given dataset
+    mutate(
+        #simplify land use categories
+        NLCD1000_Water     = NLCD_Water1000, 
+        NLCD1000_Developed = sum(NLCD_DevelopedOpen1000 + NLCD_DevelopedLow1000 + NLCD_DevelopedMed1000 + NLCD_DevelopedHigh1000),
+        NLCD1000_Forest    = sum(NLCD_DeciduousForest1000 + NLCD_MixedForest1000 + NLCD_WoodyWetlands1000 + NLCD_ShrubScrub1000 + NLCD_EvergreenForest1000), #shrubscrub = forest bc in my dataset it is rare, and is sometimes misclassified (when tree farms, fields with sparse tree), but it usually has trees, so forest seems appropriate
+        NLCD1000_Herbaceous= sum(NLCD_Grassland1000 + NLCD_PastureHay1000 + NLCD_HerbaceousWetlands1000 + NLCD_Barren1000), #barren = grassland bc I checked on the few pixels in my dataset and it was a mis-assignment in the original land cover data (the aerial imagery clearly shows grassy field where barren was assigned)
+        NLCD1000_Crop      = NLCD_CultivatedCrops1000
+          ) %>%
+  select(Name:Updated_y,NLCD1000_Water:NLCD1000_Crop)
+rowSums(SitesLandUse.sum[,c(7:11)]) #OH YAY they all equal one 
+
+summary(SitesLandUse.sum[,-c(1:6)])
+
+SiteLandUseSummary <- as.data.frame(SitesLandUse.sum[,-c(1:6)]) %>% 
+  pivot_longer(.,cols=starts_with("NLCD"), names_to = "names", values_to = "value") %>%
+  select(names,value) %>%
+  separate_wider_delim(., names, delim="_", names = c("scale","class")) %>%
+  mutate_at("value", as.numeric) %>%
+  mutate_at("class", as.factor)
+ggplot(SiteLandUseSummary, aes(x=class,y=value))+
+  geom_boxplot()+
+  ylab("Proportion of Area") +
+  xlab("Land Cover Type") +
+  theme_bw() +
+  theme( 
+        axis.title = element_text(size=18), 
+        axis.text = element_text(size=12))
+rm(SiteLandUseSummary)
+
+boxplot(x = as.list(as.data.frame(SitesLandUse.sum[,-c(1:6)])))
+
+```
+
+## PollenIDs.sum
+```{r}
+# create a summary of pollen community for each barcode-sample at the genus level
+# within a sample, multiple ASVs may have assigned to the same taxonomy, so we sum across those records
+PollenIDgenera.sum <- PollenIDs %>%
+  group_by(Barcode, BeeID, Genus) %>% #group by barcode, sample/BeeID, and assigned genus
+  summarize(PropReads=sum(PropReads)) # sum the proportion of reads
+
+# create a list of bees/samples with data from both barcodes
+TwoBarcodeBees<-PollenIDgenera.sum %>% 
+  select(BeeID, Barcode) %>% 
+  distinct() %>% group_by(BeeID) %>% 
+  summarise(nBarcode=n()) %>% 
+  filter(nBarcode==2) %>% select(BeeID)
+
+
+# create a summary of pollen community for each sample at the genus level (average of both barcodes)
+PollenIDgenera.comm <- PollenIDs %>%
+  group_by(BeeID, Genus) %>% # NOT GROUPING BY BARCODE (mean prop reads across barcodes)
+  summarize(PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1))) %>% 
+  pivot_wider(., names_from = Genus, values_from = PropReads, values_fill = 0) 
+
+# create list of genera appearing in a single sample
+singletonGenera<-as.data.frame(
+  PollenIDs %>% 
+    group_by(Genus) %>% 
+    summarize(n_bees=n_distinct(BeeID)) %>% 
+   filter(n_bees==1) %>% 
+    select(Genus)
+  )$Genus
+```
+
+
+# Join Summaries Together
+```{r}
+dat.Sites <-  
+  left_join(SiteEffort, CapLog.sum, by='SiteID') %>% #join site-effort to capture log summary
+  left_join(., CapLog.spp, by='SiteID') %>% #join to that the capture log species summary
+#install fuzzyjoin & comparator
+  mutate(across(bimaculatus:pensylvanicus, ~replace_na(.x, 0))) %>%
+  left_join(., SitesLandUse.sum, by = "Name") %>%
+  select(-"SiteID.y") %>% #remove redundant column
+  rename("SiteID"="SiteID.x") %>%  #fix column name messed up by joining
+  mutate(across(CountFlying:pensylvanicus, ~replace_na(.,0))) %>% #replace NAs with 0s
+#the current column (" . ")
+  left_join(.,FlorSpp.sum,by='SiteID') %>% #join floral richness
+  mutate(FloralRichness=if_else(is.na(FloralRichness)&Name!="Blandy Experimental Farm",0,FloralRichness))%>%
+  mutate(Bees_60min=((TotalObserved+TotalCaptured)/SearchTime)*60, #calculate bees per 60-min survey
+         logBees_60min=log(Bees_60min+1)) #calculate log() of that value
+
+
+
+dat.Queen <-left_join(CapLog,PollenIDgenera.comm,by="BeeID") %>% #join capture log with pollen summary (both barcodes averaged)
+  filter(!is.na(Cercis)) #filter rows without metabarcoding data
+
+
+#rm(PollenIDgenera.comm)
+```
+
+
+# Summary of pollen samples
+## Number of samples per barcode, reads per barcode-sample
+```{r}
+#this dataset has Bombus_spp identity and keeps data from the two barcodes separate
+dat<- left_join(
+  PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(BeeID, Bombus_spp), 
+  by="BeeID") %>% 
+  ungroup()
+
+# table of count of ITS2, rbcL, both samples by Bombus species
+dat %>% group_by(BeeID, Bombus_spp, Barcode) %>% summarise(count=n()) %>% 
+  pivot_wider(., names_from = "Barcode", values_from = "count") %>% 
+  mutate(across(ITS2:rbcL, ~replace_na(.x, 0))) %>% 
+  reframe(BeeID=first(BeeID), Bombus_spp=first(Bombus_spp), ITS2=sum(ITS2), rbcL=sum(rbcL), both=ifelse(.data$ITS2 + .data$rbcL==2, "Y", "N")) %>% 
+  group_by(Bombus_spp, both) %>% summarize(totalITS2=sum(ITS2), totalrbcL=sum(rbcL)) %>% 
+  pivot_wider(., names_from = "both", values_from = c(totalITS2, totalrbcL)) %>%
+  rename("ITS2"="totalITS2_N", "rbcL"="totalrbcL_N", "both"="totalITS2_Y") %>% 
+  select(ITS2, rbcL, both) %>%
+  mutate(across(ITS2:both, ~replace_na(.x, 0)))
+
+
+# how many barcode-samples
+dim(PollenIDs %>% 
+  group_by(BeeID, Barcode) %>%
+  summarize(
+    n=n()
+  )) # three columns (BeeID, Barcode, n or number of records), and 171 BeeID-Barcode groups
+
+
+# average and sd reads per barcode-sample
+PollenIDs %>%
+  group_by(BeeID, Barcode) %>%
+  summarise(
+    sumReads=sum(Reads)
+  ) %>%
+  group_by(Barcode) %>%
+  summarise(
+    mean=mean(sumReads), 
+    sd=stats::sd(sumReads),
+    min=min(sumReads),
+    max=max(sumReads)
+    )
+
+# count of pollen samples by month and site
+left_join(PollenIDgenera.comm %>% select(BeeID), 
+          dat.Queen %>% select(BeeID, SiteID), 
+          by="BeeID") %>% 
+  left_join(., 
+            dat.Sites %>% select(SiteID, Name, Date), 
+            by="SiteID") %>%
+  mutate(SimpName=ifelse(.data$Name=="Blandy Experimental Farm", Name, "All Other"),
+         Month=lubridate::month(Date)) %>%
+  group_by(Month, SimpName) %>% summarize(n=n()) %>%
+  pivot_wider(names_from = Month, values_from = n, values_fill = 0)
+
+```
+
+## Assignment rate
+```{r}
+#total reads
+PollenIDs %>%
+  summarise(Reads=sum(Reads))
+
+
+#number of reads UNassigned to Species, by barcode
+NA_reads<-PollenIDs %>%
+  group_by(Barcode, Species) %>%
+  summarise(Reads=sum(Reads)) %>%
+  filter(is.na(Species))
+#number of reads assigned to Species, by barcode
+Assigned_reads<-PollenIDs %>%
+  group_by(Barcode, Species) %>%
+  summarise(Reads=sum(Reads)) %>%
+  filter(!is.na(Species)) %>%
+  group_by(Barcode) %>%
+  summarise(Reads=sum(Reads))
+TotalReads<-NA_reads$Reads+Assigned_reads$Reads
+#percent of reads *ASSIGNED* to Species, by barcode
+(Assigned_reads$Reads / TotalReads) * 100 #ITS2 appears first (alphabetical)
+
+
+#number of reads UNassigned to Genus, by barcode
+NA_reads<-PollenIDs %>%
+  group_by(Barcode, Genus) %>%
+  summarise(Reads=sum(Reads)) %>%
+  filter(is.na(Genus))
+#number of reads assigned to Genus, by barcode
+Assigned_reads<-PollenIDs %>%
+  group_by(Barcode, Genus) %>%
+  summarise(Reads=sum(Reads)) %>%
+  filter(!is.na(Genus)) %>%
+  group_by(Barcode) %>%
+  summarise(Reads=sum(Reads))
+TotalReads<-NA_reads$Reads+Assigned_reads$Reads
+#percent of reads *ASSIGNED* to genus, by barcode
+(Assigned_reads$Reads / TotalReads) * 100 #ITS2 appears first (alphabetical)
+
+
+#number of reads UNassigned to Family, by barcode
+NA_reads<-PollenIDs %>%
+  group_by(Barcode, Family) %>%
+  summarise(Reads=sum(Reads)) %>%
+  filter(is.na(Family))
+#number of reads assigned to Family, by barcode
+Assigned_reads<-PollenIDs %>%
+  group_by(Barcode, Family) %>%
+  summarise(Reads=sum(Reads)) %>%
+  filter(!is.na(Family)) %>%
+  group_by(Barcode) %>%
+  summarise(Reads=sum(Reads))
+TotalReads<-NA_reads$Reads+Assigned_reads$Reads
+#percent of reads *ASSIGNED* to Family, by barcode
+(Assigned_reads$Reads / TotalReads) * 100 #ITS2 appears first (alphabetical)
+
+rm(NA_reads, Assigned_reads, TotalReads)
+```
+
+## Rarefaction curves
+```{r}
+#rarefaction of pollen species richness and read depth within each barcode-sample
+dat<-PollenIDs %>% # (2 barcodes kept separate) # Genus_species
+  group_by(Barcode, BeeID, Genus_species) %>% 
+  summarize(Reads=sum(Reads)) %>%
+  filter(Genus_species!="NA_NA") %>%
+  pivot_wider(names_from = Genus_species, values_from = Reads, values_fill = 0) %>%
+#  mutate(rowname=paste(.data$Barcode, .data$BeeID, sep="_")) %>%
+ungroup() %>% select(-c(BeeID, Barcode))
+dat<-as.data.frame(dat)
+dat <- dat[rowSums(dat) > 0, ]
+
+vegan::rarecurve(dat, step=20, tidy=T) %>%
+  ggplot(aes(x=Sample, y=Species, col=Site))+
+  geom_line()+
+  labs(x="Read Depth", y="Species detected", col="")+
+  theme(legend.position = "none") +
+  guides(color="none")+
+  lims(x=c(0,5000),y=c(0,25))+
+  theme_bw(base_size = 18)
+
+
+
+
+#rarefaction of pollen species richness and sample size within each of the most common bombus species
+dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, Bombus_spp, Date), by="BeeID") %>%
+  filter(Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"|Bombus_spp=="impatiens") %>%
+#  filter(.data$Genus %in% topGenera2$Genus) %>% #optional filter for most common genera
+  group_by(Bombus_spp, Genus) %>% #first summarize across BeeID within Bombus_spp, pollen Genus
+  summarize(nSamples=n_distinct(BeeID)) %>% 
+  filter(!is.na(Genus)) %>%
+  pivot_wider(names_from = Genus, values_from = nSamples, values_fill = 0) %>%
+ungroup() %>% select(-c(Bombus_spp))
+dat<-as.data.frame(dat)
+dat <- dat[rowSums(dat) > 0, ]
+
+vegan::rarecurve(dat, step=3, tidy=T) %>% 
+  mutate(Site=case_match(Site, 
+                         "1"~"bimaculatus",
+                         "2"~"griseocollis",
+                         "3"~"impatiens"))%>%
+  ggplot(aes(x=Sample, y=Species, col=Site))+
+  geom_line()+
+  labs(x="Number of Pollen Samples", y="Genera detected", col="Bombus spp")+
+  theme_bw(base_size = 18) 
+
+```
+
+
+## Rank abundance and genera richness
+```{r}
+rank_abundance = PollenIDs %>% 
+  select(BeeID, Barcode, Family, Genus, PropReads, SampleTotalReads) %>%
+  arrange(BeeID, Barcode, desc(PropReads)) %>%
+  group_by(BeeID, Barcode) %>%
+  mutate(abundance=PropReads,
+    rank = rank(desc(PropReads), ties.method= "random")) %>% 
+  mutate(rank=factor(rank)) %>%
+  filter(!is.na(Family) & !is.na(Genus)) %>%
+  ungroup()
+
+summary(rank_abundance)
+
+# plot with rank abundance curve
+rank_abundance  %>%
+ggplot(aes(x = rank,
+           y = abundance)) + 
+  geom_boxplot(aes(fill=Barcode), position = position_dodge(preserve = "single"))+
+  theme_bw(base_size=18)+
+  scale_x_discrete(breaks = function(x){x[c(TRUE, FALSE)]})+
+  facet_wrap(~Barcode) +
+  labs(x="Abundance Rank", y="Proportion of Reads")
+
+
+# overall genera richness of samples
+PollenIDs %>%
+  group_by(BeeID)%>%
+  summarise(GeneraRichness=n_distinct(Genus)) %>%
+  summarize(mean=mean(GeneraRichness))
+
+# by barcode, genera richness of samples
+PollenIDs %>%
+  group_by(BeeID,Barcode)%>%
+  summarise(GeneraRichness=n_distinct(Genus)) %>%
+  group_by(Barcode) %>%
+  summarize(mean=mean(GeneraRichness), median=stats::median(GeneraRichness), low=min(GeneraRichness), high=max(GeneraRichness))
+
+# plot a histogram of barcod-samples' genera richness
+PollenIDs %>%
+  group_by(BeeID,Barcode)%>%
+  summarise(GeneraRichness=n_distinct(Genus)) %>%
+  ggplot(aes(x=GeneraRichness)) +
+  geom_histogram()+
+  facet_wrap(~Barcode)
+
+rm(rank_abundance)
+```
+
+## Most, least common pollen genera
+```{r}
+# counting genera in pollen data
+PollenIDs %>% distinct(Genus) # 94 total genera detected (plus 1 for NA/unassigned reads)
+
+
+#list of all singletonGenera (genera detected in only one sample, by either barcode)
+singletonGenera<-as.data.frame( 
+  PollenIDs %>% 
+    group_by(Genus) %>% 
+    summarize(n_bees=n_distinct(BeeID)) %>% 
+   filter(n_bees==1) %>% 
+    select(Genus)
+  )$Genus
+
+
+# identify most common pollen by applying filters on genera-level abunance metrics
+temp<-PollenIDs %>%  
+  group_by(BeeID, Genus) %>% 
+  summarize(
+    PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)),
+    Barcodes=paste(unique(.data$Barcode), collapse = ", "),
+    Reads=sum(Reads)) %>% 
+  group_by(Genus) %>% 
+  summarize(Barcodes=Barcodes[which.max(str_length(Barcodes))],
+            nSamples=n_distinct(BeeID),
+            meanPropReads=mean(PropReads),
+            maxPropReads=max(PropReads),
+            Reads=sum(Reads)) %>%
+  mutate(Barcodes=recode(Barcodes, 'ITS2, rbcL'="both", "rbcL, ITS2" = "both")) %>% 
+  as.data.frame() %>%
+#  filter(.data$Genus %in% topGenera1$Genus) %>%
+  filter(nSamples>5) %>% # filter by number of samples
+  filter(maxPropReads>0.25) %>% # filter genera with >25% max prop reads w/in a sample
+  filter(meanPropReads>0.025) %>% #and filter genera with >2.5% mean prop reads
+  pivot_longer(., cols=c(nSamples:Reads), 
+               names_to = "metric", 
+               values_to = "value") %>% 
+  mutate(metric=factor(metric, levels=c("nSamples", "meanPropReads", "maxPropReads", "Reads"))) %>%
+  drop_na(Genus)
+
+temp %>% filter(metric=="Reads") %>% mutate(topGeneraTotalReads=sum(value)) %>% select(topGeneraTotalReads) %>% distinct() # 947562 reads assigned to top genera
+947562/sum(PollenIDs$Reads) #~76% of ALL reads belong to one of the top genera
+PollenIDs %>% filter(is.na(Genus)) %>% mutate(NAReads=sum(Reads)) %>% select(NAReads) %>% distinct() #95726 unassigned (NA) reads
+947562/(sum(PollenIDs$Reads)-95726) #~83% of assigned reads belong to one of the top genera
+
+topGenera2<-temp$Genus %>% as_tibble() %>% distinct() %>% as.data.frame()
+colnames(topGenera2)<-"Genus"
+
+
+temp %>%
+  ggplot() + 
+  geom_tile(data = temp %>% filter(metric=="nSamples") %>% droplevels, 
+    aes(metric, Genus, fill=value)) +
+  geom_text(data = temp %>% filter(metric=="nSamples") %>% droplevels, 
+    aes(metric, Genus, 
+        label=format(value, digits=2), 
+        size=4)) +
+  scale_fill_gradientn(name = "nSamples", colors=c("white","gold")) + 
+
+  ggnewscale::new_scale_fill() + 
+  geom_tile(data = temp %>% filter(metric=="meanPropReads") %>% droplevels, 
+    aes(metric, Genus, fill=value)) + 
+  geom_text(data = temp %>% filter(metric=="meanPropReads") %>% droplevels, 
+    aes(metric, Genus, 
+        label=format(value, digits=1), 
+        size=4)) +
+  scale_fill_gradientn(name = "meanPropReads", colors=c("white","gold")) + 
+  ggnewscale::new_scale_fill() + 
+  geom_tile(data = temp %>% filter(metric=="maxPropReads") %>% droplevels, 
+    aes(metric, Genus, fill=value)) +
+  geom_text(data = temp %>% filter(metric=="maxPropReads") %>% droplevels, 
+    aes(metric, Genus, 
+        label=format(value, digits=2), 
+        size=4)) +
+  scale_fill_gradientn(name = "maxPropReads", colors=c("white","gold")) + 
+
+  scale_y_discrete(limits=rev, 
+                   labels=paste(sort(unique(temp$Genus), decreasing = T), 
+                                paste0("(", (temp %>% 
+                                               group_by(Genus) %>% 
+                                               summarize(Barcodes=first(Barcodes)) %>% 
+                                               arrange(desc(Genus))
+                                             )$Barcodes,
+                                  ")"), sep=" ")) + # alternate:, sep="\n"
+   scale_x_discrete(limits = c("nSamples","meanPropReads","maxPropReads"),
+                    labels = c("Number of \n Samples \n (total)",
+                               "Proportion of \n Sample Reads \n (mean)",
+                               "Proportion of \n Sample Reads \n (max)")) +
+  ylab("Pollen Genus (detected by)") +
+  theme_bw(base_size = 18)+
+    theme(legend.position = "none", 
+          axis.title.x = element_text(size=0)) 
+
+
+#calculating the min and max values of metrics
+PollenIDs %>%  
+  group_by(BeeID, Genus) %>% 
+  summarize(
+    PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)),
+    Barcodes=paste(unique(.data$Barcode), collapse = ", "),
+    Reads=sum(Reads)) %>% 
+  group_by(Genus) %>% 
+  summarize(Barcodes=Barcodes[which.max(str_length(Barcodes))],
+            nSamples=n_distinct(BeeID),
+            Reads=sum(Reads), 
+            meanPropReads=round(mean(PropReads),digits=2),
+            minPropReads=round(min(PropReads),digits=2),
+            maxPropReads=round(max(PropReads),digits=2),
+            sdPropReads=round(stats::sd(PropReads),digits=2)) %>%
+  mutate(Barcodes=recode(Barcodes, 'ITS2, rbcL'="both", "rbcL, ITS2" = "both")) %>% 
+  as.data.frame() %>%
+  filter(nSamples>5) %>% # filter by number of samples
+  filter(maxPropReads>0.25) %>% # filter genera with >25% max prop reads w/in a sample
+  filter(meanPropReads>0.025) #and filter genera with >2.5% mean prop reads
+
+
+rm(temp)
+```
+
+### Customized color palettes for plotting the common genera/families
+```{r}
+# colors based on this palette
+# colorBlindness::SteppedSequential5Steps
+
+myColors.FamGen <- c("#990F0F", "#B22C2C" , "#CC5151" , "#E57E7E" , "#FFB2B2" , "#99540F" , "#B26F2C" , "#CC8E51" , "#E5B17E" , "#FFD8B2" , "#6B990F" , "#85B22C" , "#A3CC51" , "#C3E57E" , "#E5FFB2" , "#0F6B99" , "#2C85B2" , "#51A3CC" , "#7EC3E5" , "#B2E5FF" , "#260F99" , "#8F7EE5", "black")
+names(myColors.FamGen) <- 
+  sort(c(levels(
+    factor(c((PollenIDs %>% filter(.data$Genus %in% topGenera2$Genus) %>% mutate(FamGen=paste(Family, Genus, sep=" ")) %>% arrange(Family) %>% select(FamGen))$FamGen,"z_AllOther"), 
+    as.character(unique(c((PollenIDs %>% filter(.data$Genus %in% topGenera2$Genus) %>% mutate(FamGen=paste(Family, Genus, sep=" ")) %>% arrange(Family) %>% select(FamGen))$FamGen,"z_AllOther"))))
+    ), "z_Shared"))
+
+
+
+myColors.topGen <- c("#990F0F", "#B22C2C" , "#CC5151" , "#E57E7E" , "#FFB2B2" , "#99540F" , "#B26F2C" , "#CC8E51" , "#E5B17E" , "#FFD8B2" , "#6B990F" , "#85B22C" , "#A3CC51" , "#C3E57E" , "#E5FFB2" , "#0F6B99" , "#2C85B2" , "#51A3CC" , "#7EC3E5" , "#B2E5FF" , "#260F99" , "#8F7EE5" , "#BFB2FF")
+names(myColors.topGen) <- 
+  levels(
+    factor(c((PollenIDs %>% filter(.data$Genus %in% topGenera2$Genus) %>% mutate(FamGen=paste(Family, Genus, sep=" ")) %>% arrange(Family) %>% select(Genus))$Genus, "z_AllOther"), 
+    as.character(unique(c((PollenIDs %>% filter(.data$Genus %in% topGenera2$Genus) %>% mutate(FamGen=paste(Family, Genus, sep=" ")) %>% arrange(Family) %>% select(Genus))$Genus, "z_AllOther"))))
+    )
+
+#https://stackoverflow.com/questions/25098107/how-to-order-the-levels-of-factors-according-to-the-ordering-of-a-data-frame-an
+
+```
+
+### Count of species in most common pollen genera
+```{r}
+head(PollenIDs %>% 
+       filter(Genus %in% topGenera2$Genus) %>% 
+       filter(!is.na(Species)) %>%
+       group_by(Genus, Barcode) %>% 
+       summarise(
+         first=first(Species), 
+         n_spp=n_distinct(Species)))
+
+PollenIDs %>% 
+       filter(Genus %in% topGenera2$Genus) %>% 
+       filter(!is.na(Species)) %>%
+       group_by(Genus, Barcode) %>% 
+       summarise(
+         first=first(Species), 
+         n_spp=n_distinct(Species)) %>% 
+  group_by(Barcode) %>%
+  summarize(mean=mean(n_spp), min=min(n_spp), max=max(n_spp))
+```
+
+# Summary of (potential or actual) floral hosts
+### Most common blooming plants present at sites
+```{r}
+#floral species common at sites
+head(left_join(FlorSpp, dat.Sites %>% select(SiteID, Name, Date), by="SiteID"))
+head(FlorSpp %>%
+  group_by(Genus, SiteID) %>%
+  summarise(n=n()) %>%
+  group_by(Genus) %>%
+  summarise(n=n(), prop=n/50) %>% #divide by 50 site visits (25 sites visited twice)
+  arrange(-n))
+
+# floral species richness over time (mean species/site per week)
+left_join(FlorSpp, dat.Sites %>% select(SiteID, Name, Date), by="SiteID") %>%
+  mutate(Genus_spp=paste(Genus, Species, sep="_")) %>%
+  group_by(SiteID) %>%
+  summarise(
+    nGenus_spp=n_distinct(Genus_spp),
+            ) %>% ungroup() %>%
+left_join(., dat.Sites %>% select(SiteID, Name, Date), by="SiteID") %>%
+  group_by(Week=lubridate::week(.data$Date)) %>%
+  summarise(weekOf=first(Date),
+            meannGenus_spp=mean(nGenus_spp),
+            minnGenus_spp=min(nGenus_spp),
+            maxnGenus_spp=max(nGenus_spp),
+            n=n()
+            )
+```
+
+### Most common blooming plants used by queens
+```{r}
+# Among all *foraging queens observed*, what was the most common host plant?
+left_join(CapLog,PollenIDgenera.comm,by="BeeID") %>% # alt version of dat.Queen retaining bees without pollen data (but a few of these queens carried pollen, but we don't have data on it)
+  filter(!is.na(HostGenus)) %>% 
+  group_by(HostGenus) %>% 
+  summarize(bees=n_distinct(BeeID), propbees=n_distinct(BeeID)/414) %>%  #414 total foraging bees
+  arrange(-bees) %>% 
+  mutate(cumsum=cumsum(propbees))
+
+# Among all *queens with pollen data*, what was the most common host plant?
+dat.Queen %>% 
+  filter(!is.na(HostGenus)) %>% 
+  group_by(HostGenus) %>% 
+  summarize(bees=n_distinct(BeeID), propbees=n_distinct(BeeID)/103) %>% #103 total foraging bees with pollen data
+  arrange(-bees) %>% 
+  mutate(cumsum=cumsum(propbees)) 
+```
+
+
+### How does pollen composition change over time?
+```{r}
+
+dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Bombus_spp, Date), by="BeeID")  %>%
+  filter(str_starts(SiteID, "B")) %>% #ONLY BLANDY BEES
+  mutate(FamGen=paste(Family, Genus, sep=" ") # new varible to invoke in plotting
+         ) %>% 
+  group_by(BeeID, Family, Genus, FamGen) %>%
+  summarise(
+    Date=first(Date),
+    Bombus_spp=first(Bombus_spp),
+    PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)), # calculate mean prop of reads for each genus for each bee
+            ) %>% ungroup() %>% 
+  mutate(Week=lubridate::week(Date)) %>%
+  group_by(Week, Family, Genus, FamGen) %>% 
+  summarise(weekly_value=sum(PropReads)) %>% ungroup() 
+
+sort(unique(dat$FamGen))
+n_distinct(dat$FamGen) #plus NA
+
+sort(unique(dat$Family))
+n_distinct(dat$Family) #plus NA
+
+#RColorBrewer::display.brewer.all(colorblindFriendly=TRUE)
+# ,
+dat %>%
+  ggplot()+ 
+  geom_col(aes(x=Week, y=weekly_value, 
+               fill=ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
+                        ifelse(!is.na(.data$Genus), "z_AllOther", NA))), 
+           position = "fill")+
+  scale_fill_manual(name="FamGen", values = myColors.FamGen, na.value = "gray")+
+  geom_label(data=PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Date), by="BeeID") %>%
+               filter(str_starts(SiteID, "B")) %>%
+               mutate(Week=lubridate::week(Date)) %>%
+               group_by(Week) %>% summarize(nbees=n_distinct(BeeID)),
+             aes(x=Week, y=-0.05, label=paste("n = ", nbees, sep="")))+
+  guides(fill=guide_legend(title = "Family Genus")) +
+  scale_x_continuous(breaks=c(unique(dat$Week)))+
+  ylab("Proportion of Reads")+
+  theme_bw(base_size = 18)+
+  theme(legend.position = "bottom")
+
+hist((PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Date), by="BeeID") %>% distinct())$Date, breaks=30)
+```
+
+### Do common pollen genera correspond with floral survey detections? 
+```{r}
+# venn diagram: floral surveys intersected with most common genera
+site_flowers <- FlorSpp %>% select(Genus) %>% filter(!str_ends(Genus,"NA")) %>% distinct()
+pollen_flowers <- PollenIDs %>% drop_na(Genus) %>% select(Family, Genus, Species) %>% distinct(Genus)
+gplots::venn(list(site_flowers$Genus, pollen_flowers$Genus), intersections = TRUE)
+attr(gplots::venn(list(site_flowers$Genus, pollen_flowers$Genus), intersections = TRUE), "intersections")
+#two interesting common genera not detected on floral surveys: Halesia and Paulownia (i recently dug up a video of a queen on Halesia lol) but I never noticed a princess tree in bloom. 
+#the other 4 common genera not detected on floral surveys were trees: Chamaecyparis*, Pinus*, Platanus*, Quercus
+# * meanPropReads < 0.05
+rm(pollen_flowers, site_flowers)
+
+
+# how does blooming plant occurrence vary over the season
+FlorSpp %>% left_join(., dat.Sites %>%select(SiteID, Date), by="SiteID") %>%
+    mutate(Week=lubridate::week(Date)) %>%
+    group_by(Week) %>%
+    mutate(nsites=n_distinct(SiteID)) %>%
+    group_by(Week, Genus) %>%
+    summarize(weekly_value=n_distinct(SiteID), nsites=first(nsites)) %>%
+    mutate(weekly_value=weekly_value/nsites) %>%
+    filter(.data$Genus %in% topGenera2$Genus & Week>13) %>%
+ggplot()+
+  geom_line(aes(x=Week, y=weekly_value, col=Genus), linewidth=1, position="jitter") +
+  scale_color_manual(name="Genus", values = myColors.topGen, na.value = "gray")+
+  ylim(0,1)
+
+#Cercis peaks in week 15, but remains blooming at about 1/2 the sites for the entire season
+#Lamium, Viola is common for the entire season
+#Elaeagnus generally increased over time
+#Barbarea, Cornus increased over time
+#Viburnum appears at the end
+#Taraxacum decreased over time
+
+# plot each flower genus occurrence separately
+plot<-FlorSpp %>% left_join(., dat.Sites %>% select(SiteID, Date), by="SiteID") %>%
+    mutate(Week=lubridate::week(Date)) %>%
+    group_by(Week) %>%
+    mutate(nsites=n_distinct(SiteID)) %>%
+    group_by(Week, Genus) %>%
+    summarize(weekly_value=n_distinct(SiteID), nsites=first(nsites)) %>%
+    mutate(weekly_value=weekly_value/nsites) %>%
+    filter(Week>13) %>%
+ggplot()+
+  geom_line(aes(x=Week, y=weekly_value), linewidth=1) +
+  geom_point(aes(x=Week, y=weekly_value), size=1) +
+  ylim(0,1)+
+  facet_wrap(~Genus)
+
+suppressMessages(print(plot))
+```
+
+
+
+# How does pollen composition differ between ITS2 and rbcL
+## Venn diagram comparing the reference databases, detected taxa
+```{r}
+# grab reference databases (sequences with taxonomic info)
+rbcL.ref.tax<-"/Users/kelseyschoenemann/Desktop/Bioinformatics/ReferenceDatabases/rbcL-KarenBell_2021.07.08/rbcL_plus_Nov2019adds_Jul2021corrections.dada2.fa"
+PLANiTS.sntx.kls <- "/Users/kelseyschoenemann/Desktop/Bioinformatics/ReferenceDatabases/ITS-PLANiTS_2020.03.29/ITS2.SINTAX_format-kls2.fas"
+
+# extract just Family and Genus names from rbcL and ITS2 databases
+ref_rbcL <- Biostrings::fasta.index(rbcL.ref.tax)
+ref_rbcL_names <- as.data.frame(ref_rbcL$desc); colnames(ref_rbcL_names) <- "names"
+ref_rbcL_split_names <- ref_rbcL_names %>% 
+  separate_wider_delim(names, ";", names = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species","null")) %>% 
+  select(-null) %>% 
+  mutate(Family=str_extract(Family, "(?<=f__)[a-zA-Z\\s]+(?=_)"),
+    Genus=str_extract(Genus, "(?<=g__)[a-zA-Z\\s]+(?=_)"), 
+    Species=str_extract(Species, "(?<=\\s)[a-zA-Z\\s]+(?=_)"), 
+    Barcode="rbcL") %>%
+  mutate(Family = # correcting out-dated taxonomic names inherited from rbcL reference database (affecting rbcL samples only)
+           ifelse(.data$Family=="Aceraceae", "Sapindaceae", #change Acer../Hipp.. to Sapi..
+                  ifelse(.data$Family=="Hippocastanaceae", "Sapindaceae",
+                         ifelse(.data$Genus=="Nyssa", "Nyssaceae", #change Corn.. to Nyss (I only have one species from Cornaceae in my data, Nyssa sylvatica, which is in Nyssaceae family) link: https://doi.org/10.1111/boj.12385
+                         .data$Family)))) %>%
+  mutate(FamGen=paste(Family,Genus,sep = "_")) %>%
+  group_by(Barcode, Family, FamGen, Genus) %>%
+  summarise(n=n_distinct(Species)) %>%
+  filter(!str_ends(FamGen,"_NA")) %>%
+  filter(!str_ends(FamGen,"_undef"))
+
+rm(ref_rbcL, ref_rbcL_names)
+
+
+ref_its2<-Biostrings::fasta.index(PLANiTS.sntx.kls)
+ref_its2_names<-as.data.frame(ref_its2$desc); colnames(ref_its2_names) <- "names"
+ref_its2_split_names <- ref_its2_names %>% 
+  separate_wider_delim(names, ";", names = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species","null"), too_many = "merge") %>% 
+  select(-null) %>% 
+  mutate(Family=str_extract(Family, "(?<=f_)[a-zA-Z\\s]+"),
+    Genus=str_extract(Genus, "(?<=g_)[a-zA-Z\\s]+"), 
+    Species=str_extract(Species, "(?<=\\s)[a-zA-Z\\s]+"),
+    FamGen=paste(Family,Genus,sep = "_"),
+    Barcode="ITS2") %>%
+  group_by(Barcode, Family, FamGen, Genus) %>%
+  summarise(n=n_distinct(Species)) %>%
+  filter(!str_ends(FamGen,"_NA"))
+
+
+rm(ref_its2, ref_its2_names)
+
+
+# NOTE: ITS2 db has several Genera listed in 2 Families:
+# ref_its2_names %>% 
+#   separate_wider_delim(names, ";", names = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species","null"), too_many = "merge") %>% 
+#   select(-null) %>% 
+#   mutate(Family=str_extract(Family, "(?<=f_)[a-zA-Z\\s]+"),
+#     Genus=str_extract(Genus, "(?<=g_)[a-zA-Z\\s]+"), 
+#     Species=str_extract(Species, "(?<=\\s)[a-zA-Z\\s]+"),
+#     FamGen=paste(Family,Genus,sep = "_"),
+#     Barcode="ITS2") %>%
+#   group_by(Genus) %>% summarize(n_Family=n_distinct(Family)) %>% filter(n_Family!=1)
+
+# NOTE CONT: but none of these Genera appear in my data
+# (ref_its2_names %>% 
+#   separate_wider_delim(names, ";", names = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species","null"), too_many = "merge") %>% 
+#   select(-null) %>% 
+#   mutate(Family=str_extract(Family, "(?<=f_)[a-zA-Z\\s]+"),
+#     Genus=str_extract(Genus, "(?<=g_)[a-zA-Z\\s]+"), 
+#     Species=str_extract(Species, "(?<=\\s)[a-zA-Z\\s]+"),
+#     FamGen=paste(Family,Genus,sep = "_"),
+#     Barcode="ITS2") %>%
+#   group_by(Genus) %>% summarize(n_Family=n_distinct(Family)) %>% filter(n_Family!=1))$Genus %in% PollenIDs$Genus
+
+
+# create list of Family-Genera detected in rbcL and ITS2 samples separately
+rbcL_assigns<-PollenIDs %>%
+  group_by(Barcode) %>%
+  mutate(FamGen=paste0(Family,"_",Genus)) %>%
+  filter(!str_ends(FamGen,"_NA")) %>%
+  filter(Barcode=="rbcL") %>%
+  ungroup() %>%
+  select(Family, FamGen,Genus) %>% 
+  distinct()
+
+ITS2_assigns<-PollenIDs %>%
+  group_by(Barcode) %>%
+  mutate(FamGen=paste0(Family,"_",Genus)) %>%
+  filter(!str_ends(FamGen,"_NA")) %>%
+  filter(Barcode=="ITS2") %>%
+  ungroup() %>%
+  select(Family, FamGen,Genus) %>% 
+  distinct()
+
+ref_assigns<-PollenIDs %>%
+  mutate(FamGen=paste0(Family,"_",Genus)) %>%
+  filter(!str_ends(FamGen,"_NA")) %>%
+  select(Family, FamGen,Genus) %>% 
+  distinct()
+
+knitr::kable(PollenIDs$Family %>% as_tibble() %>% distinct()) # a list of all Families detected in my data
+
+ # venn diagram of Family-Genus entries in the ITS2 and rbcL dataBASES, and detected Family-Genera 
+venn_refs<-gplots::venn(list(
+  ref_its2_split_names$FamGen, # A
+  ref_rbcL_split_names$FamGen,  # B
+  ref_assigns$FamGen), intersections = TRUE) # C
+
+attr(gplots::venn(list( # similar to above but at the Family level. There are 0 Families detected by just a single dataset
+  ref_its2_split_names$Family %>% unique(), # A
+  ref_rbcL_split_names$Family %>% unique(), # B
+  ref_assigns$Family), intersections = TRUE), "intersections") # C
+
+attr(venn_refs, "intersections")[["A:C"]] #Genus present in ITS2 db & detected, but not in rbcL db (ONE TAXON)
+attr(venn_refs, "intersections")[["B:C"]] #Genus present in rbcL db & detected, but not in ITS2 db (NONE)
+# the two datasets were capable of detecting virtually all the same taxa
+
+# VennDiagram::venn.diagram( #making a *pretty* diagram (same info as three-way venn above)
+#   list(ref_its2_split_names$FamGen,
+#   ref_rbcL_split_names$FamGen,
+#   ref_assigns$FamGen),
+# #  main="Genera Shared Between Reference Databases",
+# #  main.pos = c(0.5,0.95),
+# #  main.fontfamily = "sans",
+# #  main.fontface = "plain",
+#   fontfamily = c(rep("sans",7)),
+#   fontface = c(rep("plain",3), rep("bold",4)),
+#   cex = c(rep(2,3), rep(3,4)),
+#   cat.fontface = c("plain","plain","bold"),
+#   cat.fontfamily=c("sans","sans", "sans"),
+#   category.names = c("ITS2 reference \n database", "rbcL reference \n database", "detected \n in this project"),
+#   fill = c("#F8766D", "#00BFC4", "white"),
+#   alpha = c(0.5, 0.5, 0),
+#   lwd = c(0, 0, 2),
+#   cat.pos=c(25, 335,180), # these are ordered: rbcL, ITS, detected (because i flipped the plot 180 below)
+#   cat.dist=c(0.08,0.08, -0.04),
+#   rotation.degree=180,
+#   "Figure_5_left.tiff") #saves to the current working directory
+
+# venn diagram of Genus assignments for the ITS2 and rbcL dataSETS
+venn_assigns<-gplots::venn(
+  list(ITS2_assigns$Genus,
+       rbcL_assigns$Genus), intersections = TRUE)
+
+attr(venn_assigns, "intersections")[["A"]] #22 genera detected only in ITS2 samples
+attr(venn_assigns, "intersections")[["A:B"]] #29 genera detected by both
+attr(venn_assigns, "intersections")[["B"]] #43 genera detected only in rbcL samples
+# although the two databases contained the same genera detected in my study, certain detected genera only appeared in one dataset or the other
+
+
+# venn diagram of Genus assignments for the ITS2 and rbcL dataSETS, and most common genera
+venn_assigns_common<-gplots::venn(
+  list(ITS2_assigns$Genus,
+       rbcL_assigns$Genus,
+       topGenera2$Genus), intersections = TRUE)
+
+Genera_ITS2<-attr(venn_assigns_common, "intersections")[["A:C"]] #4 common genera detected only in ITS2 samples
+Genera_Both<-attr(venn_assigns_common, "intersections")[["A:B:C"]] #9 common genera detected by both
+Genera_rbcL<-attr(venn_assigns_common, "intersections")[["B:C"]] #7 common genera detected only in rbcL samples
+
+# VennDiagram::venn.diagram( #making a *pretty* diagram (same info as three-way venn above)
+#   list(ITS2_assigns$Genus,
+#        rbcL_assigns$Genus,
+#        topGenera2$Genus),
+# #  main="Genera Shared Between Barcode Datasets",
+# #  main.pos = c(0.5,0.95),
+# #  main.fontfamily = "sans",
+# #  main.fontface = "plain",
+#   fontfamily = c(rep("sans",7)),
+#   fontface = c(rep("plain",3), rep("bold",4)),
+#   cex = c(rep(2,3), rep(3,4)),
+#   cat.fontface = c("plain","plain","bold"),
+#   cat.fontfamily=c("sans","sans","sans"),
+#   category.names = c("genera detected in \n ITS2 samples", "genera detected in \n rbcL samples", "most common genera"),
+#   fill = c("#F8766D", "#00BFC4", "white"),
+#   alpha = c(0.5, 0.5, 0),
+#   lwd = c(0, 0, 2),
+#  # lty = c(1,1,1),
+#  # col = c("black","black","white"),
+#  # cat.cex=c(2.5,2.5,0),
+#   cat.pos=c(335, 25, 180),
+#   cat.dist=c(0.08, 0.08, -0.2),
+#   "Figure_5_right.tiff") #saves to the current working directory
+
+# grid::grid.raster(tiff::readTIFF("file_name.tiff")) # view the plot
+
+
+
+# use some lists and functions to return a table with counts of intersections
+list<-list(
+    most_common=topGenera2$Genus, 
+    its2_detect=ITS2_assigns$Genus,
+    rbcL_detect=rbcL_assigns$Genus
+    )
+combs <- unlist(lapply(1:length(list), 
+                function(j) combn(names(list), j, simplify = FALSE)),
+         recursive = FALSE)
+names(combs) <- sapply(combs, function(i) paste0(i, collapse = ""))
+str(combs)
+Intersect <- function (x) {  
+  # Multiple set version of intersect
+  # x is a list
+  if (length(x) == 1) {
+    unlist(x)
+  } else if (length(x) == 2) {
+    intersect(x[[1]], x[[2]])
+  } else if (length(x) > 2){
+    intersect(x[[1]], Intersect(x[-1]))
+  }
+}
+Union <- function (x) {  
+  # Multiple set version of union
+  # x is a list
+  if (length(x) == 1) {
+    unlist(x)
+  } else if (length(x) == 2) {
+    union(x[[1]], x[[2]])
+  } else if (length(x) > 2) {
+    union(x[[1]], Union(x[-1]))
+  }
+}
+Setdiff <- function (x, y) {
+  # Remove the union of the y's from the common x's. 
+  # x and y are lists of characters.
+  xx <- Intersect(x)
+  yy <- Union(y)
+  setdiff(xx, yy)
+}
+elements <- 
+  lapply(combs, function(i) Setdiff(list[i], list[setdiff(names(list), i)]))
+n.elements <- sapply(elements, length)
+print(n.elements)
+#from lines list<-list() ...to... print(n.elements): this code was largely copied from https://stackoverflow.com/questions/23559371/get-the-list-of-items-in-venn-diagram
+
+rm(list, combs, Intersect, Union, Setdiff, elements, n.elements)
+
+rm(rbcL_assigns, ITS2_assigns, ref_assigns)
+
+```
+
+
+## Proportion of reads assigned to genus by barcode
+```{r}
+#plot prop reads assigned to the top 21 genera by barcode
+
+
+ggplot()+
+  geom_col(data=PollenIDs %>% mutate(FamGen=paste(Family, Genus, sep=" ")),
+           aes(x=Barcode, y=PropReads,
+           fill = ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
+                        ifelse(!is.na(.data$Genus), "z_AllOther", NA))), 
+           position="fill")+
+  geom_label(data=PollenIDs %>% group_by(Barcode) %>% summarize(nbees=n_distinct(BeeID)),
+             aes(x=Barcode, y=-0.05, label=paste("n = ", nbees, sep="")))+
+  scale_fill_manual(name="FamGen", values = myColors.FamGen, na.value = "gray")+
+  guides(fill=guide_legend(title = ""))+
+  labs(y="Proportion of Reads") +
+  theme_bw(base_size = 16)+
+  theme(legend.position = "bottom",
+        legend.text = element_text(size=10),
+        legend.box.just = "left")
+
+
+# prop reads assigned to top genera UNIQUE to each barcode 
+PollenIDs %>%
+  mutate(FamGen=paste(Family, Genus, sep=" ")) %>%
+ggplot(aes(x=Barcode,
+           y=PropReads,
+           fill = ifelse(.data$Genus %in% Genera_Both, "z_Shared", 
+                         ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
+                                ifelse(!is.na(.data$Genus), "z_AllOther", NA)))))+
+  geom_col(position="fill")+
+  scale_fill_manual(name="FamGen", values = myColors.FamGen, na.value = "gray")+ 
+  guides(fill=guide_legend(title = "Family Genus"))+
+  theme_bw()
+
+
+#to plot side by side the prop reads assigned to Genus for the two barcodes
+#creating a vector of sample names that have both rbcL and ITS2 data
+both<-as.vector((PollenIDs %>% group_by(BeeID, Barcode) %>% summarise(BeeID=first(BeeID), Barcode=first(Barcode)) %>% group_by(BeeID) %>% summarise(Barcodes=n()) %>% 
+filter(Barcodes==2))$BeeID) #64 pollen samples with rbcL and ITS2 data
+
+dim(CapLog %>% select(BeeID, CarryPollen) %>% filter(CarryPollen==1)) # 130 queens carrying pollen
+dim(CapLog %>% select(BeeID, SampleID, CarryPollen) %>% filter(CarryPollen==1&SampleID!=0)) # 111 pollen samples collected
+dim(PollenIDs %>% select(BeeID) %>% distinct()) # 107 samples with pollen data
+
+#the proportion of reads assigned to genera, split up by each individual pollen sample/bee; the same colors means the two barcodes agree with pollen genera composition
+PollenIDs %>%
+ filter(BeeID %in% both) %>%
+ggplot(aes(x=Barcode,y=PropReads,fill=Genus))+
+  geom_col(position="fill")+
+  facet_wrap(~BeeID)+
+  theme(legend.position = "none")
+
+
+```
+
+
+```{r}
+# do the barcode-specific genera appear in samples with only one or the other barcode?
+
+#among samples in which genera unique to ITS2 were detected, how many samples had data from one or both barcodes?
+samples_with_ITS2Only_genera<-PollenIDs %>% filter(.data$Genus %in% Genera_ITS2) %>% distinct(BeeID)
+PollenIDs %>% filter(.data$BeeID %in% samples_with_ITS2Only_genera$BeeID) %>% select(BeeID,Barcode) %>% group_by(BeeID) %>% summarize(NBarcodes=n_distinct(Barcode)) %>% group_by(NBarcodes) %>% summarize(NSamples=n_distinct(BeeID))
+
+
+samples_with_rbcLOnly_genera<-PollenIDs %>% filter(.data$Genus %in% Genera_rbcL) %>% distinct(BeeID)
+PollenIDs %>% filter(.data$BeeID %in% samples_with_rbcLOnly_genera$BeeID) %>% select(BeeID,Barcode) %>% group_by(BeeID) %>% summarize(NBarcodes=n_distinct(Barcode)) %>% group_by(NBarcodes) %>% summarize(NSamples=n_distinct(BeeID))
+
+rm(samples_with_ITS2Only_genera, samples_with_rbcLOnly_genera)
+```
+
+### Barcode gap?
+```{r}
+# are barcode-specific genera due to a "diff-genera, same-family" type situation?
+
+# taxonomic names in reference databases, for genera unique to each barcode
+rbind(ref_its2_split_names, ref_rbcL_split_names)
+rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_ITS2)
+rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_rbcL)
+
+# what are the family names of the common genera detected by only one barcode or the other
+PollenIDs %>% select(Barcode, Family, Genus) %>% arrange(Barcode, Family) %>% distinct() %>%
+  filter(if_else(.data$Barcode=="ITS2", 
+                 .data$Family %in% (rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_rbcL))$Family, 
+                 .data$Family %in% (rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_ITS2))$Family))
+
+# which samples names have mertensia (a its2 unique genus) in them
+PollenIDs %>% filter(Genus=="Brassica") %>% filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% select(BeeID)
+
+temp1<-PollenIDs %>% 
+       filter(.data$BeeID %in% (PollenIDs %>% 
+                                  filter(.data$Genus %in% Genera_rbcL | .data$Genus %in% Genera_ITS2) %>% 
+                                  select(BeeID) %>% 
+                                  filter(.data$BeeID %in% TwoBarcodeBees$BeeID)
+                                )$BeeID) %>% 
+       filter(.data$Family %in% (rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_rbcL))$Family |
+              .data$Family %in% (rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_ITS2))$Family) %>%
+       group_by(BeeID, Barcode, Family) %>% 
+       summarise(BeeID=first(BeeID), Barcode=first(Barcode), Family=first(Family), Genus=first(Genus), SampleTotalReads=first(SampleTotalReads), Reads=sum(Reads), PropReads=sum(PropReads))
+# in samples where a common-but-barcode-specific genus occurs, show me the total reads assigned to any genera of the same family
+temp1 %>%
+  ggplot(aes(y=PropReads, col=Barcode))+
+  geom_boxplot()+
+  facet_wrap(~Family)
+
+temp2<-PollenIDs %>% 
+       filter(.data$BeeID %in% (PollenIDs %>% 
+                                  filter(.data$Genus %in% Genera_rbcL | .data$Genus %in% Genera_ITS2) %>% 
+                                  select(BeeID) %>% 
+                                  filter(.data$BeeID %in% TwoBarcodeBees$BeeID)
+                                )$BeeID) %>% 
+       filter(.data$Family %in% (rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_rbcL))$Family |
+              .data$Family %in% (rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_ITS2))$Family) %>%
+       group_by(BeeID, Barcode, Family) %>% 
+       summarise(BeeID=first(BeeID), Barcode=first(Barcode), Family=first(Family), Genus=first(Genus), SampleTotalReads=first(SampleTotalReads), Reads=sum(Reads), PropReads=sum(PropReads)) %>%
+       group_by(BeeID, Barcode, Family) %>%
+       summarise(sumPropReads=sum(PropReads)) %>%
+       group_by(BeeID, Family) %>%
+       reframe(BarcodeDiff=sumPropReads[Barcode=="ITS2"]-sumPropReads[Barcode=="rbcL"])
+
+temp2 %>%
+  ggplot(aes(y=BarcodeDiff))+
+  geom_boxplot()+
+  facet_wrap(~Family)
+```
+
+
+
+## Genera richness and Shannon diversity of barcode-samples
+### Richness
+```{r}
+dat<-PollenIDs %>%
+  group_by(BeeID,Barcode)%>%
+  summarise(GeneraRichness=n_distinct(Genus))
+
+summary(stats::aov(GeneraRichness ~ Barcode, data = dat)) # sig difference in richness detected with rbcL versus ITS2
+
+
+plot_df<-dat %>% group_by(Barcode) %>%
+  summarize(mean = round(mean(GeneraRichness), 2),
+            err = stats::sd(GeneraRichness)/sqrt(length(GeneraRichness)),
+            n = n()) %>% 
+  dplyr::mutate(label = "n") %>% 
+  unite("n_label", label, n, sep = " = ", remove = FALSE)
+
+ggplot(plot_df, aes(x = Barcode, y = mean, fill = Barcode)) +
+  geom_col(color = "black") +
+  geom_errorbar(aes(ymin = mean - err, ymax = mean + err), width = 0.4) +
+  geom_label(aes(x = Barcode, y = 0.5, label = n_label), fill="white") +
+  theme(legend.position = "none") +
+  labs(x = "Barcode",
+       y = "Mean Genera Richness",
+       title = "Genera Richness")+
+  theme_bw(base_size = 18)+
+  theme(axis.title.x=element_text("none"),
+        legend.position = "none")
+
+```
+
+### Shannon diversity
+```{r}
+#this dataset is dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate
+dat<- left_join(
+  PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  select(Barcode, BeeID, Date, Bombus_spp, SiteID, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum)
+
+dat<-as.data.frame(dat)
+colnames(dat)
+
+dat2<-as.matrix(dat %>% select(-c(Barcode:NLCD1000_Crop, 'NA')) %>% select(-any_of(singletonGenera)))
+rownames(dat2)<-dat$BeeID
+sort(colnames(dat2))
+
+
+dat$ShannonD<-vegan::diversity(dat2, index="shannon")
+summary(stats::aov(ShannonD ~ Barcode, data = dat)) # sig difference in diversity detected with rbcL versus ITS2
+
+plot_df <- dat  %>% 
+  group_by(Barcode) %>% 
+  # calculate mean and standard error of diversity
+  summarize(mean = round(mean(ShannonD), 2),
+            err = stats::sd(ShannonD)/sqrt(length(ShannonD)),
+            n = n()) %>% 
+  dplyr::mutate(label = "n") %>% 
+  unite("n_label", label, n, sep = " = ", remove = FALSE)
+
+ggplot(plot_df, aes(x = Barcode, y = mean, fill = Barcode)) +
+  geom_col(color = "black") +
+#  scale_fill_manual(values = colorBlindness::SteppedSequential5Steps) +
+  geom_errorbar(aes(ymin = mean - err, ymax = mean + err), width = 0.5) +
+  geom_label(aes(x = Barcode, y = 0.05, label = n_label), fill="white") +
+#  scale_y_continuous(limits = c(0, 2.75), expand = c(0,0)) +
+  labs(x = "Barcode",
+       y = "Mean Shannon diversity",
+       title = "Shannon diversity")+
+  theme_bw(base_size = 18)+
+  theme(legend.position = "none")
+
+rm(plot_df)
+```
+
+## NMDS of barcode-samples
+```{r}
+# visualizing how barcodes separate in multidimensional space
+
+#dplyr::filters/selects that are useful
+#  filter(!str_starts(SiteID, "BEF")) %>%  #remove Blandy
+#   select(Cercis:Phleum) %>% #select metabarcoding data
+#   filter(!is.na(Cercis)) %>% #remove rows without metabarcoding data
+#   select(-any_of(singletonGenera)) # BUT de-select the singletons
+# mutations that are helpful
+#   mutate(across(everything(), ~as.numeric(.))))
+
+#this dataset is dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate
+dat<- left_join(
+  PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum) 
+
+dat2<-as.data.frame(dat %>% 
+    ungroup() %>%
+    select(Prunus:Phleum) %>% 
+    select(-c(any_of(singletonGenera), "NA")))
+
+colnames(dat2)
+dat2mat<-as.matrix(dat2)
+
+library(vegan)
+NMDS_barcode = metaMDS(dat2mat, k = 2, trymax = 20) #all data
+NMDS_barcode
+stressplot(NMDS_barcode)
+#goodness(NMDS_barcode)
+#ordiplot(NMDS_barcode, type="text", cex=1.2)
+
+NMDS_plot_df<- cbind(dat %>% ungroup(), 
+                 vegan::scores(NMDS_barcode, display = "sites") %>% 
+  as.data.frame())
+
+ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
+  geom_point(size = 4, alpha=0.5) +
+# scale_color_manual(values = colorBlindness::SteppedSequential5Steps)+
+  stat_ellipse(linetype = 2, linewidth = 1) +
+  scale_x_continuous(limits=c(-4.5,1.5), breaks = c(-4.5,-3.5,-1,-0.5,0,0.5,1,1.5,2))+
+  ggbreak::scale_x_break(breaks=c(-3.5,-1), scale=4)+
+#  labs(title = "All Data")+
+  theme_bw(base_size = 18)
+
+
+#Try removing samples appearing as outliers in the intital NMDS
+
+# which(NMDS_plot_df$NMDS1>1)
+# which(NMDS_plot_df$NMDS1<(-3))
+# View(dat[c(21,30,34,46),])
+# 
+# NMDS_barcode2 = metaMDS(dat2mat[-c(21,30,34,46),], k = 2, trymax = 20) #removing outliers from previous
+# stressplot(NMDS_barcode2)
+# NMDS_barcode2
+# 
+# NMDS_plot_df2<- cbind(dat[-c(21,30,34,46),] %>% ungroup(),
+#                       vegan::scores(NMDS_barcode2, display = "sites") %>%
+#    as.data.frame())
+# 
+# ggplot(NMDS_plot_df2, aes(x=NMDS1, y=NMDS2, color=Barcode, shape=Barcode))+
+#   geom_point(size = 4, alpha=0.5) +
+# # scale_color_manual(values = colorBlindness::SteppedSequential5Steps)+
+#   stat_ellipse(linetype = 2, linewidth = 1) +
+#   labs(title = "Excluding Outliers")
+
+
+
+# Try removing samples without data from both barcodes
+
+# dat<- left_join(
+#   PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"),
+#   dat.Queen %>% select(Date:NestSeek), by="BeeID") %>%
+#   left_join(., dat.Sites, by=c("Date", "SiteID")) %>%
+#   mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+#   select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostName, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum) %>% filter(BeeID %in% both) # ADDITIONAL FILTER: restrict NMDS to just samples with data from both barcodes)
+# dat2<-as.data.frame(dat %>%
+#     ungroup() %>%
+#     select(Prunus:Phleum) %>%
+#     select(-c(any_of(singletonGenera), "NA")))
+# colnames(dat2)
+# dat2mat<-as.matrix(dat2)
+# 
+# NMDS_barcode4 = metaMDS(dat2mat, k = 2, trymax = 20) #all data
+# NMDS_barcode4
+# stressplot(NMDS_barcode4)
+# goodness(NMDS_barcode4)
+# ordiplot(NMDS_barcode4, type="text", cex=1.2)
+# 
+# NMDS_plot_df<- cbind(dat %>% ungroup(),
+#                  vegan::scores(NMDS_barcode4, display = "sites") %>%
+#   as.data.frame())
+# 
+# ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode))+
+#   geom_point(size = 4, alpha=0.5) +
+# # scale_color_manual(values = colorBlindness::SteppedSequential5Steps)+
+#   stat_ellipse(linetype = 2, linewidth = 1) +
+#   labs(title = "Only Samples w/ Both Barcodes")
+
+
+detach('package:vegan')
+```
+
+So the databases contain the same genera detected in the samples.
+But the average richness is higher in rbcL, as well as shannon diversity. 
+And all three NMDS show rbcL clustering separately than ITS2.
+
+
+# Does pollen composition vary among Bombus species? (YES Blandy, NO Rare bees)
+
+## Chi-squared, Fisher's exact test for proportion of reads assigned to most common pollen genera
+```{r}
+# construct contingency table
+dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, Bombus_spp, Date), by="BeeID") %>%
+  filter(Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"|Bombus_spp=="impatiens") %>%
+  filter(.data$Genus %in% topGenera2$Genus) %>%
+  group_by(Bombus_spp, BeeID, Genus) %>% #first summarize across barcode within samples, genus
+  summarize(PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1))) %>% 
+#  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
+  group_by(Bombus_spp, Genus) %>% #next summarize across samples within Bombus spp, genus
+  summarise(PropReads=sum(PropReads)) %>%
+  pivot_wider(names_from = "Genus", values_from = "PropReads", values_fill = 0) %>%
+  as.data.frame(.)
+
+rownames(dat)<-dat$Bombus_spp
+dat<-dat %>% select(-Bombus_spp) %>% drop_na()
+stats::chisq.test(dat)$expected # Expected counts < 5 ==> chi square approx. maybe doubtful
+(stats::chisq.test(dat)$expected)<5 # if > 20% of expected cell counts are less than 5, then use Fisher's exact test
+#stats::chisq.test(dat)
+stats::fisher.test(dat, simulate.p.value=TRUE)
+```
+
+## Plot pollen composition among species
+```{r}
+# Plot the data! prop of reads assigned to top genera for each bombus spp
+dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, Bombus_spp, Date), by="BeeID") %>%
+  mutate(FamGen=paste(Family, Genus, sep=" "),
+         unCommon=ifelse(
+           Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"|Bombus_spp=="impatiens",
+           "common","uncommon")) %>% 
+  group_by(BeeID, Family, FamGen) %>%
+  summarise(BeeID=first(BeeID),
+            Bombus_spp=first(Bombus_spp),
+            unCommon=first(unCommon),
+            PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)),
+            Family=first(Family),
+            Genus=first(Genus),
+            FamGen=first(FamGen)
+            ) %>% ungroup() %>% arrange(FamGen)
+dat %>%
+  ggplot(aes(x=Bombus_spp)) +
+  geom_col(aes(y=PropReads, 
+               fill=ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
+                       ifelse(!is.na(.data$Genus), "z_AllOther", NA))), 
+              position="fill") +
+  scale_fill_manual(values = myColors.FamGen, na.value="gray")+ #FamGen.palette
+  scale_x_discrete(labels = c("pensylvanicus"="pensyl-\nvanicus", "vagans-sandersoni-perplexus" = "vagans-\nsandersoni-\nperplexus")) +
+  geom_label(data=dat %>%
+               group_by(Bombus_spp) %>%
+               summarize(num=n_distinct(BeeID)),
+             aes(x=Bombus_spp, y=-0.05, label=paste("n = ", num, sep="")))+
+  guides(fill=guide_legend(title = "Family Genus"))+
+  theme_bw(base_size = 16)+
+  labs(title="", y="Proportion of Sample Reads", x="Bombus species")+
+  theme(legend.text = element_text(size=10),
+        legend.position = "bottom")
+
+
+# zoom in: plot the "z_AllOther" pollen families to get an idea of the taxa we're missing from the above plot. 
+# this plot shows the proportion of "AllOther" reads assigned to taxonomic family
+dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, Bombus_spp, Date), by="BeeID") %>%
+  group_by(BeeID, Family, Genus) %>%
+  summarise(BeeID=first(BeeID),
+            Bombus_spp=first(Bombus_spp),
+            PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)),
+            Family=first(Family),
+            Genus=first(Genus),
+            ) %>% ungroup() %>%
+  filter(!.data$Genus %in% topGenera2$Genus,!is.na(.data$Family))
+plot2<-dat %>%
+ ggplot(aes(x=Bombus_spp)) +
+  geom_col(aes(x=Bombus_spp, y=PropReads,
+               fill=forcats::fct_lump_n(Family, 19)),
+              position="fill") +
+  scale_x_discrete(labels = c("pensylvanicus"="pensyl-\nvanicus", "vagans-sandersoni-perplexus" = "vagans-\nsandersoni-\nperplexus")) +
+  scale_fill_manual(values=c("#990F0F", "#B22C2C" , "#CC5151" , "#E57E7E" , "#FFB2B2" , "#99540F" , "#B26F2C" , "#CC8E51" , "#E5B17E" , "#FFD8B2" , "#6B990F" , "#85B22C" , "#A3CC51" , "#C3E57E" , "#E5FFB2" , "#0F6B99" , "#2C85B2" , "#51A3CC" , "#7EC3E5" , "#B2E5FF" , "#8F7EE5", "black")) +
+  #  scale_fill_brewer(palette = "Paired", na.value = "black")+ #FamGen.palette
+  guides(fill=guide_legend(title = "Family"))+
+  theme_bw(base_size = 16)+
+  labs(title="Subset 'AllOther' Taxa", ylab="Proportion of 'AllOther' Reads", x="Bombus species")+
+  theme(axis.text.x = element_text(size=12))+
+  theme(legend.position = "bottom")
+# 
+# ggpubr::ggarrange(plot1, plot2, ncol = 1, nrow = 2)
+
+
+```
+
+## ANOVA genera richness, Shannon diversity ~ Bombus_spp
+### Genera richness
+```{r}
+dat<-PollenIDs %>%
+  left_join(., dat.Queen %>% select(BeeID, SiteID, Bombus_spp),by="BeeID") %>%
+  filter(!Genus %in% singletonGenera) %>% #filter to REMOVE the singleton genera
+#  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
+  group_by(BeeID,Bombus_spp)%>%
+  summarise(GeneraRichness=n_distinct(Genus)) %>%
+  filter(Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"|Bombus_spp=="impatiens") #use this when running aov() on just the common bumble bee species
+
+summary(stats::aov(GeneraRichness ~ Bombus_spp, data = dat)) # no sig difference in richness between 4 most common species, *****unless you exclude bees without data from BOTH barcodes
+
+plot_df <- dat %>% 
+  filter(Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"| Bombus_spp=="impatiens") %>%
+#  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
+  group_by(Bombus_spp) %>% 
+  # calculate mean and standard error of diversity
+  summarize(mean = round(mean(GeneraRichness), 2),
+            err = stats::sd(GeneraRichness)/sqrt(length(GeneraRichness)),
+            n = n()) %>% 
+  dplyr::mutate(label = "n") %>% 
+  unite("n_label", label, n, sep = " = ", remove = FALSE)
+
+ggplot(plot_df, aes(x = Bombus_spp, y = mean)) +
+  geom_col(color = "black", aes(fill = Bombus_spp)) +
+#  scale_fill_manual(values = colorBlindness::Blue2DarkRed18Steps) +
+  geom_errorbar(aes(ymin = mean - err, ymax = mean + err), width = 0.5) +
+  geom_label(aes(x = Bombus_spp, y = 1, label = n_label)) +
+  labs(x = "Bombus species",
+       y = "Mean Genera Richness",
+       title = "All Data (incl. rbcL or ITS2 only samples)")+
+  theme_bw(base_size = 18)+
+  theme(legend.position = "none")
+
+```
+
+### Shannon diversity
+```{r}
+dat<- left_join(PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  arrange(BeeID) %>% 
+  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  group_by(BeeID) %>% summarise(across(Prunus:Phleum, ~mean(.)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)))) %>%
+  select(Prunus:Phleum) %>% # select just read data
+  select(-any_of(singletonGenera)) # de-select the singleton genera
+dat<-as.matrix(dat)
+
+dat2<-left_join(PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites %>% select(SiteID, Name), by="SiteID")%>%
+  arrange(BeeID) %>%
+  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
+  group_by(BeeID) %>% summarise(Bombus_spp=first(Bombus_spp), across(Prunus:Phleum, ~mean(.)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)))) %>%
+  select(BeeID, Bombus_spp) %>%
+  ungroup() 
+
+rownames(dat)<-dat2$BeeID
+
+
+# for the old version of dat and dat2
+# rownames(dat)<-paste(dat2$BeeID, dat2$Barcode, sep="_")
+# dat2$BeeIDBarcode<-paste(dat2$BeeID, dat2$Barcode, sep="_")
+
+dat2$ShannonD<-vegan::diversity(dat, index="shannon")
+dat2<- dat2 %>% filter(Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"|Bombus_spp=="impatiens") #use this when running aov() on just the common bumble bee species
+summary(stats::aov(ShannonD ~ Bombus_spp, data = dat2)) # WOAH THERE IS sig difference in shannon diversity of pollens collected by three common bombus spp when you only include bees with both barcodes
+
+plot_df <- dat2 %>% 
+  filter(Bombus_spp=="bimaculatus" | Bombus_spp=="griseocollis"| Bombus_spp=="impatiens") %>%
+  group_by(Bombus_spp) %>% 
+  # calculate mean and standard error of diversity
+  summarize(mean = round(mean(ShannonD), 2),
+            err = stats::sd(ShannonD)/sqrt(length(ShannonD)),
+            n = n_distinct(BeeID)) %>% 
+  dplyr::mutate(label = "n") %>% 
+  unite("n_label", label, n, sep = " = ", remove = FALSE)
+
+ggplot(plot_df, aes(x = Bombus_spp, y = mean)) +
+  geom_col(color = "black", aes(fill = Bombus_spp)) +
+#  scale_fill_manual(values = colorBlindness::Blue2DarkRed18Steps) +
+  geom_errorbar(aes(ymin = mean - err, ymax = mean + err), width = 0.5) +
+  geom_label(aes(x = Bombus_spp, y = 0.1, label = n_label)) +
+  labs(x = "Bombus_spp",
+       y = "Mean Shannon diversity",
+       title = "All Data (incl. rbcL or ITS2 only samples)") +
+  theme_bw(base_size = 18)+
+  theme(legend.position = "none")
+```
+
+
+## Redundancy analysis 
+```{r}
+
+#this dataset is like dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate
+dat <- left_join(PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  mutate(CapTimeHM=hms::hms(hours=CapTimeH, minutes=CapTimeM, seconds=0), JDate=julian(Date)) %>%  #create variables: CapTimeHM and julian date JDate
+  mutate(HostGenus=ifelse(is.na(.data$HostGenus),"none",HostGenus)) %>%
+  select(Barcode, BeeID, JDate, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeHM, Prunus:Phleum) %>%
+  rowwise() %>% mutate(max=max(c_across(Prunus:Phleum))) %>% 
+  filter(Bombus_spp=="bimaculatus" | Bombus_spp=="griseocollis"| Bombus_spp=="impatiens") %>%
+#  filter(Name=="Blandy Experimental Farm") %>%
+#  filter(BeeID %in% TwoBarcodeBees$BeeID) %>%
+  ungroup()
+
+summary(dat %>% filter(HostGenus=="Elaeagnus") %>% select(Elaeagnus))
+summary(dat %>% filter(HostGenus=="Glechoma") %>% select(Glechoma))
+summary(dat %>% filter(HostGenus=="Lamium") %>% select(Lamium))
+
+
+# explanatory variables must be centered, standardized (if explanatory variables are in different units), transformed (to limit the skew of explanatory variables) or normalized (to linearize relationships) following the same principles as in PCA
+
+
+# sample size by Bombus species and floral host
+dat %>% group_by(Bombus_spp) %>% summarise(n=n_distinct(BeeID)) 
+dat %>% group_by(HostGenus) %>% summarise(n=n_distinct(BeeID)) 
+
+# these counts incl double counts of samples with data from more than one barcode
+hist(scale(as.numeric(dat$JDate)))
+hist(scale(as.numeric(dat$CapTimeHM)))
+
+dat$JDate<-scale(as.numeric(dat$JDate))
+dat$CapTimeHM<-scale(as.numeric(dat$CapTimeHM))
+dat$Updated_y<-scale(as.numeric(dat$Updated_y))
+
+dat2<-as.data.frame(dat %>% 
+    ungroup() %>%
+    select(Prunus:Phleum) %>% 
+    select(-c(any_of(singletonGenera), "NA")) #remove genera detected only once
+      )
+dat2<-as.matrix(dat2)
+rownames(dat2)<-dat$BeeID
+
+dat2<-vegan::decostand(dat2, method = "hellinger") # community data standardization
+
+library(vegan)
+# global model1 should include: 
+#dat2 ~ Bombus_spp + Barcode + JDate + CapTimeHM + HostGenus + Updated_y
+#dat2 ~ Bombus_spp + Barcode + JDate + CapTimeHM  + Updated_y (no host model)
+
+global.RDA.step<-ordiR2step(rda(dat2~1, data=dat), scope = rda(dat2 ~ Bombus_spp + Barcode + JDate + CapTimeHM + HostGenus + Updated_y, data=dat))
+
+# sample size of model
+bees<-length(unique(dat$BeeID))
+records<-length(dat$BeeID)
+
+#only bees with both barcodes, best model
+#RDA_Bombus<-vegan::rda(dat2 ~ HostGenus + Barcode + Bombus_spp + Updated_y + JDate, data=dat) 
+
+#all data best model
+RDA_Bombus<-vegan::rda(dat2 ~ HostGenus + Barcode + JDate + Updated_y + Bombus_spp, data=dat) 
+
+#no host best model
+#RDA_Bombus<-vegan::rda(dat2 ~ Bombus_spp + Barcode + JDate + Updated_y + CapTimeHM, data=dat) 
+
+
+#for getting stats from best model
+RsquareAdj(RDA_Bombus) 
+anova.cca(RDA_Bombus, by="term")
+summary(RDA_Bombus)[c(7:9,11)]
+#vegan::ordiplot(RDA_Bombus, scaling=1, type="text")
+# Scaling 1 shows similarities between objects in the response matrix.
+# Sites (numbers) that are closer together have more similar communities.
+# Species that are closer together occupy more sites in common.
+RDA_plot_df<-vegan::ordiplot(RDA_Bombus, scaling=2, type = "text")
+# Scaling 2 shows the effects of explanatory variables.
+# Longer arrows mean this variable strongly drives the variation in the community matrix.
+# Arrows pointing in opposite directions have a negative relationship.
+# Arrows pointing in the same direction have a positive relationship.
+
+#an RDA with host, County, Barcode, Date, and Bombus species can explain ~30% of the total variation in pollen community composition.
+
+#grabbing data from rda model (or the ordiplot thereof) for plotting in ggplot
+sites.long <- BiodiversityR::sites.long(RDA_plot_df, env.data=dat)
+species.long <- BiodiversityR::species.long(RDA_plot_df)
+species.long2<- species.long %>% 
+  mutate(diff=sqrt(abs(axis1)^2+abs(axis2)^2)) %>% 
+  filter(diff>0.15) %>%
+  mutate(labels=paste("Pollen_",labels,sep=""))
+axis.long <- BiodiversityR::axis.long(RDA_Bombus, choices=c(1, 2))
+
+
+arrows <- as.data.frame(vegan::scores(RDA_Bombus)$biplot) #
+arrows$names<-rownames(arrows)
+
+arrows <- arrows %>%        # select only Host and Barcode arrows greater than 0.2 units from 0,0
+  mutate(diff=sqrt(abs(RDA1)^2+abs(RDA2)^2)) %>% 
+  filter(
+    !str_starts(names, "Bombus"), #Bombus will be visualized with color
+    !str_starts(names,"Barcode") #Barcode will be visualized with shape
+    # diff>0.15
+         ) %>%
+  rowwise() %>% mutate(
+    names=ifelse(str_starts(names, "Host"),
+      paste("Host_", strsplit(names, split="HostGenus")[[1]][2], sep=""),
+                ifelse(str_starts(names, "Barcode"),
+             strsplit(names, split="Barcode")[[1]][2],
+                        names)) # making names pretty
+    ) %>%
+  mutate( # create variable to flag and filter hosts with only 1 obs, keep everything else
+    keep=ifelse(names %in% ((dat %>% group_by(HostGenus) %>% summarise(n=n_distinct(BeeID)) %>% filter(n>1) %>% mutate(HostGenus=paste("Host_",HostGenus,sep="")))$HostGenus), 1,
+              ifelse(!str_starts(names,"Host"), 1, 0))) %>% filter(keep==1) %>% select(-keep) # remove filter variable
+
+colnames(arrows)<-c("axis1","axis2","labels","diff")
+rbind(species.long2, arrows)
+
+
+plot1<- ggplot() + 
+    geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
+    geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +  
+    labs(x=axis.long[1, "label"], y=axis.long[2, "label"]) +  
+    scale_x_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) +
+    scale_y_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) + 
+    geom_point(data=sites.long, 
+               aes(x=axis1, y=axis2, color=Bombus_spp, shape=Barcode), 
+               size=5, alpha=0.7) +
+#    scale_shape_manual(values=c(16, 17)) +
+#    stat_ellipse(data=sites.long, aes(x=axis1, y=axis2, colour=Bombus_spp), linewidth = 1) +
+    geom_point(data=species.long, aes(x=axis1, y=axis2), size=3, alpha=0.7) +
+    ggrepel::geom_text_repel(data=rbind(species.long2, arrows), aes(x = axis1, y = axis2, label = labels), direction = "both", size=5, box.padding = 0.75) +
+    geom_segment(data=arrows, aes(x = 0, xend = axis1, y = 0, yend = axis2), arrow = arrow(length = unit(0.25, "cm")), colour="black") +
+    coord_fixed(ratio=1) +
+    theme_bw(base_size = 18)+
+    labs(title=paste("Bombus species differences (n = ",records," records from ",bees," bees)", sep=""))+
+    theme(axis.title = element_text(size=18), 
+        axis.text=element_text(size=14))
+plot1
+
+detach('package:vegan')
+
+#whether or not you exclude samples without both barcodes, the model tells the same story
+```
+
+
+
+# Does pollen composition vary with land use? (NO Blandy, YES Rare bees)
+## LMM Shannon diversity of pollen ~ site land use
+We also and fit a mixed effects linear model with four land use variables (i.e., Forest, Herb, Urban, Crop), survey date and sample collection time, using the lme function of the nlme package. 
+```{r}
+#this dataset is dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate
+# environmental variables dataset
+dat<- left_join(PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  mutate(CapTimeHM=hms::hms(hours=CapTimeH, minutes=CapTimeM, seconds=0), JDate=julian(Date)) %>%  #create variables
+  select(Barcode, BeeID, SiteID, Name, 
+         JDate, CapTimeHM, 
+         Updated_y, NLCD1000_Water:NLCD1000_Crop, 
+         Prunus:Phleum, 
+         -"NA") %>%
+#  filter(BeeID %in% TwoBarcodeBees$BeeID) %>%
+  filter(Name!="Blandy Experimental Farm") %>% #remove Blandy bees
+  ungroup()
+
+dat
+
+# does shannon diversity of pollen samples differ among sites? across land use contexts?
+dat<-as.data.frame(dat)
+colnames(dat)
+
+dat2<-as.matrix(dat %>% select(Prunus:Phleum) %>% select(-any_of(singletonGenera)))
+rownames(dat2)<-dat$BeeID
+
+dat$ShannonD<-vegan::diversity(dat2, index="shannon")
+
+hist(dat$ShannonD)
+hist(as.numeric(dat$JDate))
+hist(dat$NLCD1000_Developed)
+hist(scale(dat$ShannonD))
+hist(scale(as.numeric(dat$JDate)))
+hist(scale(dat$NLCD1000_Developed))
+
+polldivers.lmm <- nlme::lme(ShannonD~scale(NLCD1000_Developed)+scale(NLCD1000_Forest)+scale(NLCD1000_Herbaceous)+scale(NLCD1000_Crop)+scale(as.numeric(JDate))+scale(CapTimeHM), random=~1|Name, data=dat)
+plot(polldivers.lmm)
+summary(polldivers.lmm) #conditional t-test testing the marginal significance of each fixed effect coefficient with the other fixed effects in the model
+stats::anova(polldivers.lmm) #conditional F-test testing the significance of terms in the fixed effects model (sequentially by default)
+summary<-summary(polldivers.lmm)
+summary$tTable
+
+plot(dat$JDate,dat$ShannonD)
+
+dat %>%
+  ggplot(aes(x=JDate, y=ShannonD))+
+  geom_point(size=4)+
+  stat_smooth(method=stats::lm, se=F)+
+  theme_bw(base_size = 18)+
+  labs(title="Pollen diversity over time",
+       y="Shannon diversity index",
+       x="Julian date")
+
+
+```
+
+## Redundancy analysis
+```{r}
+#this dataset is dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate
+# environmental variables dataset
+dat<- left_join(PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  mutate(CapTimeHM=hms::hms(hours=CapTimeH, minutes=CapTimeM, seconds=0), JDate=julian(Date)) %>%  #create variables
+  select(Barcode, BeeID, SiteID, Name, 
+         JDate, CapTimeHM, 
+         Updated_y, NLCD1000_Water:NLCD1000_Crop, 
+         Prunus:Phleum, 
+         -"NA") %>%
+#  filter(BeeID %in% TwoBarcodeBees$BeeID) %>% #optional
+  filter(Name!="Blandy Experimental Farm") %>% #remove Blandy bees (REQUIRED)
+  ungroup()
+
+# explanatory variables must be centered, standardized (if explanatory variables are in different units), transformed (to limit the skew of explanatory variables) or normalized (to linearize relationships) following the same principles as in PCA
+
+# global model2 should include: 
+#NLCD1000_Forest + NLCD1000_Herbaceous + NLCD1000_Crop + NLCD1000_Developed + Barcode + Updated_y + JDate + CapTimeHM
+
+#viewing distribution of explanatory, environmental variables 
+hist(dat$NLCD1000_Herbaceous)
+hist(dat$Updated_y)
+hist(as.numeric(dat$JDate))
+
+hist(scale(dat$NLCD1000_Herbaceous))
+hist(scale(dat$Updated_y))
+hist(scale(as.numeric(dat$JDate)))
+
+# save center and scale of original Latitude (for plotting later, optional)
+# center<-attr(scale(dat$Updated_y), "scaled:center")
+# scale<-attr(scale(dat$Updated_y), "scaled:scale")
+
+#transformations & standardization of environmental variables
+dat<-dat %>% mutate(across(NLCD1000_Water:NLCD1000_Crop, ~scale(.)),
+                    ) %>% as.data.frame()
+dat$JDate<-scale(as.numeric(dat$JDate))
+dat$Updated_y<-scale(as.numeric(dat$Updated_y))
+
+
+# pollen community dataset
+dat2<-as.data.frame(dat %>% 
+    ungroup() %>%
+    select(Prunus:Phleum) %>% 
+    select(-any_of(singletonGenera))
+      )
+dat2<-as.matrix(dat2)
+rownames(dat2)<-dat$BeeID
+
+#standardization of pollen community data
+dat2<-vegan::decostand(dat2,method = "hellinger") # community data standardization
+
+library(vegan)
+global.RDA.step<-ordiR2step(rda(dat2~1, data=dat), scope = rda(dat2 ~ NLCD1000_Forest + NLCD1000_Herbaceous + NLCD1000_Crop + NLCD1000_Developed + CapTimeHM + JDate + Updated_y + Barcode, data=dat))
+
+#sample size calc
+records<-dim(dat)[1] # rows
+bees<-n_distinct(dat$BeeID) # bees
+sites<-n_distinct(dat$Name) # sites
+
+#best model of full dataset
+RDA_LandCover<-vegan::rda(dat2 ~ JDate + NLCD1000_Crop + Updated_y + Barcode + NLCD1000_Herbaceous, data=dat) #n=76 datapoints from 52 bees from 16 sites
+
+#best model of subset (i.e., remove samples without both barcodes) n=48 datapoints from 24 bees from 12 sites
+# RDA_LandCover<-vegan::rda(dat2 ~ JDate + NLCD1000_Crop + Updated_y + Barcode + NLCD1000_Developed + NLCD1000_Forest + NLCD1000_Herbaceous , data=dat)
+
+RsquareAdj(RDA_LandCover) 
+anova.cca(RDA_LandCover, by="term")
+summary(RDA_LandCover)[c(7:9,11)]
+
+#anova.cca(RDA_LandCover, by="axis")
+#vegan::ordiplot(RDA_LandCover, scaling=1, type="text")
+# Scaling 1 shows similarities between objects in the response matrix.
+# Sites (numbers) that are closer together have more similar communities.
+# Species that are closer together occupy more sites in common.
+RDA_plot_df<-vegan::ordiplot(RDA_LandCover, scaling=2, type = "text")
+# Scaling 2 shows the effects of explanatory variables.
+# Longer arrows mean this variable strongly drives the variation in the community matrix.
+# Arrows pointing in opposite directions have a negative relationship.
+# Arrows pointing in the same direction have a positive relationship.
+
+#an RDA with x,x,x can explain about xx.x% of the total variation in pollen community composition. anova.cca() generate a significant p-value for this difference
+
+#grabbing data from rda model (or the ordiplot thereof) for plotting in ggplot
+#grabbing data from rda model (or the ordiplot thereof) for plotting in ggplot
+sites.long <- BiodiversityR::sites.long(RDA_plot_df, env.data=dat)
+species.long <- BiodiversityR::species.long(RDA_plot_df)
+species.long2<- species.long %>% 
+  mutate(diff=sqrt(abs(axis1)^2+abs(axis2)^2)) %>% 
+  filter(diff>0.15) # select pollen species greater than X.XX units from origin (0,0)
+axis.long <- BiodiversityR::axis.long(RDA_LandCover, choices=c(1, 2))
+
+arrows <- as.data.frame(vegan::scores(RDA_LandCover)$biplot) #
+arrows$names<-rownames(arrows)
+arrows <- arrows %>%        # select non-County arrows greater than 0.2 units from 0,0
+  mutate(diff=sqrt(abs(RDA1)^2+abs(RDA2)^2)) %>% 
+  filter(!str_starts(names,"Barcode"), #represented as color and shape
+         diff>0.15)
+
+
+colnames(arrows)<-c("axis1","axis2","labels","diff")
+rbind(species.long2, arrows)
+
+#sites.long$Updated_y_descaled<-as.numeric(unlist(ggfortify::unscale(dat$Updated_y, center=center, scale=scale)))
+
+plot2<-ggplot() + 
+    geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
+    geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +  
+    labs(x=axis.long[1, "label"], y=axis.long[2, "label"]) +  
+    scale_x_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) +
+    scale_y_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) + 
+    geom_point(data=sites.long, aes(x=axis1, y=axis2, shape=Barcode, color=Barcode), size=5, alpha=0.7) +
+    geom_point(data=species.long, aes(x=axis1, y=axis2), size=3, alpha=0.7) +
+    ggrepel::geom_text_repel(data=rbind(species.long2, arrows), aes(x = axis1, y = axis2, label = labels), size=5, box.padding = 0.75, direction = "both") +
+    geom_segment(data=arrows, aes(x=0, xend=axis1, y=0, yend=axis2), arrow=arrow(length=unit(0.25, "cm")), colour="black") +
+    coord_fixed(ratio=1) +
+  theme_bw(base_size = 18)+
+  labs(title=paste("Land cover differences (n=", records, " records from ", bees, " bees, ", sites, " sites)", sep=""))
+plot2
+
+ggpubr::ggarrange(plot1, plot2, ncol = 2, nrow = 1)
+```
+
+# Misc Summary/Counts
+
+## summary of queen obs
+```{r}
+# total queens observed
+dat<-dat.Sites%>%filter(Name!="Blandy Experimental Farm")
+sum(dat.Sites$TotalCaptured + dat.Sites$TotalCaptured) #total
+sum(dat$TotalCaptured + dat$TotalCaptured) #excluding blandy
+
+# bombus queen richness
+unique(dat.Queen$Bombus_spp)
+
+# by species, a count of bees, date of first detect, first pollen, first nest
+left_join(
+dat.Queen %>% 
+  group_by(Bombus_spp) %>% 
+  summarise(
+    Total=n(),
+    FirstDetect=min(Date)
+  ),
+dat.Queen %>% 
+  group_by(Bombus_spp) %>% 
+  filter(CarryPollen==1) %>%
+  summarise(
+    CarryPollen=n(),
+    FirstPollen=min(Date)
+  ),
+by="Bombus_spp") %>% 
+  left_join(.,
+dat.Queen %>% 
+  group_by(Bombus_spp) %>% 
+  filter(NestSeek==1) %>%
+  summarise(
+    NestSeek=n(),
+    FirstNestSeek=min(Date))
+  ,
+by="Bombus_spp") %>% 
+  left_join(.,
+dat.Queen %>% 
+  group_by(Bombus_spp) %>% 
+  filter(Forage==1) %>%
+  summarise(
+    Forage=n(),
+    FirstForage=min(Date))
+  ,
+by="Bombus_spp")
+
+dat.Queen %>% group_by(CarryPollen,Bombus_spp) %>% #number of queens with pollen by species
+  summarise(Count=n())
+
+#filter out blandy
+dat.Queen %>% filter(!str_starts(SiteID, "BEF")) %>% 
+  group_by(Bombus_spp) %>% #number of queens with pollen by species
+  summarise(Count=n())
+dat.Queen %>% filter(!str_starts(SiteID, "BEF")) %>% 
+  group_by(CarryPollen,Bombus_spp)%>% #number of queens with pollen by species
+  summarise(Count=n())
+dat.Queen %>% filter(!str_starts(SiteID, "BEF")) %>% 
+  group_by(NestSeek, Bombus_spp)%>%  #number of queens nest seeking
+  summarise(Count=n())
+```
+
+
+## survey site list
+```{r}
+
+dat.Sites %>% select(SiteID, bimaculatus:pensylvanicus) %>%
+  pivot_longer(cols=c(bimaculatus:pensylvanicus), names_to = "Bombus_spp", values_to = "count") %>%
+  filter(count>0) %>%
+  group_by(SiteID) %>%
+  summarize(BeeRichness=n()) %>%
+  left_join(., dat.Sites, by="SiteID") %>%
+  select(Name, SiteID, County, Type, Updated_x, Updated_y, Date, FloralRichness, Bees_60min, BeeRichness)
+
+```
+
+## avg distance bw sites
+```{r}
+dat<-dat.Sites %>% select(Name, Updated_x, Updated_y) %>% distinct()
+dist<-raster::pointDistance(dat[, c("Updated_x", "Updated_y")], lonlat=TRUE)
+dist[dist==0]<-NA
+
+mean(dist, na.rm = T)
+min(dist, na.rm = T)
+max(dist, na.rm = T)
+
+rm(dist)
+```
+
