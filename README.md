@@ -1,5 +1,5 @@
 # bumblebee_pollen
-Data and R codes for analyzing pollen load composition of bumble bee (Apidae: Bombus) queens in Virginia. Contributed by Kelsey Schoenemann.
+Data and R codes for analyzing pollen load composition of bumble bee (Apidae: Bombus) queens in Virginia. Contributed by Kelsey Schoenemann & etc.
 
 ## Abstract:
 The nest-founding stage represents an especially vulnerable period of the bumble bee (Bombus) life cycle, requiring solitary queens locate and acquire sufficient floral pollen to feed herself and her brood. Yet, we lack contemporary information about foraging resources used by queens in early spring. Here, we use next generation sequencing to characterize the floral species used by queens for pollen for provisioning during early nest establishment. The following data and analyses describe patterns of pollen collection from over 100 wild bumble bee queens at 26 working farms, rural and city parks, and nature preserves captured between 21 March to 25 May, 2022 in northern and central Virginia, USA.
