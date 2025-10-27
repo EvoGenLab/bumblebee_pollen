@@ -166,7 +166,27 @@ ITS2_IDs %>%
                          ifelse(.data$Genus=="Nyssa", "Nyssaceae", #change Corn.. to Nyss (I only have two species from Cornaceae in my data, Nyssa sylvatica, which is now in Nyssaceae family, and Cornus spp, which remains in Cornaceae family); link: https://doi.org/10.1111/boj.12385
                          .data$Family))))
 
+
+# creating a new SampleTotalReads that only includes ASVs assigned to Genus 
+PollenIDs <- left_join(PollenIDs,  # join PollenIDs to a summary of PollenIDs
+          PollenIDs %>% #summarize PollenIDs
+            filter(is.na(Genus)) %>% # select records of reads unassigned to Genus
+            group_by(BeeID, Barcode) %>% # group by sample ID and barcode
+            summarize(UnassgnReads=sum(Reads)), # sum the number of reads unassigned to Genus
+          by=c("BeeID", "Barcode")) %>% #finish join by sample ID and barcode
+  mutate(UnassgnReads = replace_na(UnassgnReads, 0)) %>% # replace 0
+  mutate(SampleAssgnReads=SampleTotalReads-UnassgnReads) %>% # subtract unassigned reads from SampleTotalReads
+  mutate(PropAssgnReads=Reads/SampleAssgnReads) # calculate new proportion of reads PropAssgnReads based on SampleAssgnReads
+
 PollenIDs <- as.data.frame(PollenIDs) # revert tibble to dataframe
+
+NA.BeeIDs<-PollenIDs %>%
+  filter(is.na(Genus),PropReads>0.5) %>%
+  select(BeeID)
+
+PollenIDs <- PollenIDs %>%
+  filter(!.data$BeeID %in% NA.BeeIDs$BeeID)
+#  filter(.data$Genus %in% topGenera2$Genus) %>% #optional filter for most common genera
 
 
 rm(ITS2_IDs, rbcL_IDs)
@@ -314,6 +334,80 @@ singletonGenera<-as.data.frame(
    filter(n_bees==1) %>% 
     select(Genus)
   )$Genus
+
+
+
+## Start edit 2025 Oct 16 a
+#transform entire PropReads dataset with CLR transformation
+#similar to PollenIDgenera.sum, but with PropReads transformed.
+PollenIDgenera.sum1 <- PollenIDs %>%
+  group_by(Barcode, BeeID, Genus) %>% #group by barcode, sample/BeeID, and assigned genus
+  summarize(PropAssgnReads=sum(PropAssgnReads)) %>% # sum the proportion of reads 
+  pivot_wider(., names_from = "Genus", values_from = "PropAssgnReads") %>% # begin transformation by pivoting the table wider into community dataset
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% # replace NA with 0
+  rowwise() %>% mutate(rareGenera=sum(c_across(any_of(singletonGenera)))) %>% # create new column (taxa) called rareGenera to be sum of PropAssgnReads belonging to singletonGenera
+  rename(., unassigned = "NA") %>% #rename cumbersome column name "NA"
+  select(-c(any_of(singletonGenera), unassigned)) #exclude singletonGenera (taxa appearing in one sample only) and exclude unassigned
+
+rowSums(PollenIDgenera.sum1[,-c(1:2)]) #row sums to 1 for every sample; the sum of Proportion of Assigned Reads belonging to each Genera and rareGenera equals 1 within each sample (reads un-assigned to genus have been removed; earlier, see "PollenIDs", the proportion of reads assigned to taxa were calculated relative to total assigned reads in a sample, rather than sample total reads incl assigned and not)
+
+detect.threshold <- min(PollenIDs$Reads) / max(PollenIDs$SampleAssgnReads) #4.5e-05
+
+dat.temp <- compositions::rcomp(PollenIDgenera.sum1 #invoke rcomp() : A class providing a way to analyse compositions in the philosophical framework of the Simplex as subset of the R^D
+                                %>% mutate(rareGenera=rareGenera+4.6e-5), #add constant to rareGenera that is just above the detection threshold
+                                parts=3:ncol(PollenIDgenera.sum1),
+                                total=1,
+                                detectionlimit = detect.threshold,
+                                BDL=NULL,MAR=NULL,MNAR=NULL,SZ=NULL)
+# Arguments
+# X- composition or dataset of compositions
+# parts- vector containing the indices xor names of the columns to be used
+# total- the total amount to be used, typically 1 or 100
+# warn.na- should the user be warned in case of NA,NaN or 0 coding different types of missing values?
+# detectionlimit- a number, vector or matrix of positive numbers giving the detection limit of all values, all columns or each value, respectively
+# BDL- the code for 'Below Detection Limit' in X
+# SZ- the code for 'Structural Zero' in X
+# MAR- the code for 'Missing At Random' in X
+# MNAR- the code for 'Missing Not At Random' in X
+# not an argument, but note that in the object outputted, NMV = Not Missing Value
+
+clr<-compositions::clr(dat.temp)
+summary(dat.temp)
+
+rowSums(as_tibble(clr)) # CLR does not play nice with "pure" samples containing data from only one taxa/genus.
+as_tibble(clr)
+
+PollenIDgenera.sum1$rareGenera
+as_tibble(clr)$rareGenera
+as_tibble(clr)$Prunus
+
+# NEXT STEP = PIVOT LONGER TO MAKE IT ALL LOOK LIKE POLLENIDGENERA.SUM
+
+#from:https://www.geo.fu-berlin.de/en/v/soga-r/Advances-statistics/Feature-scales/Logratio_Transformations/index.html
+# The clr-transformation represents a one-by-one link between the original and the transformed parts, which is helpful in interpretation of the results.
+# Therefore this transformation is frequently used in practice, however it has two severe drawbacks:  
+# (a) the resulting parts are still linear dependent, and
+# (b) the transformation is sub-compositionally incoherent.
+# 
+# The first property yields singular covariance matrices, i.e. the determinant zero, which becomes problematic if a statistical method applied needs to invert the covariance matrix (e.g. PCA, LDA, etc.).
+# 
+# The latter property means that when different subsets of variables (parts) are considered, the clr-transformed results are not the same. This has serious consequences for the data analysis, because any chosen bivariate subset of interest would not reflect the original data. 
+
+# why do transformation?
+# from: https://www.geo.fu-berlin.de/en/v/soga-r/Advances-statistics/Feature-scales/Reasons_for_Transformations/index.html
+#  in compositions the deviations vectors as bases are oblique by nature and consequently non-euclidean !!!
+# Hence, statistical methods using distances and angles (ratios) as optimization parameters can not be applied on pure compositions. 
+#Centered log-ratio (clr) transformation is the logarithm of the ratio of each value divided through the geometric mean of all parts of the corresponding observation. The clr transformation is symmetric with respect to the compositional parts and keeps the same number of components as the number of parts in the composition.
+
+biplot(pcaPP::PCAproj(dat.temp, k=3, scores=TRUE), main="raw data rPCA \n w/ package:pcaPP")
+
+colnames(dat.temp)
+NMDS = vegan::metaMDS(as.matrix(compositions::clr(dat.temp)), k = 2, trymax = 20) #all data
+NMDS
+stressplot(NMDS)
+
+rm(NMDS, dat.temp)
+## END edit 
 ```
 
 
@@ -776,7 +870,7 @@ dat.Queen %>%
 ```
 
 
-### How does pollen composition change over time?
+### Plot pollen composition change over time
 ```{r}
 
 dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Bombus_spp, Date), by="BeeID")  %>%
@@ -803,8 +897,8 @@ n_distinct(dat$Family) #plus NA
 # ,
 dat %>%
   ggplot()+ 
-  geom_col(aes(x=Week, y=weekly_value, 
-               fill=ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
+  geom_col(aes(x=Week, y=weekly_value,
+                 fill=ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
                         ifelse(!is.na(.data$Genus), "z_AllOther", NA))), 
            position = "fill")+
   scale_fill_manual(name="FamGen", values = myColors.FamGen, na.value = "gray")+
@@ -818,6 +912,48 @@ dat %>%
   ylab("Proportion of Reads")+
   theme_bw(base_size = 18)+
   theme(legend.position = "bottom")
+
+## Start edit 2025 Oct 1 a
+dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Bombus_spp, Date), by="BeeID")  %>%
+  filter(str_starts(SiteID, "B")) %>% #ONLY BLANDY BEES
+  mutate(FamGen=paste(Family, Genus, sep=" ") # new varible to invoke in plotting
+         ) %>% 
+
+  group_by(BeeID, Family, Genus, FamGen, Barcode) %>%
+  summarise(
+    Date=first(Date),
+    Bombus_spp=first(Bombus_spp),
+    PropReads=sum(PropReads), 
+            ) %>% ungroup() %>% 
+  mutate(Week=lubridate::week(Date)) %>%
+  group_by(Week, Family, Genus, FamGen, Barcode) %>% 
+  summarise(weekly_value=sum(PropReads)) %>% ungroup() 
+dat %>% 
+  ggplot()+ 
+  geom_col(aes(x=Week, y=weekly_value,
+                 fill=ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
+                        ifelse(!is.na(.data$Genus), "z_AllOther", NA))), 
+           position = "fill",
+           color="white")+
+  scale_fill_manual(name="FamGen", values = myColors.FamGen, na.value = "gray")+
+  geom_label(data=PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Date), by="BeeID") %>% #sample size for number of pollen loads sequenced with a given barcode
+               filter(str_starts(SiteID, "B")) %>%
+               mutate(Week=lubridate::week(Date)) %>%
+               group_by(Week, Barcode) %>% summarize(nbees=n_distinct(BeeID)),
+             aes(x=Week, y=-0.05, label=paste("N sequenced = ", nbees, sep="")))+
+    geom_label(data=PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Date), by="BeeID") %>% #sample size for total number of pollen loads processed with either/both barcodes
+               filter(str_starts(SiteID, "B")) %>%
+               mutate(Week=lubridate::week(Date)) %>%
+               group_by(Week) %>% summarize(nbees=n_distinct(BeeID), Barcode="rbcL"),
+             aes(x=Week, y=-0.15, label=paste("N total = ", nbees, sep="")))+
+  guides(fill=guide_legend(title = "Family Genus")) +
+  facet_wrap(~Barcode, ncol=1, scales="free_y")+
+  scale_x_continuous(breaks=c(unique(dat$Week)))+
+  ylab("Proportion of Reads")+
+  theme_bw(base_size = 18)+
+  theme(legend.position = "bottom")
+## END edit
+
 
 hist((PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, SiteID, Date), by="BeeID") %>% distinct())$Date, breaks=30)
 ```
@@ -1290,9 +1426,12 @@ dat2<-as.matrix(dat %>% select(-c(Barcode:NLCD1000_Crop, 'NA')) %>% select(-any_
 rownames(dat2)<-dat$BeeID
 sort(colnames(dat2))
 
-
+## Start edit 2025 Oct 1 c
 dat$ShannonD<-vegan::diversity(dat2, index="shannon")
-summary(stats::aov(ShannonD ~ Barcode, data = dat)) # sig difference in diversity detected with rbcL versus ITS2
+hist(dat$ShannonD); stats::shapiro.test(dat$ShannonD) # not normal
+#summary(stats::aov(ShannonD ~ Barcode, data = dat)) # so this test not valid
+stats::kruskal.test(ShannonD ~ Barcode, data = dat) # sig difference in diversity detected with rbcL versus ITS2
+## END edit
 
 plot_df <- dat  %>% 
   group_by(Barcode) %>% 
@@ -1336,7 +1475,7 @@ dat<- left_join(
   dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
   left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
   mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
-  select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum) 
+  select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum)
 
 dat2<-as.data.frame(dat %>% 
     ungroup() %>%
@@ -1345,6 +1484,7 @@ dat2<-as.data.frame(dat %>%
 
 colnames(dat2)
 dat2mat<-as.matrix(dat2)
+dat2Pollen.dist<-vegan::vegdist(dat2, method="bray")
 
 library(vegan)
 NMDS_barcode = metaMDS(dat2mat, k = 2, trymax = 20) #all data
@@ -1352,6 +1492,14 @@ NMDS_barcode
 stressplot(NMDS_barcode)
 #goodness(NMDS_barcode)
 #ordiplot(NMDS_barcode, type="text", cex=1.2)
+
+## Start edit 2025 Oct 1 b
+dispersion <- vegan::betadisper(dat2Pollen.dist, group=dat$Barcode)
+TukeyHSD(dispersion)
+vegan::permutest(dispersion)
+plot(dispersion, hull=FALSE, ellipse=TRUE) ##sd ellipse
+vegan::adonis2(dat2~ Barcode, data=dat, permutations = 999, method = "bray", by="term")
+## END edit
 
 NMDS_plot_df<- cbind(dat %>% ungroup(), 
                  vegan::scores(NMDS_barcode, display = "sites") %>% 
@@ -1488,6 +1636,53 @@ dat %>%
   theme(legend.text = element_text(size=10),
         legend.position = "bottom")
 
+## Start edit 2025 Oct 1 a
+dat<-PollenIDs %>% left_join(., dat.Queen %>% select(BeeID, Bombus_spp, Date), by="BeeID") %>%
+  mutate(FamGen=paste(Family, Genus, sep=" "),
+         unCommon=ifelse(
+           Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"|Bombus_spp=="impatiens",
+           "common","uncommon")) %>% 
+  group_by(BeeID, Family, FamGen, Barcode) %>%
+  summarise(BeeID=first(BeeID),
+            Bombus_spp=first(Bombus_spp),
+            unCommon=first(unCommon),
+            PropReads=sum(PropReads),
+            Family=first(Family),
+            Genus=first(Genus),
+            FamGen=first(FamGen)
+            ) %>% ungroup() %>% arrange(FamGen)
+
+dat %>%
+  group_by(Bombus_spp, Family, FamGen, Barcode) %>% # *DROP* BeeID from group_by so we can summarize by species in the plot but retain info about num of bees (from BeeID) for plotting sample size
+  summarise(unCommon=first(unCommon),
+            PropReads=sum(PropReads),
+            Family=first(Family),
+            Genus=first(Genus),
+            FamGen=first(FamGen)
+            ) %>% ungroup() %>% arrange(FamGen) %>%
+  ggplot(aes(x=Bombus_spp)) +
+  geom_col(aes(y=PropReads, 
+               fill=ifelse(.data$Genus %in% topGenera2$Genus, FamGen, 
+                       ifelse(!is.na(.data$Genus), "z_AllOther", NA))), 
+              position="fill",
+           color="white") +
+  scale_fill_manual(values = myColors.FamGen, na.value="gray")+ #FamGen.palette
+  scale_x_discrete(labels = c("pensylvanicus"="pensyl-\nvanicus", "vagans-sandersoni-perplexus" = "vagans-\nsandersoni-\nperplexus")) +
+  geom_label(data=dat %>% # adding sample size to plot based on unique BeeID in dat
+               group_by(Bombus_spp, Barcode) %>%
+               summarize(num=n_distinct(BeeID)),
+             aes(x=Bombus_spp, y=-0.05, label=paste("n sequenced = ", num, sep="")))+
+  geom_label(data=dat %>% # adding sample size to plot based on unique BeeID in dat
+               group_by(Bombus_spp) %>%
+               summarize(num=n_distinct(BeeID), Barcode="rbcL"),
+             aes(x=Bombus_spp, y=-0.15, label=paste("n total = ", num, sep="")))+
+    guides(fill=guide_legend(title = "Family Genus"))+
+  facet_wrap(~Barcode, ncol=1, scales="free_y")+
+  theme_bw(base_size = 16)+
+  labs(title="", y="Proportion of Sample Reads", x="Bombus species")+
+  theme(legend.text = element_text(size=10),
+        legend.position = "bottom")
+## END edit
 
 # zoom in: plot the "z_AllOther" pollen families to get an idea of the taxa we're missing from the above plot. 
 # this plot shows the proportion of "AllOther" reads assigned to taxonomic family
@@ -1561,7 +1756,7 @@ ggplot(plot_df, aes(x = Bombus_spp, y = mean)) +
 dat<- left_join(PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
   dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
   arrange(BeeID) %>% 
-  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
+#  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
   mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
   group_by(BeeID) %>% summarise(across(Prunus:Phleum, ~mean(.)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)))) %>%
   select(Prunus:Phleum) %>% # select just read data
@@ -1572,7 +1767,7 @@ dat2<-left_join(PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", valu
   dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
   left_join(., dat.Sites %>% select(SiteID, Name), by="SiteID")%>%
   arrange(BeeID) %>%
-  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
+#  filter(.data$BeeID %in% TwoBarcodeBees$BeeID) %>% #optional filter for BOTH BARCODE BEES
   group_by(BeeID) %>% summarise(Bombus_spp=first(Bombus_spp), across(Prunus:Phleum, ~mean(.)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1)))) %>%
   select(BeeID, Bombus_spp) %>%
   ungroup() 
@@ -1584,7 +1779,14 @@ rownames(dat)<-dat2$BeeID
 # rownames(dat)<-paste(dat2$BeeID, dat2$Barcode, sep="_")
 # dat2$BeeIDBarcode<-paste(dat2$BeeID, dat2$Barcode, sep="_")
 
+
 dat2$ShannonD<-vegan::diversity(dat, index="shannon")
+
+## Start edit 2025 Oct 1 c
+hist(dat2$ShannonD); stats::shapiro.test(dat2$ShannonD) # YES normal, unless you include bees without both barcodes
+stats::kruskal.test(ShannonD ~ Bombus_spp, data = dat2)
+## END edit
+
 dat2<- dat2 %>% filter(Bombus_spp=="bimaculatus"|Bombus_spp=="griseocollis"|Bombus_spp=="impatiens") #use this when running aov() on just the common bumble bee species
 summary(stats::aov(ShannonD ~ Bombus_spp, data = dat2)) # WOAH THERE IS sig difference in shannon diversity of pollens collected by three common bombus spp when you only include bees with both barcodes
 
