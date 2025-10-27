@@ -13,7 +13,7 @@ editor_options:
 
 # Set wd & load packages & read in data
 ```{r}
-setwd("/Users/kelseyschoenemann/Desktop/Code_Datasets")
+setwd("~/Documents/GitHub/bumblebee_pollen/datasets")
 
 library(readxl) #read in data
 library(readr)
@@ -167,16 +167,16 @@ ITS2_IDs %>%
                          .data$Family))))
 
 
-# creating a new SampleTotalReads that only includes ASVs assigned to Genus 
-PollenIDs <- left_join(PollenIDs,  # join PollenIDs to a summary of PollenIDs
-          PollenIDs %>% #summarize PollenIDs
-            filter(is.na(Genus)) %>% # select records of reads unassigned to Genus
-            group_by(BeeID, Barcode) %>% # group by sample ID and barcode
-            summarize(UnassgnReads=sum(Reads)), # sum the number of reads unassigned to Genus
-          by=c("BeeID", "Barcode")) %>% #finish join by sample ID and barcode
-  mutate(UnassgnReads = replace_na(UnassgnReads, 0)) %>% # replace 0
-  mutate(SampleAssgnReads=SampleTotalReads-UnassgnReads) %>% # subtract unassigned reads from SampleTotalReads
-  mutate(PropAssgnReads=Reads/SampleAssgnReads) # calculate new proportion of reads PropAssgnReads based on SampleAssgnReads
+# (optional) creating a new SampleTotalReads that only includes ASVs assigned to Genus 
+# PollenIDs <- left_join(PollenIDs,  # join PollenIDs to a summary of PollenIDs
+#           PollenIDs %>% #summarize PollenIDs
+#             filter(is.na(Genus)) %>% # select records of reads unassigned to Genus
+#             group_by(BeeID, Barcode) %>% # group by sample ID and barcode
+#             summarize(UnassgnReads=sum(Reads)), # sum the number of reads unassigned to Genus
+#           by=c("BeeID", "Barcode")) %>% #finish join by sample ID and barcode
+#   mutate(UnassgnReads = replace_na(UnassgnReads, 0)) %>% # replace 0
+#   mutate(SampleAssgnReads=SampleTotalReads-UnassgnReads) %>% # subtract unassigned reads from SampleTotalReads
+#   mutate(PropAssgnReads=Reads/SampleAssgnReads) # calculate new proportion of reads PropAssgnReads based on SampleAssgnReads
 
 PollenIDs <- as.data.frame(PollenIDs) # revert tibble to dataframe
 
@@ -189,7 +189,7 @@ PollenIDs <- PollenIDs %>%
 #  filter(.data$Genus %in% topGenera2$Genus) %>% #optional filter for most common genera
 
 
-rm(ITS2_IDs, rbcL_IDs)
+rm(ITS2_IDs, rbcL_IDs, NA.BeeIDs)
 ```
 
 
@@ -211,7 +211,7 @@ CapLog.sum <- CapLog %>%           #
 CapLog.spp <- CapLog %>% 
   group_by(SiteID, Bombus_spp) %>% 
   tally() %>% 
-  pivot_wider(names_from = Bombus_spp, values_from = n) %>%
+  pivot_wider(names_from = Bombus_spp, values_from = n, values_fill = 0) %>%
   select(SiteID,bimaculatus,griseocollis,impatiens,auricomus,'vagans-sandersoni-perplexus',fervidus,pensylvanicus)
 
 ```
@@ -319,13 +319,6 @@ TwoBarcodeBees<-PollenIDgenera.sum %>%
   summarise(nBarcode=n()) %>% 
   filter(nBarcode==2) %>% select(BeeID)
 
-
-# create a summary of pollen community for each sample at the genus level (average of both barcodes)
-PollenIDgenera.comm <- PollenIDs %>%
-  group_by(BeeID, Genus) %>% # NOT GROUPING BY BARCODE (mean prop reads across barcodes)
-  summarize(PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1))) %>% 
-  pivot_wider(., names_from = Genus, values_from = PropReads, values_fill = 0) 
-
 # create list of genera appearing in a single sample
 singletonGenera<-as.data.frame(
   PollenIDs %>% 
@@ -336,25 +329,32 @@ singletonGenera<-as.data.frame(
   )$Genus
 
 
+# create a summary of pollen community for each sample at the genus level (average of both barcodes)
+PollenIDgenera.comm <- PollenIDs %>%
+  group_by(BeeID, Genus) %>% # NOT GROUPING BY BARCODE (mean prop reads across barcodes)
+  summarize(PropReads=sum(PropReads)/first(ifelse(.data$BeeID %in% TwoBarcodeBees$BeeID, 2,1))) %>% 
+  pivot_wider(., names_from = Genus, values_from = PropReads, values_fill = 0) 
 
-## Start edit 2025 Oct 16 a
+
+
+
+## Start edit 2025 Oct 16 a, Oct 27 a
 #transform entire PropReads dataset with CLR transformation
 #similar to PollenIDgenera.sum, but with PropReads transformed.
 PollenIDgenera.sum1 <- PollenIDs %>%
   group_by(Barcode, BeeID, Genus) %>% #group by barcode, sample/BeeID, and assigned genus
-  summarize(PropAssgnReads=sum(PropAssgnReads)) %>% # sum the proportion of reads 
-  pivot_wider(., names_from = "Genus", values_from = "PropAssgnReads") %>% # begin transformation by pivoting the table wider into community dataset
+  summarize(PropReads=sum(PropReads)) %>% # sum the proportion of reads 
+  pivot_wider(., names_from = "Genus", values_from = "PropReads") %>% # begin transformation by pivoting the table wider into community dataset
   mutate(across(everything(), ~replace(., is.na(.), 0))) %>% # replace NA with 0
-  rowwise() %>% mutate(rareGenera=sum(c_across(any_of(singletonGenera)))) %>% # create new column (taxa) called rareGenera to be sum of PropAssgnReads belonging to singletonGenera
-  rename(., unassigned = "NA") %>% #rename cumbersome column name "NA"
-  select(-c(any_of(singletonGenera), unassigned)) #exclude singletonGenera (taxa appearing in one sample only) and exclude unassigned
+  mutate(dummy=4.6e-5) %>% # CLR does not play nice with "pure" samples containing data from only one taxa/genus, but by adding a 'dummy' variable with a constant just above the detection threshold, we can get the CLR to convert even pure samples.
+#  select(-c(any_of(singletonGenera))) # (optional) we exclude singletonGenera and NA from the NMDS and RDA analyses, but we're including them here so that the samples each sum to 1.0 for PropReads
+  as_tibble(.)
 
-rowSums(PollenIDgenera.sum1[,-c(1:2)]) #row sums to 1 for every sample; the sum of Proportion of Assigned Reads belonging to each Genera and rareGenera equals 1 within each sample (reads un-assigned to genus have been removed; earlier, see "PollenIDs", the proportion of reads assigned to taxa were calculated relative to total assigned reads in a sample, rather than sample total reads incl assigned and not)
+# rowSums(PollenIDgenera.sum1[,-c(1:2)]) #row sums to 1.000046; the sum of Proportion of Reads belonging to each Genus and PropReads unassigned to any Genus equals 1 within each sample, plus 0.000046 in the dummy variable (reads un-assigned to genus have been *retained*; earlier, see "PollenIDs", where you can optionally calculate the proportion of reads assigned to taxa relative to total assigned reads in a sample, rather than sample total reads incl, assigned and not)
 
-detect.threshold <- min(PollenIDs$Reads) / max(PollenIDs$SampleAssgnReads) #4.5e-05
+detect.threshold <- min(PollenIDs$Reads) / max(PollenIDs$SampleTotalReads) #4.5e-05
 
-dat.temp <- compositions::rcomp(PollenIDgenera.sum1 #invoke rcomp() : A class providing a way to analyse compositions in the philosophical framework of the Simplex as subset of the R^D
-                                %>% mutate(rareGenera=rareGenera+4.6e-5), #add constant to rareGenera that is just above the detection threshold
+rcomp_PollenIDgenera.sum1 <- compositions::rcomp(PollenIDgenera.sum1, #invoke rcomp() : A class providing a way to analyse compositions in the philosophical framework of the Simplex as subset of the R^D
                                 parts=3:ncol(PollenIDgenera.sum1),
                                 total=1,
                                 detectionlimit = detect.threshold,
@@ -371,17 +371,18 @@ dat.temp <- compositions::rcomp(PollenIDgenera.sum1 #invoke rcomp() : A class pr
 # MNAR- the code for 'Missing Not At Random' in X
 # not an argument, but note that in the object outputted, NMV = Not Missing Value
 
-clr<-compositions::clr(dat.temp)
-summary(dat.temp)
+clr_rcomp_PollenIDgenera.sum1<-compositions::clr(rcomp_PollenIDgenera.sum1)
+clr_rcomp_PollenIDgenera.sum1<-as_tibble(clr_rcomp_PollenIDgenera.sum1)
+round(rowSums(clr_rcomp_PollenIDgenera.sum1), digits = 2) # transformed data is now centered on 0 with positive and negative values within each sample
 
-rowSums(as_tibble(clr)) # CLR does not play nice with "pure" samples containing data from only one taxa/genus.
-as_tibble(clr)
+# binding transformed data with sample info, and then PIVOT_LONGER to make it match PollenIDgenera.sum
+mycolnames<-colnames(clr_rcomp_PollenIDgenera.sum1)
+PollenIDgenera.sum1 <- cbind(PollenIDgenera.sum1[,1:2],clr_rcomp_PollenIDgenera.sum1) %>% 
+  pivot_longer(., cols=c(any_of(mycolnames)), 
+               names_to = "Genus", 
+               values_to = "CLR_PropReads") %>%
+  filter(CLR_PropReads!=0, Genus!="dummy")
 
-PollenIDgenera.sum1$rareGenera
-as_tibble(clr)$rareGenera
-as_tibble(clr)$Prunus
-
-# NEXT STEP = PIVOT LONGER TO MAKE IT ALL LOOK LIKE POLLENIDGENERA.SUM
 
 #from:https://www.geo.fu-berlin.de/en/v/soga-r/Advances-statistics/Feature-scales/Logratio_Transformations/index.html
 # The clr-transformation represents a one-by-one link between the original and the transformed parts, which is helpful in interpretation of the results.
@@ -395,18 +396,13 @@ as_tibble(clr)$Prunus
 
 # why do transformation?
 # from: https://www.geo.fu-berlin.de/en/v/soga-r/Advances-statistics/Feature-scales/Reasons_for_Transformations/index.html
-#  in compositions the deviations vectors as bases are oblique by nature and consequently non-euclidean !!!
+#  in compositions, the deviations vectors as bases are oblique by nature and consequently non-euclidean !!!
 # Hence, statistical methods using distances and angles (ratios) as optimization parameters can not be applied on pure compositions. 
-#Centered log-ratio (clr) transformation is the logarithm of the ratio of each value divided through the geometric mean of all parts of the corresponding observation. The clr transformation is symmetric with respect to the compositional parts and keeps the same number of components as the number of parts in the composition.
+# Centered log-ratio (clr) transformation is the logarithm of the ratio of each value divided through the geometric mean of all parts of the corresponding observation. The clr transformation is symmetric with respect to the compositional parts and keeps the same number of components as the number of parts in the composition.
 
-biplot(pcaPP::PCAproj(dat.temp, k=3, scores=TRUE), main="raw data rPCA \n w/ package:pcaPP")
+biplot(pcaPP::PCAproj(clr_rcomp_PollenIDgenera.sum1, k=2, scores=TRUE), main="CLR-transformed data rPCA \n w/ package:pcaPP")
 
-colnames(dat.temp)
-NMDS = vegan::metaMDS(as.matrix(compositions::clr(dat.temp)), k = 2, trymax = 20) #all data
-NMDS
-stressplot(NMDS)
-
-rm(NMDS, dat.temp)
+rm(detect.threshold, rcomp_PollenIDgenera.sum1, clr_rcomp_PollenIDgenera.sum1, mycolnames)
 ## END edit 
 ```
 
@@ -1465,7 +1461,7 @@ rm(plot_df)
 #  filter(!str_starts(SiteID, "BEF")) %>%  #remove Blandy
 #   select(Cercis:Phleum) %>% #select metabarcoding data
 #   filter(!is.na(Cercis)) %>% #remove rows without metabarcoding data
-#   select(-any_of(singletonGenera)) # BUT de-select the singletons
+#   select(-any_of(singletonGenera)) # de-select the singletons
 # mutations that are helpful
 #   mutate(across(everything(), ~as.numeric(.))))
 
@@ -1509,8 +1505,8 @@ ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
   geom_point(size = 4, alpha=0.5) +
 # scale_color_manual(values = colorBlindness::SteppedSequential5Steps)+
   stat_ellipse(linetype = 2, linewidth = 1) +
-  scale_x_continuous(limits=c(-4.5,1.5), breaks = c(-4.5,-3.5,-1,-0.5,0,0.5,1,1.5,2))+
-  ggbreak::scale_x_break(breaks=c(-3.5,-1), scale=4)+
+#  scale_x_continuous(limits=c(-4.5,1.5), breaks = c(-4.5,-3.5,-1,-0.5,0,0.5,1,1.5,2))+
+#  ggbreak::scale_x_break(breaks=c(-3.5,-1), scale=4)+
 #  labs(title = "All Data")+
   theme_bw(base_size = 18)
 
@@ -1568,6 +1564,39 @@ ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
 #   stat_ellipse(linetype = 2, linewidth = 1) +
 #   labs(title = "Only Samples w/ Both Barcodes")
 
+
+## Start edit 2025 Oct 27 b
+# using the CLR-TRANSFORMED, PollenIDgenera.sum1, we can pivot_wider, add a constant to make values positive, and perform NMDS
+# we end of up a community dataset that is dat.Queens (sample info) plus dat.Sites (environmental info) AND it also keeps data from the two barcodes separate in PollenIDgenera.sum
+dat<- left_join(
+  PollenIDgenera.sum1 %>% pivot_wider(., names_from = "Genus", values_from = "CLR_PropReads"), 
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum)
+
+dat2<-as.data.frame(dat %>% 
+    ungroup() %>%
+    select(Prunus:Phleum) %>% 
+    select(-c(any_of(singletonGenera), "NA")))
+
+colnames(dat2)
+dat2mat<-as.matrix(dat2)+10 # easy place to add a constant to every value to make them non-negative; the magnitude of the constant (i.e., 10, 100, or 1000) does not meaningfully affect the overall shape and distribution of points
+
+NMDS_barcode = vegan::metaMDS(dat2mat, k = 2, trymax = 20) #all data
+NMDS_plot_df<- cbind(dat %>% ungroup(), 
+                 vegan::scores(NMDS_barcode, display = "sites") %>% 
+  as.data.frame())
+
+ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
+  geom_point(size = 4, alpha=0.5) +
+# scale_color_manual(values = colorBlindness::SteppedSequential5Steps)+
+  stat_ellipse(linetype = 2, linewidth = 1) +
+#  scale_x_continuous(limits=c(-4.5,1.5), breaks = c(-4.5,-3.5,-1,-0.5,0,0.5,1,1.5,2))+
+#  ggbreak::scale_x_break(breaks=c(-3.5,-1), scale=4)+
+#  labs(title = "CLR-transformed")+
+  theme_bw(base_size = 18)
+## END edit
 
 detach('package:vegan')
 ```
