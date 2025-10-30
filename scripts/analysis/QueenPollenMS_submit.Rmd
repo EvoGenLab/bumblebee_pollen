@@ -17,8 +17,14 @@ setwd("~/Documents/GitHub/bumblebee_pollen/datasets")
 
 library(readxl) #read in data
 library(readr)
-library(tidyverse) #manipulate the data
+
+library(tidyverse) #manipulate data
 library(ggplot2) #plot data
+
+# if (!require("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+# BiocManager::install(version = "3.22")
+
 # install.packages("devtools")
 # devtools::install_github("r-lib/conflicted")
 library(conflicted) #https://conflicted.r-lib.org
@@ -350,6 +356,7 @@ PollenIDgenera.sum1 <- PollenIDs %>%
 #  select(-c(any_of(singletonGenera))) # (optional) we exclude singletonGenera and NA from the NMDS and RDA analyses, but we're including them here so that the samples each sum to 1.0 for PropReads
   as_tibble(.)
 
+
 # rowSums(PollenIDgenera.sum1[,-c(1:2)]) #row sums to 1.000046; the sum of Proportion of Reads belonging to each Genus and PropReads unassigned to any Genus equals 1 within each sample, plus 0.000046 in the dummy variable (reads un-assigned to genus have been *retained*; earlier, see "PollenIDs", where you can optionally calculate the proportion of reads assigned to taxa relative to total assigned reads in a sample, rather than sample total reads incl, assigned and not)
 
 detect.threshold <- min(PollenIDs$Reads) / max(PollenIDs$SampleTotalReads) #4.5e-05
@@ -437,14 +444,15 @@ dat.Queen <-left_join(CapLog,PollenIDgenera.comm,by="BeeID") %>% #join capture l
 # Summary of pollen samples
 ## Number of samples per barcode, reads per barcode-sample
 ```{r}
-#this dataset has Bombus_spp identity and keeps data from the two barcodes separate
-dat<- left_join(
+#how many samples (bees)?
+PollenIDs %>% summarise(n=n_distinct(BeeID))
+
+# table of count of ITS2, rbcL, both samples by Bombus species
+dat<- left_join( #this dataset has Bombus_spp identity and keeps data from the two barcodes separate
   PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
   dat.Queen %>% select(BeeID, Bombus_spp), 
   by="BeeID") %>% 
   ungroup()
-
-# table of count of ITS2, rbcL, both samples by Bombus species
 dat %>% group_by(BeeID, Bombus_spp, Barcode) %>% summarise(count=n()) %>% 
   pivot_wider(., names_from = "Barcode", values_from = "count") %>% 
   mutate(across(ITS2:rbcL, ~replace_na(.x, 0))) %>% 
@@ -461,7 +469,7 @@ dim(PollenIDs %>%
   group_by(BeeID, Barcode) %>%
   summarize(
     n=n()
-  )) # three columns (BeeID, Barcode, n or number of records), and 171 BeeID-Barcode groups
+  )) # three columns (BeeID, Barcode, n or number of records)
 
 
 # average and sd reads per barcode-sample
@@ -692,10 +700,10 @@ temp<-PollenIDs %>%
   mutate(metric=factor(metric, levels=c("nSamples", "meanPropReads", "maxPropReads", "Reads"))) %>%
   drop_na(Genus)
 
-temp %>% filter(metric=="Reads") %>% mutate(topGeneraTotalReads=sum(value)) %>% select(topGeneraTotalReads) %>% distinct() # 947562 reads assigned to top genera
-947562/sum(PollenIDs$Reads) #~76% of ALL reads belong to one of the top genera
-PollenIDs %>% filter(is.na(Genus)) %>% mutate(NAReads=sum(Reads)) %>% select(NAReads) %>% distinct() #95726 unassigned (NA) reads
-947562/(sum(PollenIDs$Reads)-95726) #~83% of assigned reads belong to one of the top genera
+temp %>% filter(metric=="Reads") %>% mutate(topGeneraTotalReads=sum(value)) %>% select(topGeneraTotalReads) %>% distinct() # 926042 reads assigned to top genera
+926042/sum(PollenIDs$Reads) #~79% of ALL reads belong to one of the top genera
+PollenIDs %>% filter(is.na(Genus)) %>% mutate(NAReads=sum(Reads)) %>% select(NAReads) %>% distinct() #56373 unassigned (NA) reads
+926042/(sum(PollenIDs$Reads)-56373) #~83% of assigned reads belong to one of the top genera
 
 topGenera2<-temp$Genus %>% as_tibble() %>% distinct() %>% as.data.frame()
 colnames(topGenera2)<-"Genus"
@@ -849,18 +857,20 @@ left_join(., dat.Sites %>% select(SiteID, Name, Date), by="SiteID") %>%
 ### Most common blooming plants used by queens
 ```{r}
 # Among all *foraging queens observed*, what was the most common host plant?
+CapLog %>% filter(HostGenus!="") %>% summarize(bees=n_distinct(BeeID)) #414 total foraging bees
 left_join(CapLog,PollenIDgenera.comm,by="BeeID") %>% # alt version of dat.Queen retaining bees without pollen data (but a few of these queens carried pollen, but we don't have data on it)
-  filter(!is.na(HostGenus)) %>% 
+  filter(HostGenus!="") %>% 
   group_by(HostGenus) %>% 
   summarize(bees=n_distinct(BeeID), propbees=n_distinct(BeeID)/414) %>%  #414 total foraging bees
   arrange(-bees) %>% 
   mutate(cumsum=cumsum(propbees))
 
 # Among all *queens with pollen data*, what was the most common host plant?
+dat.Queen %>% filter(HostGenus!="") %>% summarize(bees=n_distinct(BeeID)) #98 total foraging bees with pollen data
 dat.Queen %>% 
-  filter(!is.na(HostGenus)) %>% 
+  filter(HostGenus!="") %>% 
   group_by(HostGenus) %>% 
-  summarize(bees=n_distinct(BeeID), propbees=n_distinct(BeeID)/103) %>% #103 total foraging bees with pollen data
+  summarize(bees=n_distinct(BeeID), propbees=n_distinct(BeeID)/98) %>% #98 total foraging bees with pollen data
   arrange(-bees) %>% 
   mutate(cumsum=cumsum(propbees)) 
 ```
@@ -1008,9 +1018,13 @@ suppressMessages(print(plot))
 
 
 
-# How does pollen composition differ between ITS2 and rbcL
+# Does pollen composition differ between ITS2 and rbcL? (ALL DATA)
 ## Venn diagram comparing the reference databases, detected taxa
 ```{r}
+# if (!require("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+# BiocManager::install("Biostrings")
+
 # grab reference databases (sequences with taxonomic info)
 rbcL.ref.tax<-"/Users/kelseyschoenemann/Desktop/Bioinformatics/ReferenceDatabases/rbcL-KarenBell_2021.07.08/rbcL_plus_Nov2019adds_Jul2021corrections.dada2.fa"
 PLANiTS.sntx.kls <- "/Users/kelseyschoenemann/Desktop/Bioinformatics/ReferenceDatabases/ITS-PLANiTS_2020.03.29/ITS2.SINTAX_format-kls2.fas"
@@ -1149,9 +1163,9 @@ venn_assigns<-gplots::venn(
   list(ITS2_assigns$Genus,
        rbcL_assigns$Genus), intersections = TRUE)
 
-attr(venn_assigns, "intersections")[["A"]] #22 genera detected only in ITS2 samples
+attr(venn_assigns, "intersections")[["A"]] #21 genera detected only in ITS2 samples
 attr(venn_assigns, "intersections")[["A:B"]] #29 genera detected by both
-attr(venn_assigns, "intersections")[["B"]] #43 genera detected only in rbcL samples
+attr(venn_assigns, "intersections")[["B"]] #44 genera detected only in rbcL samples
 # although the two databases contained the same genera detected in my study, certain detected genera only appeared in one dataset or the other
 
 
@@ -1237,7 +1251,7 @@ elements <-
   lapply(combs, function(i) Setdiff(list[i], list[setdiff(names(list), i)]))
 n.elements <- sapply(elements, length)
 print(n.elements)
-#from lines list<-list() ...to... print(n.elements): this code was largely copied from https://stackoverflow.com/questions/23559371/get-the-list-of-items-in-venn-diagram
+#from lines starting 'list<-list()' ...to... 'print(n.elements)': this code was largely copied from https://stackoverflow.com/questions/23559371/get-the-list-of-items-in-venn-diagram
 
 rm(list, combs, Intersect, Union, Setdiff, elements, n.elements)
 
@@ -1345,6 +1359,7 @@ temp1<-PollenIDs %>%
               .data$Family %in% (rbind(ref_its2_split_names, ref_rbcL_split_names) %>% filter(.data$Genus %in% Genera_ITS2))$Family) %>%
        group_by(BeeID, Barcode, Family) %>% 
        summarise(BeeID=first(BeeID), Barcode=first(Barcode), Family=first(Family), Genus=first(Genus), SampleTotalReads=first(SampleTotalReads), Reads=sum(Reads), PropReads=sum(PropReads))
+
 # in samples where a common-but-barcode-specific genus occurs, show me the total reads assigned to any genera of the same family
 temp1 %>%
   ggplot(aes(y=PropReads, col=Barcode))+
@@ -1381,14 +1396,16 @@ dat<-PollenIDs %>%
   group_by(BeeID,Barcode)%>%
   summarise(GeneraRichness=n_distinct(Genus))
 
-summary(stats::aov(GeneraRichness ~ Barcode, data = dat)) # sig difference in richness detected with rbcL versus ITS2
+hist(dat$GeneraRichness); stats::shapiro.test(dat$GeneraRichness) # not normal
+#summary(stats::aov(GeneraRichness ~ Barcode, data = dat)) # so this test not valid
+stats::kruskal.test(GeneraRichness ~ Barcode, data = dat) # sig difference in richness detected with rbcL versus ITS2
 
 
 plot_df<-dat %>% group_by(Barcode) %>%
   summarize(mean = round(mean(GeneraRichness), 2),
             err = stats::sd(GeneraRichness)/sqrt(length(GeneraRichness)),
-            n = n()) %>% 
-  dplyr::mutate(label = "n") %>% 
+            n = n()) %>%
+  dplyr::mutate(label = "n") %>%
   unite("n_label", label, n, sep = " = ", remove = FALSE)
 
 ggplot(plot_df, aes(x = Barcode, y = mean, fill = Barcode)) +
@@ -1418,7 +1435,7 @@ dat<- left_join(
 dat<-as.data.frame(dat)
 colnames(dat)
 
-dat2<-as.matrix(dat %>% select(-c(Barcode:NLCD1000_Crop, 'NA')) %>% select(-any_of(singletonGenera)))
+dat2<-as.matrix(  dat %>% select(-c(Barcode:NLCD1000_Crop, 'NA', any_of(singletonGenera)))  )
 rownames(dat2)<-dat$BeeID
 sort(colnames(dat2))
 
@@ -1457,45 +1474,116 @@ rm(plot_df)
 ```{r}
 # visualizing how barcodes separate in multidimensional space
 
-#dplyr::filters/selects that are useful
-#  filter(!str_starts(SiteID, "BEF")) %>%  #remove Blandy
-#   select(Cercis:Phleum) %>% #select metabarcoding data
-#   filter(!is.na(Cercis)) %>% #remove rows without metabarcoding data
-#   select(-any_of(singletonGenera)) # de-select the singletons
-# mutations that are helpful
-#   mutate(across(everything(), ~as.numeric(.))))
+library(vegan)
 
-#this dataset is dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate
+##Start edit 2025 Oct 30 a
+#----- compare NMDS of barcode-samples with CLR-transformed data
+#this dataset is dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate (CLR TRANSFORMED)
 dat<- left_join(
-  PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), 
+  PollenIDgenera.sum1 %>% pivot_wider(., names_from = "Genus", values_from = "CLR_PropReads"), #CLR-transformed data!!!!
   dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
   left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
   mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
   select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum)
 
+colnames(dat)
 dat2<-as.data.frame(dat %>% 
     ungroup() %>%
     select(Prunus:Phleum) %>% 
     select(-c(any_of(singletonGenera), "NA")))
 
-colnames(dat2)
-dat2mat<-as.matrix(dat2)
-dat2Pollen.dist<-vegan::vegdist(dat2, method="bray")
+dat2mat<-as.matrix(dat2) # community matrix
 
-library(vegan)
-NMDS_barcode = metaMDS(dat2mat, k = 2, trymax = 20) #all data
-NMDS_barcode
+dat2mat.dist<-vegan::vegdist(dat2mat, method="euclidean") # aitchison_dist is same as Euclidean in CLR space
+NMDS_barcode<-vegan::metaMDS(dat2mat.dist)   
+
 stressplot(NMDS_barcode)
-#goodness(NMDS_barcode)
-#ordiplot(NMDS_barcode, type="text", cex=1.2)
+# goodness(NMDS_barcode)
+# ordiplot(NMDS_barcode, type="text", cex=1.2)
 
-## Start edit 2025 Oct 1 b
-dispersion <- vegan::betadisper(dat2Pollen.dist, group=dat$Barcode)
+
+NMDS_plot_df<- cbind(dat %>% ungroup(), 
+                 vegan::scores(NMDS_barcode, display = "sites") %>% 
+  as.data.frame())
+ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
+  geom_point(size = 4, alpha=0.5) +
+  stat_ellipse(linetype = 2, linewidth = 1) +
+  labs(title = "CLR-transformed proportions") +
+  theme_bw(base_size = 18)
+
+ggplot(NMDS_plot_df %>% filter(Bombus_spp=="bimaculatus" | Bombus_spp=="griseocollis"| Bombus_spp=="impatiens"), aes(x=NMDS1, y=NMDS2, color=Bombus_spp, shape = Bombus_spp))+
+  geom_point(size = 4, alpha=0.5) +
+  stat_ellipse(linetype = 2, linewidth = 1) +
+  labs(title = "CLR-transformed proportions") +
+  theme_bw(base_size = 18)
+ggplot(NMDS_plot_df %>% filter(!str_starts(SiteID,"BEF")), aes(x=NMDS1, y=NMDS2, color=NLCD1000_Crop, shape = Barcode))+
+  geom_point(size = 4, alpha=0.5) +
+  stat_ellipse(linetype = 2, linewidth = 1) +
+  labs(title = "CLR-transformed proportions") +
+  theme_bw(base_size = 18)
+  
+
+dispersion <- vegan::betadisper(dat2mat.dist, group=dat$Barcode)
 TukeyHSD(dispersion)
 vegan::permutest(dispersion)
 plot(dispersion, hull=FALSE, ellipse=TRUE) ##sd ellipse
-vegan::adonis2(dat2~ Barcode, data=dat, permutations = 999, method = "bray", by="term")
-## END edit
+vegan::adonis2(dat2~ Barcode, data=dat, permutations = 999, method = "euclidean", by="term")
+
+#----- compare NMDS of barcode-samples with raw proportions data
+#this dataset is dat.Queens plus dat.Sites AND it also keeps data from the two barcodes separate (RAW PROPORTIONS)
+dat<- left_join(
+  PollenIDgenera.sum %>% pivot_wider(., names_from = "Genus", values_from = "PropReads"), #CLR-transformed data!!!!
+  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
+  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
+  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
+  select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum)
+
+colnames(dat)
+dat2<-as.data.frame(dat %>% 
+    ungroup() %>%
+    select(Prunus:Phleum) %>% 
+    select(-c(any_of(singletonGenera), "NA")))
+
+dat2mat<-as.matrix(dat2) # community matrix
+
+dat2mat.dist<-vegan::vegdist(dat2mat, method="bray") # Bray-Curtis distance
+NMDS_barcode<-vegan::metaMDS(dat2mat.dist)
+
+NMDS_plot_df<- cbind(dat %>% ungroup(), 
+                 vegan::scores(NMDS_barcode, display = "sites") %>% 
+  as.data.frame())
+ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
+  geom_point(size = 4, alpha=0.5) +
+  stat_ellipse(linetype = 2, linewidth = 1) +
+  labs(title = "raw proportions") +
+  theme_bw(base_size = 18)
+
+dispersion <- vegan::betadisper(dat2mat.dist, group=dat$Barcode)
+TukeyHSD(dispersion)
+vegan::permutest(dispersion)
+plot(dispersion, hull=FALSE, ellipse=TRUE) ##sd ellipse
+vegan::adonis2(dat2~ Barcode, data=dat, permutations = 999, method = "euclidean", by="term")
+
+
+#----- compare PCA with raw and clr-transformed data
+biplot(
+  pcaPP::PCAproj(
+    PollenIDgenera.sum %>% 
+      pivot_wider(., names_from = "Genus", values_from = "PropReads", values_fill = 0) %>% ungroup() %>%
+      select(Prunus:Phleum) %>% 
+      select(-c(any_of(singletonGenera), "NA")),
+    k=2, scores=TRUE), 
+  main="raw data rPCA \n w/ package:pcaPP")
+biplot(
+  pcaPP::PCAproj(
+    PollenIDgenera.sum1 %>% 
+      pivot_wider(., names_from = "Genus", values_from = "CLR_PropReads", values_fill = 0) %>% ungroup() %>%
+      select(Prunus:Phleum) %>% 
+      select(-c(any_of(singletonGenera), "NA")), 
+    k=2, scores=TRUE), 
+  main="CLR-transformed data rPCA \n w/ package:pcaPP")
+##END edit
+
 
 NMDS_plot_df<- cbind(dat %>% ungroup(), 
                  vegan::scores(NMDS_barcode, display = "sites") %>% 
@@ -1565,45 +1653,12 @@ ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
 #   labs(title = "Only Samples w/ Both Barcodes")
 
 
-## Start edit 2025 Oct 27 b
-# using the CLR-TRANSFORMED, PollenIDgenera.sum1, we can pivot_wider, add a constant to make values positive, and perform NMDS
-# we end of up a community dataset that is dat.Queens (sample info) plus dat.Sites (environmental info) AND it also keeps data from the two barcodes separate in PollenIDgenera.sum
-dat<- left_join(
-  PollenIDgenera.sum1 %>% pivot_wider(., names_from = "Genus", values_from = "CLR_PropReads"), 
-  dat.Queen %>% select(Date:NestSeek), by="BeeID") %>% 
-  left_join(., dat.Sites, by=c("Date", "SiteID")) %>% 
-  mutate(across(Prunus:Phleum, ~replace(., is.na(.), 0))) %>%
-  select(Barcode, BeeID, Date, Bombus_spp, SiteID, Name, Updated_x, Updated_y, HostGenus, CapTimeH, CapTimeM, NLCD1000_Water:NLCD1000_Crop, Prunus:Phleum)
-
-dat2<-as.data.frame(dat %>% 
-    ungroup() %>%
-    select(Prunus:Phleum) %>% 
-    select(-c(any_of(singletonGenera), "NA")))
-
-colnames(dat2)
-dat2mat<-as.matrix(dat2)+10 # easy place to add a constant to every value to make them non-negative; the magnitude of the constant (i.e., 10, 100, or 1000) does not meaningfully affect the overall shape and distribution of points
-
-NMDS_barcode = vegan::metaMDS(dat2mat, k = 2, trymax = 20) #all data
-NMDS_plot_df<- cbind(dat %>% ungroup(), 
-                 vegan::scores(NMDS_barcode, display = "sites") %>% 
-  as.data.frame())
-
-ggplot(NMDS_plot_df, aes(x=NMDS1, y=NMDS2, color=Barcode, shape = Barcode))+
-  geom_point(size = 4, alpha=0.5) +
-# scale_color_manual(values = colorBlindness::SteppedSequential5Steps)+
-  stat_ellipse(linetype = 2, linewidth = 1) +
-#  scale_x_continuous(limits=c(-4.5,1.5), breaks = c(-4.5,-3.5,-1,-0.5,0,0.5,1,1.5,2))+
-#  ggbreak::scale_x_break(breaks=c(-3.5,-1), scale=4)+
-#  labs(title = "CLR-transformed")+
-  theme_bw(base_size = 18)
-## END edit
-
 detach('package:vegan')
 ```
 
 So the databases contain the same genera detected in the samples.
 But the average richness is higher in rbcL, as well as shannon diversity. 
-And all three NMDS show rbcL clustering separately than ITS2.
+And all three NMDS of raw proportions show rbcL clustering a little apart from ITS2, but with the CLR-transformed proportions they overlap completely
 
 
 # Does pollen composition vary among Bombus species? (YES Blandy, NO Rare bees)
@@ -2173,6 +2228,7 @@ plot2
 
 ggpubr::ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ```
+
 
 # Misc Summary/Counts
 
